@@ -3,7 +3,9 @@
  * Handles live match data operations
  */
 
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis'
+
+const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -18,7 +20,7 @@ export default async function handler(req, res) {
   try {
     // GET - Fetch live match data
     if (req.method === 'GET') {
-      const liveMatch = await kv.get('live-match');
+      const liveMatch = await redis.get('live-match');
       
       return res.status(200).json({
         success: true,
@@ -33,7 +35,7 @@ export default async function handler(req, res) {
       // Add timestamp
       data.lastUpdated = new Date().toISOString();
       
-      await kv.set('live-match', data);
+      await redis.set('live-match', data);
       
       return res.status(200).json({
         success: true,
@@ -44,7 +46,7 @@ export default async function handler(req, res) {
 
     // DELETE - Clear live match data
     if (req.method === 'DELETE') {
-      await kv.del('live-match');
+      await redis.del('live-match');
       
       return res.status(200).json({
         success: true,

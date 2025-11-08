@@ -230,12 +230,92 @@
 
         // Set detailed information
         const allrounderType = player['allrounder type'] || player['Allrounder Type'] || '';
+        const stats = player.stats || {};
+        
         const detailsHTML = `
-            ${player.age ? `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${player.age}</div></div>` : ''}
-            ${player.nationality ? `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${player.nationality}</div></div>` : ''}
-            ${player['batting style'] || player.Batting ? `<div class="detail-item"><div class="detail-label">Batting Style</div><div class="detail-value">${player['batting style'] || player.Batting}</div></div>` : ''}
-            ${player['bowling style'] || player.Bowling ? `<div class="detail-item"><div class="detail-label">Bowling Style</div><div class="detail-value">${player['bowling style'] || player.Bowling}</div></div>` : ''}
-            ${allrounderType ? `<div class="detail-item"><div class="detail-label">All-Rounder Type</div><div class="detail-value">${allrounderType}</div></div>` : ''}
+            <div class="player-details-grid">
+                <div class="details-section">
+                    <h4>Player Information</h4>
+                    ${player.age ? `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${player.age}</div></div>` : ''}
+                    ${player.nationality ? `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${player.nationality}</div></div>` : ''}
+                    ${player.jersey ? `<div class="detail-item"><div class="detail-label">Jersey Number</div><div class="detail-value">${player.jersey}</div></div>` : ''}
+                    ${player['batting style'] || player.Batting ? `<div class="detail-item"><div class="detail-label">Batting Style</div><div class="detail-value">${player['batting style'] || player.Batting}</div></div>` : ''}
+                    ${player['bowling style'] || player.Bowling ? `<div class="detail-item"><div class="detail-label">Bowling Style</div><div class="detail-value">${player['bowling style'] || player.Bowling}</div></div>` : ''}
+                    ${allrounderType ? `<div class="detail-item"><div class="detail-label">All-Rounder Type</div><div class="detail-value">${allrounderType}</div></div>` : ''}
+                </div>
+                
+                <div class="details-section">
+                    <h4>Batting Statistics</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.matches || 0}</div>
+                            <div class="stat-label">Matches</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.runs || 0}</div>
+                            <div class="stat-label">Runs</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.battingAvg || '0.00'}</div>
+                            <div class="stat-label">Average</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.strikeRate || '0.00'}</div>
+                            <div class="stat-label">Strike Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.highestScore || 0}</div>
+                            <div class="stat-label">Highest Score</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.centuries || 0}</div>
+                            <div class="stat-label">Centuries</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.fifties || 0}</div>
+                            <div class="stat-label">Half-Centuries</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.sixes || 0}</div>
+                            <div class="stat-label">Sixes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.fours || 0}</div>
+                            <div class="stat-label">Fours</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="details-section">
+                    <h4>Bowling Statistics</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.wickets || 0}</div>
+                            <div class="stat-label">Wickets</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.bowlingAvg || '0.00'}</div>
+                            <div class="stat-label">Bowling Average</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.economy || '0.00'}</div>
+                            <div class="stat-label">Economy Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.bestBowling || '-'}</div>
+                            <div class="stat-label">Best Bowling</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.fiveWickets || 0}</div>
+                            <div class="stat-label">5-Wicket Hauls</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${stats.fourWickets || 0}</div>
+                            <div class="stat-label">4-Wicket Hauls</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         `;
         modalDetails.innerHTML = detailsHTML;
 
@@ -264,102 +344,11 @@
         }
     });
 
-    // Load players from localStorage
+    // Load players from API - will use team-page-api-loader.js
     document.addEventListener('DOMContentLoaded', function() {
-        const TEAM_KEY = 'mi';
-        const storageKey = `uploaded_${TEAM_KEY.toLowerCase()}_players`;
-        const playersContainer = document.getElementById('playersContainer');
-        
-        try {
-            const playersData = localStorage.getItem(storageKey);
-            
-            if (playersData) {
-                const players = JSON.parse(playersData);
-                
-                if (players.length > 0) {
-                    // Sort players by role
-                    const roleOrder = {
-                        'batsman': 1,
-                        'wicket-keeper': 2,
-                        'all-rounder': 3,
-                        'bowler': 4
-                    };
-                    
-                    players.sort((a, b) => {
-                        const roleA = (a.role || '').toLowerCase();
-                        const roleB = (b.role || '').toLowerCase();
-                        const orderA = roleOrder[roleA] || 99;
-                        const orderB = roleOrder[roleB] || 99;
-                        
-                        // First sort by role
-                        if (orderA !== orderB) {
-                            return orderA - orderB;
-                        }
-                        
-                        // Then sort by age (high to low)
-                        const ageA = parseInt(a.age || 0);
-                        const ageB = parseInt(b.age || 0);
-                        return ageB - ageA;
-                    });
-                    
-                    // Update stats
-                    document.getElementById('playerCount').textContent = players.length;
-                    document.getElementById('foreignCount').textContent = players.filter(p => p.isForeign).length;
-                    document.getElementById('indianCount').textContent = players.filter(p => !p.isForeign).length;
-                    
-                    // Create player cards
-                    playersContainer.innerHTML = '';
-                    players.forEach(player => {
-                        const card = document.createElement('div');
-                        card.className = 'player-card';
-                        
-                        let badges = '';
-                        if (player.isCaptain) badges += '<span class="badge badge-captain">👑 Captain</span>';
-                        if (player.isViceCaptain) badges += '<span class="badge badge-captain">⭐ Vice Captain</span>';
-                        if (player.isForeign) badges += '<span class="badge badge-foreign">🌏 Overseas</span>';
-                        if ((player.role || '').toLowerCase() === 'wicket-keeper') badges += '<span class="badge badge-wk">🧤 WK</span>';
-                        
-                        card.innerHTML = `
-                            <div class="player-image">
-                                <img src="assets/mi_logo_new.svg" alt="${player.name || 'Player'}" onerror="this.src='assets/ipl_logo_new.svg'">
-                            </div>
-                            <h3 class="player-name">${player.name || 'Unknown'}</h3>
-                            <p class="player-role">${player.role || 'Player'}</p>
-                            <div class="player-badges">
-                                ${badges}
-                            </div>
-                        `;
-                        
-                        // Add click event to show modal
-                        card.addEventListener('click', () => showPlayerModal(player));
-                        card.style.cursor = 'pointer';
-                        
-                        playersContainer.appendChild(card);
-                    });
-                } else {
-                    playersContainer.innerHTML = `
-                        <div class="no-players-message">
-                            <h3>Squad Announcement Coming Soon</h3>
-                            <p>Stay tuned for player updates!</p>
-                        </div>
-                    `;
-                }
-            } else {
-                playersContainer.innerHTML = `
-                    <div class="no-players-message">
-                        <h3>Squad Announcement Coming Soon</h3>
-                        <p>Stay tuned for player updates!</p>
-                    </div>
-                `;
-            }
-        } catch (error) {
-            console.error('Error loading players:', error);
-            playersContainer.innerHTML = `
-                <div class="no-players-message">
-                    <h3>Error Loading Players</h3>
-                    <p>Please try refreshing the page.</p>
-                </div>
-            `;
+        // The API loader will automatically detect the team from URL and load players
+        if (typeof loadTeamPlayers === 'function') {
+            loadTeamPlayers('mi');
         }
     });
     </script>

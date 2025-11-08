@@ -3,7 +3,9 @@
  * Handles fixtures data CRUD operations
  */
 
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis'
+
+const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -18,7 +20,7 @@ export default async function handler(req, res) {
   try {
     // GET - Fetch all fixtures
     if (req.method === 'GET') {
-      const fixtures = await kv.get('fixtures');
+      const fixtures = await redis.get('fixtures');
       
       return res.status(200).json({
         success: true,
@@ -37,7 +39,7 @@ export default async function handler(req, res) {
         });
       }
 
-      await kv.set('fixtures', fixtures);
+      await redis.set('fixtures', fixtures);
       
       return res.status(200).json({
         success: true,
@@ -48,7 +50,7 @@ export default async function handler(req, res) {
 
     // DELETE - Clear all fixtures
     if (req.method === 'DELETE') {
-      await kv.del('fixtures');
+      await redis.del('fixtures');
       
       return res.status(200).json({
         success: true,

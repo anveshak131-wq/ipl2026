@@ -3,7 +3,9 @@
  * Handles points table CRUD operations
  */
 
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis'
+
+const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -18,7 +20,7 @@ export default async function handler(req, res) {
   try {
     // GET - Fetch points table
     if (req.method === 'GET') {
-      const points = await kv.get('points-table');
+      const points = await redis.get('points-table');
       
       return res.status(200).json({
         success: true,
@@ -37,7 +39,7 @@ export default async function handler(req, res) {
         });
       }
 
-      await kv.set('points-table', points);
+      await redis.set('points-table', points);
       
       return res.status(200).json({
         success: true,
@@ -48,7 +50,7 @@ export default async function handler(req, res) {
 
     // DELETE - Clear points table
     if (req.method === 'DELETE') {
-      await kv.del('points-table');
+      await redis.del('points-table');
       
       return res.status(200).json({
         success: true,

@@ -1,9 +1,13 @@
 /**
  * Vercel Serverless Function: /api/admin/players
  * Handles player data CRUD operations
+ * Uses Upstash Redis (automatically configured by Vercel)
  */
 
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis'
+
+// Initialize Upstash Redis client
+const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -27,7 +31,7 @@ export default async function handler(req, res) {
         });
       }
 
-      const players = await kv.get(`players:${team}`);
+      const players = await redis.get(`players:${team}`);
       
       return res.status(200).json({
         success: true,
@@ -46,7 +50,7 @@ export default async function handler(req, res) {
         });
       }
 
-      await kv.set(`players:${team}`, players);
+      await redis.set(`players:${team}`, players);
       
       return res.status(200).json({
         success: true,
@@ -66,7 +70,7 @@ export default async function handler(req, res) {
         });
       }
 
-      await kv.del(`players:${team}`);
+      await redis.del(`players:${team}`);
       
       return res.status(200).json({
         success: true,
