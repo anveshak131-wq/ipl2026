@@ -23,6 +23,22 @@ async function loadTeamPlayers(teamCode) {
     
     let players = [];
     
+    // Try localStorage fallback first (for local testing)
+    try {
+        const localData = localStorage.getItem(storageKey);
+        if (localData) {
+            const localPlayers = JSON.parse(localData);
+            if (Array.isArray(localPlayers) && localPlayers.length > 0) {
+                console.log(`✅ Loaded ${localPlayers.length} players from localStorage`);
+                players = localPlayers;
+                displayPlayers(players, teamCode);
+                return;
+            }
+        }
+    } catch (e) {
+        console.log('No localStorage data found');
+    }
+    
     // Load from Vercel Storage (Admin API) - PRIMARY SOURCE
     try {
         console.log(`🔄 Fetching ${teamCode.toUpperCase()} players from Vercel Storage...`);
