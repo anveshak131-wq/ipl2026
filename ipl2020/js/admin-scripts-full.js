@@ -157,19 +157,38 @@ function savePlayers() {
 // Save to Vercel KV API
 async function saveToVercelKV(team, players) {
     try {
+        // Fetch existing players from backend
+        let existingPlayers = [];
+        try {
+            const fetchResp = await fetch(`/api/admin/players?team=${team}`);
+            if (fetchResp.ok) {
+                const result = await fetchResp.json();
+                existingPlayers = result.data || result || [];
+            }
+        } catch (e) {
+            console.warn('Could not fetch existing players for merge:', e);
+        }
+
+        // Merge: keep all unique players by name (new overwrite old)
+        const nameMap = {};
+        existingPlayers.forEach(p => { if(p.name) nameMap[p.name.toLowerCase()] = p; });
+        players.forEach(p => { if(p.name) nameMap[p.name.toLowerCase()] = p; });
+        const mergedPlayers = Object.values(nameMap);
+
+        // Save merged list to backend
         const response = await fetch('/api/admin/players', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ team, players })
+            body: JSON.stringify({ team, players: mergedPlayers })
         });
-        
+
         if (response.ok) {
-            console.log(`✅ Saved to Vercel KV for team ${team}`);
+            console.log(`✅ Saved merged players to Vercel KV for team ${team}`);
         } else {
-            console.warn('Failed to save to Vercel KV:', response.status);
+            console.warn('Failed to save merged players to Vercel KV:', response.status);
         }
     } catch (error) {
-        console.error('Error saving to Vercel KV:', error);
+        console.error('Error saving merged players to Vercel KV:', error);
     }
 }
 
