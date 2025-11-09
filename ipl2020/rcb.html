@@ -217,14 +217,11 @@
         </div>
     </footer>
 
+    <script src="js/player-modal.js?v=1.0"></script>
     <script src="js/team-page-loader.js?v=2.2"></script>
-    <script>
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded, initializing...');
-        
-        // Initialize modal functionality
-        function initModal() {
+    // Initialize modal functionality first, make it globally available
+    function initModal() {
+        console.log('Initializing modal...');
             const elements = {
                 modal: document.getElementById('playerModal'),
                 modalName: document.getElementById('modalPlayerName'),

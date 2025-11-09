@@ -3,6 +3,11 @@
  * Loads player data from backend API or localStorage fallback
  */
 
+// Wait for player-modal.js to load
+if (!window.modalState) {
+    console.log('Waiting for modal initialization...');
+}
+
 const BACKEND_API_URL = 'https://ipl-backend-api.vercel.app'; // Update with your deployed backend URL
 
 /**
@@ -164,14 +169,20 @@ function createPlayerCard(player, teamCode) {
     // Add click event to show modal
     card.addEventListener('click', () => {
         try {
-            if (typeof window.showPlayerModal === 'function') {
+            // Ensure modal is initialized
+            if (!window.modalState?.initialized) {
+                console.log('Modal not yet initialized, initializing now...');
+                initModal();
+            }
+            
+            // Now check if we can show the modal
+            if (window.showPlayerModal) {
                 // Clone the player object to ensure we pass all data
                 const playerData = JSON.parse(JSON.stringify(player));
                 console.log('Opening modal for player:', playerData);
                 window.showPlayerModal(playerData);
             } else {
-                console.error('showPlayerModal function not found. Available global functions:', 
-                    Object.keys(window).filter(key => typeof window[key] === 'function'));
+                console.error('showPlayerModal function not found. Modal state:', window.modalState);
             }
         } catch (error) {
             console.error('Error showing player modal:', error);
