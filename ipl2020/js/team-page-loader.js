@@ -145,6 +145,9 @@ function createPlayerCard(player, teamCode) {
             }
             
             // Now check if we can show the modal
+            // Try to recover modal elements if possible
+            if (typeof window.ensureModalElements === 'function') try { window.ensureModalElements(); } catch(e){}
+
             if (window.showPlayerModal) {
                 // Clone the player object to ensure we pass all data
                 const playerData = JSON.parse(JSON.stringify(player));
