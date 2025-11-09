@@ -163,11 +163,18 @@ function createPlayerCard(player, teamCode) {
     
     // Add click event to show modal
     card.addEventListener('click', () => {
-        if (typeof window.showPlayerModal === 'function') {
-            console.log('Opening modal for player:', player);
-            window.showPlayerModal(player);
-        } else {
-            console.error('showPlayerModal function not found on window object');
+        try {
+            if (typeof window.showPlayerModal === 'function') {
+                // Clone the player object to ensure we pass all data
+                const playerData = JSON.parse(JSON.stringify(player));
+                console.log('Opening modal for player:', playerData);
+                window.showPlayerModal(playerData);
+            } else {
+                console.error('showPlayerModal function not found. Available global functions:', 
+                    Object.keys(window).filter(key => typeof window[key] === 'function'));
+            }
+        } catch (error) {
+            console.error('Error showing player modal:', error);
         }
     });
     card.style.cursor = 'pointer';

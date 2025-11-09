@@ -233,15 +233,12 @@
                 <div class="modal-player-logo">
                     <img src="assets/rcb_logo_new.svg" alt="Player" id="modalPlayerLogo">
                 </div>
-                <h2 class="modal-player-name" id="modalPlayerName">Player Name</h2>
-                <p class="modal-player-role" id="modalPlayerRole">Role</p>
-                <div class="modal-player-badges" id="modalPlayerBadges">
-                    <!-- Badges will be added dynamically -->
-                </div>
+                <h2 class="modal-player-name" id="modalPlayerName"></h2>
+                <p class="modal-player-role" id="modalPlayerRole"></p>
+                <div class="modal-player-badges" id="modalPlayerBadges"></div>
             </div>
-            <div class="modal-player-details" id="modalPlayerDetails">
-                <!-- Details will be added dynamically -->
-            </div>
+            <div class="modal-player-stats" id="modalPlayerStats"></div>
+            <div class="modal-player-details" id="modalPlayerDetails"></div>
         </div>
     </div>
 
@@ -254,27 +251,44 @@
 
     <script src="js/team-page-loader.js?v=2.1"></script>
     <script>
-    // Scroll effect
-    window.addEventListener('scroll', () => {
-        const navbar = document.getElementById('navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
+    // Initialize modal functionality
+    (function() {
+        // Scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
 
-    // Define showPlayerModal function and make it available globally
-    window.showPlayerModal = function(player) {
-        const modal = document.getElementById('playerModal');
-        const modalName = document.getElementById('modalPlayerName');
-        const modalRole = document.getElementById('modalPlayerRole');
-        const modalBadges = document.getElementById('modalPlayerBadges');
-        const modalDetails = document.getElementById('modalPlayerDetails');
-
-        // Set basic info
-        modalName.textContent = player.name || 'Unknown Player';
-        modalRole.textContent = player.role || 'Player';
+        // Define modal functions globally
+        window.showPlayerModal = function(player) {
+        try {
+            console.log('Showing modal for player:', player);
+            
+            // Get modal elements
+            const modal = document.getElementById('playerModal');
+            const modalName = document.getElementById('modalPlayerName');
+            const modalRole = document.getElementById('modalPlayerRole');
+            const modalBadges = document.getElementById('modalPlayerBadges');
+            const modalDetails = document.getElementById('modalPlayerDetails');
+            
+            if (!modal || !modalName || !modalRole || !modalBadges || !modalDetails) {
+                console.error('Modal elements not found:', {
+                    modal: !!modal,
+                    modalName: !!modalName,
+                    modalRole: !!modalRole,
+                    modalBadges: !!modalBadges,
+                    modalDetails: !!modalDetails
+                });
+                return;
+            }
+            
+            // Set basic info
+            modalName.textContent = player.name || 'Unknown Player';
+            modalRole.textContent = player.role || 'Player';
         // Set badges
         let badgesHTML = '';
         if (player.isCaptain) badgesHTML += '<span class="modal-badge badge-captain">👑 Captain</span>';
@@ -341,20 +355,35 @@
     document.querySelector('.team-header').classList.add('blurred');
     }
 
-    function closePlayerModal() {
-        const modal = document.getElementById('playerModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    document.querySelector('.container').classList.remove('blurred');
-    document.querySelector('.team-header').classList.remove('blurred');
+    window.closePlayerModal = function() {
+        try {
+            const modal = document.getElementById('playerModal');
+            if (!modal) {
+                console.error('Modal element not found');
+                return;
+            }
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            const container = document.querySelector('.container');
+            const header = document.querySelector('.team-header');
+            
+            if (container) container.classList.remove('blurred');
+            if (header) header.classList.remove('blurred');
+        } catch (error) {
+            console.error('Error closing modal:', error);
+        }
     }
 
     // Close modal on background click
-    document.getElementById('playerModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closePlayerModal();
-        }
-    });
+    const modal = document.getElementById('playerModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                window.closePlayerModal();
+            }
+        });
+    }
 
     // Close modal on Escape key
     document.addEventListener('keydown', function(e) {
