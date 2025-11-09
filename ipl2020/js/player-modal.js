@@ -32,6 +32,11 @@ function initModal() {
 
     if (missingElements.length > 0) {
         console.error('Missing modal elements:', missingElements);
+        // Show error on page
+        let err = document.createElement('div');
+        err.style = 'color:red;background:#fff;padding:1rem;text-align:center;position:fixed;top:0;left:0;right:0;z-index:99999;font-size:1.2rem;';
+        err.innerText = 'Modal initialization failed. Missing elements: ' + missingElements.join(', ');
+        document.body.appendChild(err);
         return;
     }
 
@@ -163,11 +168,18 @@ function initModal() {
 }
 
 // Initialize when DOM is loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initModal);
-} else {
-    initModal();
-}
+// Always force modal initialization after page load
+setTimeout(() => {
+    try {
+        initModal();
+    } catch (e) {
+        console.error('Modal force-init error:', e);
+        let err = document.createElement('div');
+        err.style = 'color:red;background:#fff;padding:1rem;text-align:center;position:fixed;top:0;left:0;right:0;z-index:99999;font-size:1.2rem;';
+        err.innerText = 'Modal force-init error: ' + e;
+        document.body.appendChild(err);
+    }
+}, 500);
 
 // Debug: Add test button to open modal with sample data
 document.addEventListener('DOMContentLoaded', function() {
