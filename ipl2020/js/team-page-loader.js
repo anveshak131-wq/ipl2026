@@ -9,84 +9,53 @@ if (!window.modalState) {
 }
 
 const BACKEND_API_URL = 'https://ipl-backend-api.vercel.app'; // Update with your deployed backend URL
+const REMOTE_STATS_URL = 'https://iplcrickethub-kappa.vercel.app/api/admin/players?team=RCB';
 
 /**
  * Load players for a team page
  * @param {string} teamCode - Team code (e.g., 'rcb', 'mi', 'csk')
  */
 async function loadTeamPlayers(teamCode) {
-    const storageKey = `uploaded_${teamCode.toLowerCase()}_players`;
     const playersContainer = document.getElementById('playersContainer');
-    
     if (!playersContainer) {
         console.error('Players container not found');
         return;
     }
-    
-    // Show loading state
     playersContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.7);">Loading players...</div>';
-    
     let players = [];
-    
-    // Load directly from Vercel Storage (Admin API)
     try {
-        console.log(`🔄 Fetching ${teamCode.toUpperCase()} players from Vercel Storage...`);
-        const adminResponse = await fetch(`/api/admin/players?team=${teamCode.toUpperCase()}`);
-        console.log(`API Response Status:`, adminResponse.status, adminResponse.statusText);
-        
-        // Log the raw response for debugging
-        const responseText = await adminResponse.text();
-        console.log('Raw API Response:', responseText);
-        
-        // Parse the response back to JSON
-        const result = responseText ? JSON.parse(responseText) : null;
-        
-        if (adminResponse.ok && result) {
-            console.log(`Parsed API Response:`, result);
-            
-            const apiPlayers = result.data || result || [];
-            if (Array.isArray(apiPlayers) && apiPlayers.length > 0) {
-                players = apiPlayers.map(p => {
-                    // Parse stats if they are stored as a string
-                    let stats = p.stats || {};
-                    if (typeof stats === 'string') {
-                        try {
-                            stats = JSON.parse(stats);
-                        } catch (e) {
-                            console.warn('Failed to parse player stats:', e);
-                            stats = {};
-                        }
-                    }
-                    
-                    return {
-                        name: p.name,
-                        role: p.role || p.position,
-                        age: p.age,
-                        nationality: p.nationality,
-                        isForeign: p.isForeign || false,
-                        isCaptain: p.isCaptain || false,
-                        isViceCaptain: p.isViceCaptain || false,
-                        'batting style': p.battingStyle || p['batting style'],
-                        'bowling style': p.bowlingStyle || p['bowling style'],
-                        'allrounder type': p.allrounderType || p['allrounder type'],
-                        stats: stats,
-                        jersey: p.jersey,
-                        photo: p.photo || null
-                    };
-                });
-                console.log(`✅ Loaded ${players.length} players from Vercel Storage`);
-                console.log(`📊 Sample player stats:`, players[0]?.stats);
-            } else {
-                console.warn(`⚠️ No players found in API response for ${teamCode.toUpperCase()}`);
-            }
+        console.log('🔄 Fetching RCB players from remote stats endpoint...');
+        const response = await fetch(REMOTE_STATS_URL);
+        const result = await response.json();
+        if (response.ok && result && Array.isArray(result.data)) {
+            players = result.data.map(p => {
+                let stats = p.stats || {};
+                if (typeof stats === 'string') {
+                    try { stats = JSON.parse(stats); } catch { stats = {}; }
+                }
+                return {
+                    name: p.name,
+                    role: p.role || p.position,
+                    age: p.age,
+                    nationality: p.nationality,
+                    isForeign: p.isForeign || false,
+                    isCaptain: p.isCaptain || false,
+                    isViceCaptain: p.isViceCaptain || false,
+                    'batting style': p.battingStyle || p['batting style'],
+                    'bowling style': p.bowlingStyle || p['bowling style'],
+                    'allrounder type': p.allrounderType || p['allrounder type'],
+                    stats: stats,
+                    jersey: p.jersey,
+                    photo: p.photo || null
+                };
+            });
+            console.log(`✅ Loaded ${players.length} players from remote stats endpoint`);
         } else {
-            console.error(`❌ API Error: ${adminResponse.status} ${adminResponse.statusText}`);
+            console.warn('⚠️ No players found in remote stats response');
         }
     } catch (e) {
-        console.error('❌ Failed to fetch from Vercel Storage:', e);
+        console.error('❌ Failed to fetch from remote stats endpoint:', e);
     }
-    
-    // Display players or show message
     if (players.length > 0) {
         displayPlayers(players, teamCode);
     } else {
