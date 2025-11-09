@@ -132,6 +132,7 @@
         modalName.textContent = player.name || 'Unknown Player';
         modalRole.textContent = player.role || 'Player';
 
+    window.showPlayerModal = showPlayerModal;
         // Set badges
         let badgesHTML = '';
         if (player.isCaptain) badgesHTML += '<span class="modal-badge badge-captain">👑 Captain</span>';
@@ -146,92 +147,49 @@
         // Set detailed information with comprehensive statistics
         const allrounderType = player['allrounder type'] || player['Allrounder Type'] || '';
         const stats = player.stats || {};
-        
-        const detailsHTML = `
-            <div class="player-details-grid">
-                <div class="details-section">
-                    <h4>Player Information</h4>
-                    ${player.age ? `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${player.age}</div></div>` : ''}
-                    ${player.nationality ? `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${player.nationality}</div></div>` : ''}
-                    ${player.jersey ? `<div class="detail-item"><div class="detail-label">Jersey Number</div><div class="detail-value">${player.jersey}</div></div>` : ''}
-                    ${player['batting style'] || player.Batting ? `<div class="detail-item"><div class="detail-label">Batting Style</div><div class="detail-value">${player['batting style'] || player.Batting}</div></div>` : ''}
-                    ${player['bowling style'] || player.Bowling ? `<div class="detail-item"><div class="detail-label">Bowling Style</div><div class="detail-value">${player['bowling style'] || player.Bowling}</div></div>` : ''}
-                    ${allrounderType ? `<div class="detail-item"><div class="detail-label">All-Rounder Type</div><div class="detail-value">${allrounderType}</div></div>` : ''}
-                </div>
-                
-                <div class="details-section">
-                    <h4>Batting Statistics</h4>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.matches || 0}</div>
-                            <div class="stat-label">Matches</div>
+        let detailsHTML = '';
+        if (Object.keys(stats).length > 0) {
+            detailsHTML = `
+                <div class="player-details-grid">
+                    <div class="details-section">
+                        <h4>Player Information</h4>
+                        ${player.age ? `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${player.age}</div></div>` : ''}
+                        ${player.nationality ? `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${player.nationality}</div></div>` : ''}
+                        ${player.jersey ? `<div class="detail-item"><div class="detail-label">Jersey Number</div><div class="detail-value">${player.jersey}</div></div>` : ''}
+                        ${player['batting style'] || player.Batting ? `<div class="detail-item"><div class="detail-label">Batting Style</div><div class="detail-value">${player['batting style'] || player.Batting}</div></div>` : ''}
+                        ${player['bowling style'] || player.Bowling ? `<div class="detail-item"><div class="detail-label">Bowling Style</div><div class="detail-value">${player['bowling style'] || player.Bowling}</div></div>` : ''}
+                        ${allrounderType ? `<div class="detail-item"><div class="detail-label">All-Rounder Type</div><div class="detail-value">${allrounderType}</div></div>` : ''}
+                    </div>
+                    <div class="details-section">
+                        <h4>Batting Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item"><div class="stat-number">${stats.matches || 0}</div><div class="stat-label">Matches</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.runs || 0}</div><div class="stat-label">Runs</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.battingAvg || '0.00'}</div><div class="stat-label">Average</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.strikeRate || '0.00'}</div><div class="stat-label">Strike Rate</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.highestScore || 0}</div><div class="stat-label">Highest Score</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.centuries || 0}</div><div class="stat-label">Centuries</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.fifties || 0}</div><div class="stat-label">Half-Centuries</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.sixes || 0}</div><div class="stat-label">Sixes</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.fours || 0}</div><div class="stat-label">Fours</div></div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.runs || 0}</div>
-                            <div class="stat-label">Runs</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.battingAvg || '0.00'}</div>
-                            <div class="stat-label">Average</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.strikeRate || '0.00'}</div>
-                            <div class="stat-label">Strike Rate</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.highestScore || 0}</div>
-                            <div class="stat-label">Highest Score</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.centuries || 0}</div>
-                            <div class="stat-label">Centuries</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.fifties || 0}</div>
-                            <div class="stat-label">Half-Centuries</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.sixes || 0}</div>
-                            <div class="stat-label">Sixes</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.fours || 0}</div>
-                            <div class="stat-label">Fours</div>
+                    </div>
+                    <div class="details-section">
+                        <h4>Bowling Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item"><div class="stat-number">${stats.wickets || 0}</div><div class="stat-label">Wickets</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.bowlingAvg || '0.00'}</div><div class="stat-label">Bowling Average</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.economy || '0.00'}</div><div class="stat-label">Economy Rate</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.bestBowling || '-'}</div><div class="stat-label">Best Bowling</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.fiveWickets || 0}</div><div class="stat-label">5-Wicket Hauls</div></div>
+                            <div class="stat-item"><div class="stat-number">${stats.fourWickets || 0}</div><div class="stat-label">4-Wicket Hauls</div></div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="details-section">
-                    <h4>Bowling Statistics</h4>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.wickets || 0}</div>
-                            <div class="stat-label">Wickets</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.bowlingAvg || '0.00'}</div>
-                            <div class="stat-label">Bowling Average</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.economy || '0.00'}</div>
-                            <div class="stat-label">Economy Rate</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.bestBowling || '-'}</div>
-                            <div class="stat-label">Best Bowling</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.fiveWickets || 0}</div>
-                            <div class="stat-label">5-Wicket Hauls</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">${stats.fourWickets || 0}</div>
-                            <div class="stat-label">4-Wicket Hauls</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+            `;
+        } else {
+            detailsHTML = `<div class='empty-state'><h4>No stats available for this player.</h4></div>`;
+        }
         modalDetails.innerHTML = detailsHTML;
 
         // Show modal
