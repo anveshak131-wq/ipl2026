@@ -144,8 +144,8 @@
         }
     });
 
-    // Modal functions
-    function showPlayerModal(player) {
+    // Make showPlayerModal function available globally
+    window.showPlayerModal = function(player) {
         const modal = document.getElementById('playerModal');
         const modalName = document.getElementById('modalPlayerName');
         const modalRole = document.getElementById('modalPlayerRole');

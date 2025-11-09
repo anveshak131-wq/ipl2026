@@ -23,22 +23,6 @@ async function loadTeamPlayers(teamCode) {
     
     let players = [];
     
-    // Try localStorage fallback first (for local testing)
-    try {
-        const localData = localStorage.getItem(storageKey);
-        if (localData) {
-            const localPlayers = JSON.parse(localData);
-            if (Array.isArray(localPlayers) && localPlayers.length > 0) {
-                console.log(`✅ Loaded ${localPlayers.length} players from localStorage`);
-                players = localPlayers;
-                displayPlayers(players, teamCode);
-                return;
-            }
-        }
-    } catch (e) {
-        console.log('No localStorage data found');
-    }
-    
     // Load from Vercel Storage (Admin API) - PRIMARY SOURCE
     try {
         console.log(`🔄 Fetching ${teamCode.toUpperCase()} players from Vercel Storage...`);
@@ -51,38 +35,26 @@ async function loadTeamPlayers(teamCode) {
             
             const apiPlayers = result.data || result || [];
             if (Array.isArray(apiPlayers) && apiPlayers.length > 0) {
-                players = apiPlayers.map(p => ({
-                    name: p.name,
-                    role: p.role || p.position,
-                    age: p.age,
-                    nationality: p.nationality,
-                    isForeign: p.isForeign,
-                    isCaptain: p.isCaptain,
-                    isViceCaptain: p.isViceCaptain,
-                    'batting style': p.battingStyle || p['batting style'],
-                    'bowling style': p.bowlingStyle || p['bowling style'],
-                    'allrounder type': p.allrounderType || p['allrounder type'],
-                    stats: {
-                        matches: p.stats?.matches || 0,
-                        innings: p.stats?.innings || 0,
-                        runs: p.stats?.runs || 0,
-                        battingAvg: p.stats?.battingAvg || 0,
-                        strikeRate: p.stats?.strikeRate || 0,
-                        highestScore: p.stats?.highestScore || 0,
-                        centuries: p.stats?.centuries || 0,
-                        fifties: p.stats?.fifties || 0,
-                        sixes: p.stats?.sixes || 0,
-                        fours: p.stats?.fours || 0,
-                        wickets: p.stats?.wickets || 0,
-                        bowlingAvg: p.stats?.bowlingAvg || 0,
-                        economy: p.stats?.economy || 0,
-                        bestBowling: p.stats?.bestBowling || '-',
-                        fiveWickets: p.stats?.fiveWickets || 0,
-                        fourWickets: p.stats?.fourWickets || 0
-                    },
-                    jersey: p.jersey,
-                    photo: p.photo
-                }));
+                players = apiPlayers.map(p => {
+                    // Keep raw stats object to preserve all fields
+                    const stats = p.stats || {};
+                    
+                    return {
+                        name: p.name,
+                        role: p.role || p.position,
+                        age: p.age,
+                        nationality: p.nationality,
+                        isForeign: p.isForeign,
+                        isCaptain: p.isCaptain,
+                        isViceCaptain: p.isViceCaptain,
+                        'batting style': p.battingStyle || p['batting style'],
+                        'bowling style': p.bowlingStyle || p['bowling style'],
+                        'allrounder type': p.allrounderType || p['allrounder type'],
+                        stats: stats, // Use raw stats object
+                        jersey: p.jersey,
+                        photo: p.photo
+                    };
+                });
                 console.log(`✅ Loaded ${players.length} players from Vercel Storage`);
                 console.log(`📊 Sample player stats:`, players[0]?.stats);
             } else {
