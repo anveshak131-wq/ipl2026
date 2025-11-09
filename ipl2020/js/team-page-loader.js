@@ -27,11 +27,17 @@ async function loadTeamPlayers(teamCode) {
     try {
         console.log(`🔄 Fetching ${teamCode.toUpperCase()} players from Vercel Storage...`);
         const adminResponse = await fetch(`/api/admin/players?team=${teamCode.toUpperCase()}`);
-        console.log(`API Response Status:`, adminResponse.status);
+        console.log(`API Response Status:`, adminResponse.status, adminResponse.statusText);
         
-        if (adminResponse.ok) {
-            const result = await adminResponse.json();
-            console.log(`API Response:`, result);
+        // Log the raw response for debugging
+        const responseText = await adminResponse.text();
+        console.log('Raw API Response:', responseText);
+        
+        // Parse the response back to JSON
+        const result = responseText ? JSON.parse(responseText) : null;
+        
+        if (adminResponse.ok && result) {
+            console.log(`Parsed API Response:`, result);
             
             const apiPlayers = result.data || result || [];
             if (Array.isArray(apiPlayers) && apiPlayers.length > 0) {
@@ -157,8 +163,11 @@ function createPlayerCard(player, teamCode) {
     
     // Add click event to show modal
     card.addEventListener('click', () => {
-        if (typeof showPlayerModal === 'function') {
-            showPlayerModal(player);
+        if (typeof window.showPlayerModal === 'function') {
+            console.log('Opening modal for player:', player);
+            window.showPlayerModal(player);
+        } else {
+            console.error('showPlayerModal function not found on window object');
         }
     });
     card.style.cursor = 'pointer';

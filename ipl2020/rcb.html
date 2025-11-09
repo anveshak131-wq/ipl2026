@@ -264,20 +264,17 @@
         }
     });
 
-    // Make showPlayerModal function available globally
+    // Define showPlayerModal function and make it available globally
     window.showPlayerModal = function(player) {
         const modal = document.getElementById('playerModal');
         const modalName = document.getElementById('modalPlayerName');
         const modalRole = document.getElementById('modalPlayerRole');
         const modalBadges = document.getElementById('modalPlayerBadges');
-        const modalStats = document.getElementById('modalPlayerStats');
         const modalDetails = document.getElementById('modalPlayerDetails');
 
         // Set basic info
         modalName.textContent = player.name || 'Unknown Player';
         modalRole.textContent = player.role || 'Player';
-
-    window.showPlayerModal = showPlayerModal;
         // Set badges
         let badgesHTML = '';
         if (player.isCaptain) badgesHTML += '<span class="modal-badge badge-captain">👑 Captain</span>';
