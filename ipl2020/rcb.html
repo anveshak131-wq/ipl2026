@@ -14,6 +14,9 @@
         transition: filter 0.3s;
         pointer-events: none;
     }
+    .player-modal {
+        display: none;
+    }
     .player-modal.active {
         display: flex;
         align-items: center;
@@ -27,9 +30,6 @@
         z-index: 9999;
         backdrop-filter: blur(4px);
         animation: fadeIn 0.3s;
-    }
-    .player-modal {
-        display: none;
     }
     .player-modal-content {
         background: rgba(16, 20, 48, 0.95);
@@ -55,6 +55,7 @@
         padding: 0.5rem;
         line-height: 1;
         transition: color 0.2s;
+        z-index: 1;
     }
     .modal-close:hover {
         color: #fff;
@@ -77,7 +78,7 @@
         font-size: 2.5rem;
         color: #fff;
         margin: 0.5rem 0;
-        font-family: 'Bebas Neue', sans-serif;
+        font-family: "Bebas Neue", sans-serif;
     }
     .modal-player-role {
         color: rgba(255, 255, 255, 0.7);
@@ -155,38 +156,6 @@
     </style>
 </head>
 <body data-team="RCB">
-    <!-- Animated Mesh Background -->
-    <div class="mesh-background">
-        <div class="mesh-gradient mesh-gradient-1"></div>
-        <div class="mesh-gradient mesh-gradient-2"></div>
-        <div class="mesh-gradient mesh-gradient-3"></div>
-        <div class="mesh-gradient mesh-gradient-4"></div>
-        <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-            <div class="shape shape-5"></div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="assets/ipl_logo_new.svg" alt="IPL Logo">
-                <span>IPL Cricket Hub</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="index.html#teams">Teams</a></li>
-                <li><a href="fixtures_modern.html">Fixtures</a></li>
-                <li><a href="points_modern.html">Points</a></li>
-                <li><a href="about.html">About</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <!-- Team Header -->
     <section class="team-header">
         <div class="team-header-container">
@@ -220,15 +189,15 @@
                 <p class="section-subtitle">Meet our powerhouse lineup</p>
             </div>
             <div class="players-grid" id="playersContainer">
-                <!-- Players will be loaded dynamically from localStorage -->
+                <!-- Players will be loaded dynamically -->
             </div>
         </div>
     </section>
 
-    <!-- Player Details Modal -->
+    <!-- Player Modal -->
     <div class="player-modal" id="playerModal">
         <div class="player-modal-content">
-            <button class="modal-close" onclick="closePlayerModal()">&times;</button>
+            <button class="modal-close" id="modalCloseButton">&times;</button>
             <div class="modal-player-header">
                 <div class="modal-player-logo">
                     <img src="assets/rcb_logo_new.svg" alt="Player" id="modalPlayerLogo">
@@ -237,7 +206,6 @@
                 <p class="modal-player-role" id="modalPlayerRole"></p>
                 <div class="modal-player-badges" id="modalPlayerBadges"></div>
             </div>
-            <div class="modal-player-stats" id="modalPlayerStats"></div>
             <div class="modal-player-details" id="modalPlayerDetails"></div>
         </div>
     </div>
@@ -249,11 +217,147 @@
         </div>
     </footer>
 
-    <script src="js/team-page-loader.js?v=2.1"></script>
+    <script src="js/team-page-loader.js?v=2.2"></script>
     <script>
-    // Initialize modal functionality
-    (function() {
-        // Scroll effect
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing...');
+        
+        // Initialize modal functionality
+        function initModal() {
+            const elements = {
+                modal: document.getElementById('playerModal'),
+                modalName: document.getElementById('modalPlayerName'),
+                modalRole: document.getElementById('modalPlayerRole'),
+                modalBadges: document.getElementById('modalPlayerBadges'),
+                modalDetails: document.getElementById('modalPlayerDetails'),
+                modalClose: document.getElementById('modalCloseButton'),
+                container: document.querySelector('.container'),
+                header: document.querySelector('.team-header')
+            };
+
+            // Check if all elements exist
+            const missingElements = Object.entries(elements)
+                .filter(([key, element]) => !element)
+                .map(([key]) => key);
+
+            if (missingElements.length > 0) {
+                console.error('Missing modal elements:', missingElements);
+                return;
+            }
+
+            console.log('All modal elements found');
+
+            // Define showPlayerModal globally
+            window.showPlayerModal = function(player) {
+                console.log('Showing modal for player:', player);
+
+                try {
+                    // Set basic info
+                    elements.modalName.textContent = player.name || 'Unknown Player';
+                    elements.modalRole.textContent = player.role || 'Player';
+
+                    // Set badges
+                    let badgesHTML = '';
+                    if (player.isCaptain) badgesHTML += '<span class="modal-badge badge-captain">👑 Captain</span>';
+                    if (player.isViceCaptain) badgesHTML += '<span class="modal-badge badge-captain">⭐ Vice Captain</span>';
+                    if (player.isForeign) badgesHTML += '<span class="modal-badge badge-foreign">🌏 Overseas</span>';
+                    if ((player.role || '').toLowerCase() === 'wicket-keeper') badgesHTML += '<span class="modal-badge badge-wk">🧤 Wicket-Keeper</span>';
+                    elements.modalBadges.innerHTML = badgesHTML;
+
+                    // Set player details and stats
+                    const allrounderType = player['allrounder type'] || player['Allrounder Type'] || '';
+                    const stats = player.stats || {};
+
+                    let detailsHTML = '<div class="player-details-grid">';
+                    
+                    // Player Information
+                    detailsHTML += `
+                        <div class="details-section">
+                            <h4>Player Information</h4>
+                            ${player.age ? `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${player.age}</div></div>` : ''}
+                            ${player.nationality ? `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${player.nationality}</div></div>` : ''}
+                            ${player.jersey ? `<div class="detail-item"><div class="detail-label">Jersey Number</div><div class="detail-value">${player.jersey}</div></div>` : ''}
+                            ${player['batting style'] || player.Batting ? `<div class="detail-item"><div class="detail-label">Batting Style</div><div class="detail-value">${player['batting style'] || player.Batting}</div></div>` : ''}
+                            ${player['bowling style'] || player.Bowling ? `<div class="detail-item"><div class="detail-label">Bowling Style</div><div class="detail-value">${player['bowling style'] || player.Bowling}</div></div>` : ''}
+                            ${allrounderType ? `<div class="detail-item"><div class="detail-label">All-Rounder Type</div><div class="detail-value">${allrounderType}</div></div>` : ''}
+                        </div>
+                    `;
+
+                    if (Object.keys(stats).length > 0) {
+                        // Batting Stats
+                        detailsHTML += `
+                            <div class="details-section">
+                                <h4>Batting Statistics</h4>
+                                <div class="stats-grid">
+                                    <div class="stat-item"><div class="stat-number">${stats.matches || 0}</div><div class="stat-label">Matches</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.runs || 0}</div><div class="stat-label">Runs</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.battingAvg || '0.00'}</div><div class="stat-label">Average</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.strikeRate || '0.00'}</div><div class="stat-label">Strike Rate</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.highestScore || 0}</div><div class="stat-label">Highest Score</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.centuries || 0}</div><div class="stat-label">Centuries</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.fifties || 0}</div><div class="stat-label">Half-Centuries</div></div>
+                                </div>
+                            </div>
+                        `;
+
+                        // Bowling Stats
+                        detailsHTML += `
+                            <div class="details-section">
+                                <h4>Bowling Statistics</h4>
+                                <div class="stats-grid">
+                                    <div class="stat-item"><div class="stat-number">${stats.wickets || 0}</div><div class="stat-label">Wickets</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.bowlingAvg || '0.00'}</div><div class="stat-label">Bowling Average</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.economy || '0.00'}</div><div class="stat-label">Economy Rate</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.bestBowling || '-'}</div><div class="stat-label">Best Bowling</div></div>
+                                    <div class="stat-item"><div class="stat-number">${stats.fiveWickets || 0}</div><div class="stat-label">5-Wicket Hauls</div></div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        detailsHTML += '<div class="empty-state"><h4>No stats available for this player.</h4></div>';
+                    }
+
+                    detailsHTML += '</div>';
+                    elements.modalDetails.innerHTML = detailsHTML;
+
+                    // Show modal and blur background
+                    elements.modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    elements.container.classList.add('blurred');
+                    elements.header.classList.add('blurred');
+                } catch (error) {
+                    console.error('Error showing modal:', error);
+                }
+            };
+
+            // Define closePlayerModal globally
+            window.closePlayerModal = function() {
+                try {
+                    elements.modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    elements.container.classList.remove('blurred');
+                    elements.header.classList.remove('blurred');
+                } catch (error) {
+                    console.error('Error closing modal:', error);
+                }
+            };
+
+            // Add event listeners
+            elements.modalClose.addEventListener('click', window.closePlayerModal);
+            elements.modal.addEventListener('click', function(e) {
+                if (e.target === elements.modal) {
+                    window.closePlayerModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && elements.modal.classList.contains('active')) {
+                    window.closePlayerModal();
+                }
+            });
+        }
+
+        // Initialize scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
@@ -263,224 +367,10 @@
             }
         });
 
-        // Define modal functions globally
-        window.showPlayerModal = function(player) {
-        try {
-            console.log('Showing modal for player:', player);
-            
-            // Get modal elements
-            const modal = document.getElementById('playerModal');
-            const modalName = document.getElementById('modalPlayerName');
-            const modalRole = document.getElementById('modalPlayerRole');
-            const modalBadges = document.getElementById('modalPlayerBadges');
-            const modalDetails = document.getElementById('modalPlayerDetails');
-            
-            if (!modal || !modalName || !modalRole || !modalBadges || !modalDetails) {
-                console.error('Modal elements not found:', {
-                    modal: !!modal,
-                    modalName: !!modalName,
-                    modalRole: !!modalRole,
-                    modalBadges: !!modalBadges,
-                    modalDetails: !!modalDetails
-                });
-                return;
-            }
-            
-            // Set basic info
-            modalName.textContent = player.name || 'Unknown Player';
-            modalRole.textContent = player.role || 'Player';
-        // Set badges
-        let badgesHTML = '';
-        if (player.isCaptain) badgesHTML += '<span class="modal-badge badge-captain">👑 Captain</span>';
-        if (player.isViceCaptain) badgesHTML += '<span class="modal-badge badge-captain">⭐ Vice Captain</span>';
-        if (player.isForeign) badgesHTML += '<span class="modal-badge badge-foreign">🌏 Overseas</span>';
-        if ((player.role || '').toLowerCase() === 'wicket-keeper') badgesHTML += '<span class="modal-badge badge-wk">🧤 Wicket-Keeper</span>';
-        modalBadges.innerHTML = badgesHTML;
-
-        // Hide modalStats element if it exists (use details for all stats now)
-        if (modalStats) modalStats.innerHTML = '';
-
-        // Set detailed information with comprehensive statistics
-        const allrounderType = player['allrounder type'] || player['Allrounder Type'] || '';
-        const stats = player.stats || {};
-        let detailsHTML = '';
-        if (Object.keys(stats).length > 0) {
-            detailsHTML = `
-                <div class="player-details-grid">
-                    <div class="details-section">
-                        <h4>Player Information</h4>
-                        ${player.age ? `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${player.age}</div></div>` : ''}
-                        ${player.nationality ? `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${player.nationality}</div></div>` : ''}
-                        ${player.jersey ? `<div class="detail-item"><div class="detail-label">Jersey Number</div><div class="detail-value">${player.jersey}</div></div>` : ''}
-                        ${player['batting style'] || player.Batting ? `<div class="detail-item"><div class="detail-label">Batting Style</div><div class="detail-value">${player['batting style'] || player.Batting}</div></div>` : ''}
-                        ${player['bowling style'] || player.Bowling ? `<div class="detail-item"><div class="detail-label">Bowling Style</div><div class="detail-value">${player['bowling style'] || player.Bowling}</div></div>` : ''}
-                        ${allrounderType ? `<div class="detail-item"><div class="detail-label">All-Rounder Type</div><div class="detail-value">${allrounderType}</div></div>` : ''}
-                    </div>
-                    <div class="details-section">
-                        <h4>Batting Statistics</h4>
-                        <div class="stats-grid">
-                            <div class="stat-item"><div class="stat-number">${stats.matches || 0}</div><div class="stat-label">Matches</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.runs || 0}</div><div class="stat-label">Runs</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.battingAvg || '0.00'}</div><div class="stat-label">Average</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.strikeRate || '0.00'}</div><div class="stat-label">Strike Rate</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.highestScore || 0}</div><div class="stat-label">Highest Score</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.centuries || 0}</div><div class="stat-label">Centuries</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.fifties || 0}</div><div class="stat-label">Half-Centuries</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.sixes || 0}</div><div class="stat-label">Sixes</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.fours || 0}</div><div class="stat-label">Fours</div></div>
-                        </div>
-                    </div>
-                    <div class="details-section">
-                        <h4>Bowling Statistics</h4>
-                        <div class="stats-grid">
-                            <div class="stat-item"><div class="stat-number">${stats.wickets || 0}</div><div class="stat-label">Wickets</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.bowlingAvg || '0.00'}</div><div class="stat-label">Bowling Average</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.economy || '0.00'}</div><div class="stat-label">Economy Rate</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.bestBowling || '-'}</div><div class="stat-label">Best Bowling</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.fiveWickets || 0}</div><div class="stat-label">5-Wicket Hauls</div></div>
-                            <div class="stat-item"><div class="stat-number">${stats.fourWickets || 0}</div><div class="stat-label">4-Wicket Hauls</div></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else {
-            detailsHTML = `<div class='empty-state'><h4>No stats available for this player.</h4></div>`;
-        }
-        modalDetails.innerHTML = detailsHTML;
-
-    // Show modal and blur main content
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    document.querySelector('.container').classList.add('blurred');
-    document.querySelector('.team-header').classList.add('blurred');
-    }
-
-    window.closePlayerModal = function() {
-        try {
-            const modal = document.getElementById('playerModal');
-            if (!modal) {
-                console.error('Modal element not found');
-                return;
-            }
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            
-            const container = document.querySelector('.container');
-            const header = document.querySelector('.team-header');
-            
-            if (container) container.classList.remove('blurred');
-            if (header) header.classList.remove('blurred');
-        } catch (error) {
-            console.error('Error closing modal:', error);
-        }
-    }
-
-    // Close modal on background click
-    const modal = document.getElementById('playerModal');
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                window.closePlayerModal();
-            }
-        });
-    }
-
-    // Close modal on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closePlayerModal();
-        }
+        // Initialize modal
+        initModal();
+        console.log('Modal initialization complete');
     });
-
-    // Display all players sorted by role and age in console
-    function displayAllPlayersByAge() {
-        const TEAM_OPTIONS = ['RCB', 'MI', 'CSK', 'SRH', 'PBSK', 'KKR', 'DC', 'RR', 'GT', 'LSG'];
-        const allPlayers = [];
-        
-        TEAM_OPTIONS.forEach(team => {
-            const key = `uploaded_${team.toLowerCase()}_players`;
-            try {
-                const players = JSON.parse(localStorage.getItem(key) || '[]');
-                players.forEach(player => {
-                    allPlayers.push({ ...player, team: team });
-                });
-            } catch(e) {}
-        });
-        
-        if (allPlayers.length === 0) {
-            console.log('%cNo players found in localStorage', 'color: #EF4444; font-size: 16px; font-weight: bold;');
-            return;
-        }
-        
-        const roleOrder = { 'batsman': 1, 'wicket-keeper': 2, 'all-rounder': 3, 'bowler': 4 };
-        allPlayers.sort((a, b) => {
-            const orderA = roleOrder[(a.role || '').toLowerCase()] || 99;
-            const orderB = roleOrder[(b.role || '').toLowerCase()] || 99;
-            if (orderA !== orderB) return orderA - orderB;
-            return parseInt(b.age || 0) - parseInt(a.age || 0);
-        });
-        
-        console.log('%c═══════════════════════════════════════════════════', 'color: #FFD700; font-weight: bold;');
-        console.log('%c🏏 ALL IPL PLAYERS - SORTED BY ROLE & AGE', 'color: #00D9FF; font-size: 20px; font-weight: bold;');
-        console.log('%c═══════════════════════════════════════════════════', 'color: #FFD700; font-weight: bold;');
-        console.log(`%cTotal Players: ${allPlayers.length}`, 'color: #10B981; font-size: 14px; font-weight: bold;');
-        console.log('');
-        
-        let currentRole = '';
-        let roleCount = 0;
-        const roleEmoji = { 'BATSMAN': '🏏', 'WICKET-KEEPER': '🧤', 'ALL-ROUNDER': '⚡', 'BOWLER': '🎯' };
-        
-        allPlayers.forEach(player => {
-            const role = (player.role || 'Unknown').toUpperCase();
-            if (role !== currentRole) {
-                if (roleCount > 0) {
-                    console.log(`%c   └─ Total: ${roleCount} players`, 'color: #A1A1AA; font-style: italic;');
-                    console.log('');
-                }
-                currentRole = role;
-                roleCount = 0;
-                console.log(`%c${roleEmoji[role] || '👤'} ${role}S`, 'color: #FF4655; font-size: 16px; font-weight: bold; text-decoration: underline;');
-                console.log('%c───────────────────────────────────────────────────', 'color: #4B5563;');
-            }
-            roleCount++;
-            
-            const badges = [];
-            if (player.isCaptain) badges.push('👑 Captain');
-            if (player.isViceCaptain) badges.push('⭐ Vice-Captain');
-            if (player.isForeign) badges.push('🌏 Foreign');
-            const badgeText = badges.length > 0 ? ` [${badges.join(', ')}]` : '';
-            
-            console.log(
-                `%c   ${roleCount}. ${player.name || 'Unknown'}%c | Age: %c${player.age || 'N/A'}%c | Team: %c${player.team || 'N/A'}%c | ${player.nationality || 'Unknown'}${badgeText}`,
-                'color: #E4E4E7; font-weight: bold;',
-                'color: #A1A1AA;',
-                'color: #FFD700; font-weight: bold;',
-                'color: #A1A1AA;',
-                'color: #00D9FF; font-weight: bold;',
-                'color: #A1A1AA;'
-            );
-            
-            if (player['batting style'] || player['bowling style']) {
-                console.log(`%c      ↳ Batting: ${player['batting style'] || 'N/A'} | Bowling: ${player['bowling style'] || 'N/A'}`, 'color: #6B7280; font-size: 11px;');
-            }
-            if (player['allrounder type']) {
-                console.log(`%c      ↳ Type: ${player['allrounder type']}`, 'color: #10B981; font-size: 11px;');
-            }
-        });
-        
-        if (roleCount > 0) {
-            console.log(`%c   └─ Total: ${roleCount} players`, 'color: #A1A1AA; font-style: italic;');
-        }
-        
-        console.log('');
-        console.log('%c═══════════════════════════════════════════════════', 'color: #FFD700; font-weight: bold;');
-        console.log('%c✅ Complete player list displayed above', 'color: #10B981; font-size: 14px; font-weight: bold;');
-        console.log('%c═══════════════════════════════════════════════════', 'color: #FFD700; font-weight: bold;');
-    }
-
-    // Auto-display all players on load
-    setTimeout(() => displayAllPlayersByAge(), 1000);
-    console.log('%cType displayAllPlayersByAge() to view all players sorted by role & age', 'color: #FFD700; font-size: 12px;');
     </script>
 </body>
 </html>
