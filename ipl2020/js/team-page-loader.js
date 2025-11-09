@@ -46,11 +46,29 @@ async function loadTeamPlayers(teamCode) {
                     'batting style': p.battingStyle || p['batting style'],
                     'bowling style': p.bowlingStyle || p['bowling style'],
                     'allrounder type': p.allrounderType || p['allrounder type'],
-                    stats: p.stats,
+                    stats: {
+                        matches: p.stats?.matches || 0,
+                        innings: p.stats?.innings || 0,
+                        runs: p.stats?.runs || 0,
+                        battingAvg: p.stats?.battingAvg || 0,
+                        strikeRate: p.stats?.strikeRate || 0,
+                        highestScore: p.stats?.highestScore || 0,
+                        centuries: p.stats?.centuries || 0,
+                        fifties: p.stats?.fifties || 0,
+                        sixes: p.stats?.sixes || 0,
+                        fours: p.stats?.fours || 0,
+                        wickets: p.stats?.wickets || 0,
+                        bowlingAvg: p.stats?.bowlingAvg || 0,
+                        economy: p.stats?.economy || 0,
+                        bestBowling: p.stats?.bestBowling || '-',
+                        fiveWickets: p.stats?.fiveWickets || 0,
+                        fourWickets: p.stats?.fourWickets || 0
+                    },
                     jersey: p.jersey,
                     photo: p.photo
                 }));
                 console.log(`✅ Loaded ${players.length} players from Vercel Storage`);
+                console.log(`📊 Sample player stats:`, players[0]?.stats);
             } else {
                 console.warn(`⚠️ No players found in API response for ${teamCode.toUpperCase()}`);
             }
