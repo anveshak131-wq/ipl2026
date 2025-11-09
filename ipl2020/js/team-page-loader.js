@@ -23,7 +23,7 @@ async function loadTeamPlayers(teamCode) {
     
     let players = [];
     
-    // Load from Vercel Storage (Admin API) - PRIMARY SOURCE
+    // Load directly from Vercel Storage (Admin API)
     try {
         console.log(`🔄 Fetching ${teamCode.toUpperCase()} players from Vercel Storage...`);
         const adminResponse = await fetch(`/api/admin/players?team=${teamCode.toUpperCase()}`);
@@ -36,23 +36,31 @@ async function loadTeamPlayers(teamCode) {
             const apiPlayers = result.data || result || [];
             if (Array.isArray(apiPlayers) && apiPlayers.length > 0) {
                 players = apiPlayers.map(p => {
-                    // Keep raw stats object to preserve all fields
-                    const stats = p.stats || {};
+                    // Parse stats if they are stored as a string
+                    let stats = p.stats || {};
+                    if (typeof stats === 'string') {
+                        try {
+                            stats = JSON.parse(stats);
+                        } catch (e) {
+                            console.warn('Failed to parse player stats:', e);
+                            stats = {};
+                        }
+                    }
                     
                     return {
                         name: p.name,
                         role: p.role || p.position,
                         age: p.age,
                         nationality: p.nationality,
-                        isForeign: p.isForeign,
-                        isCaptain: p.isCaptain,
-                        isViceCaptain: p.isViceCaptain,
+                        isForeign: p.isForeign || false,
+                        isCaptain: p.isCaptain || false,
+                        isViceCaptain: p.isViceCaptain || false,
                         'batting style': p.battingStyle || p['batting style'],
                         'bowling style': p.bowlingStyle || p['bowling style'],
                         'allrounder type': p.allrounderType || p['allrounder type'],
-                        stats: stats, // Use raw stats object
+                        stats: stats,
                         jersey: p.jersey,
-                        photo: p.photo
+                        photo: p.photo || null
                     };
                 });
                 console.log(`✅ Loaded ${players.length} players from Vercel Storage`);
