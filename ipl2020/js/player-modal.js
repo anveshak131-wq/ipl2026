@@ -6,6 +6,7 @@ window.modalState = {
 
 // Initialize modal functionality
 function initModal() {
+    // Initialize modal elements
     if (window.modalState.initialized) {
         console.log('Modal already initialized');
         return;
@@ -25,14 +26,33 @@ function initModal() {
         header: document.querySelector('.team-header')
     };
 
-    // Check if all elements exist
+    // Diagnostic overlay for modal elements (safe: after elements are collected)
+    try {
+        let diag = document.createElement('div');
+        diag.style = 'position:fixed;bottom:0;left:0;right:0;background:#222;color:#fff;z-index:99999;padding:1rem;font-size:1rem;opacity:0.95;';
+        diag.innerHTML = '<b>Modal Diagnostic:</b><br>';
+        Object.entries(elements).forEach(([key, el]) => {
+            diag.innerHTML += key + ': ' + (el ? 'FOUND' : '<span style="color:red">MISSING</span>') + '<br>';
+        });
+        document.body.appendChild(diag);
+    } catch (e) {
+        console.warn('Modal diagnostic failed:', e);
+    }
+
+    // Check if all elements exist and log them
     const missingElements = Object.entries(elements)
         .filter(([key, element]) => !element)
         .map(([key]) => key);
 
+    Object.entries(elements).forEach(([key, el]) => {
+        if (!el) {
+            console.error(`Modal element missing: ${key}`);
+        } else {
+            console.log(`Modal element found: ${key}`);
+        }
+    });
+
     if (missingElements.length > 0) {
-        console.error('Missing modal elements:', missingElements);
-        // Show error on page
         let err = document.createElement('div');
         err.style = 'color:red;background:#fff;padding:1rem;text-align:center;position:fixed;top:0;left:0;right:0;z-index:99999;font-size:1.2rem;';
         err.innerText = 'Modal initialization failed. Missing elements: ' + missingElements.join(', ');
