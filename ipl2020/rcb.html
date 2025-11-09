@@ -8,6 +8,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/shared-modern.css">
     <link rel="stylesheet" href="css/team-styles.css">
+    <style>
+    .blurred {
+        filter: blur(8px) brightness(0.7);
+        transition: filter 0.3s;
+    }
+    .player-modal.active {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(10,14,39,0.85);
+        z-index: 9999;
+        backdrop-filter: blur(4px);
+        animation: fadeIn 0.3s;
+    }
+    .player-modal {
+        display: none;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    </style>
 </head>
 <body data-team="RCB">
     <!-- Animated Mesh Background -->
@@ -192,15 +217,19 @@
         }
         modalDetails.innerHTML = detailsHTML;
 
-        // Show modal
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    // Show modal and blur main content
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    document.querySelector('.container').classList.add('blurred');
+    document.querySelector('.team-header').classList.add('blurred');
     }
 
     function closePlayerModal() {
         const modal = document.getElementById('playerModal');
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    document.querySelector('.container').classList.remove('blurred');
+    document.querySelector('.team-header').classList.remove('blurred');
     }
 
     // Close modal on background click
