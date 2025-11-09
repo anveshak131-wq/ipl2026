@@ -8,6 +8,85 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/shared-modern.css">
     <link rel="stylesheet" href="css/team-styles.css">
+</head>
+<body data-team="RCB">
+    <!-- Team Header -->
+    <section class="team-header">
+        <div class="team-header-container">
+            <div class="team-logo-hero">
+                <img src="assets/rcb_logo_new.svg" alt="ROYAL CHALLENGERS BANGALORE">
+            </div>
+            <h1 class="team-title">ROYAL CHALLENGERS BANGALORE</h1>
+            <p class="team-subtitle">Bengaluru</p>
+            <div class="team-stats-bar">
+                <div class="team-stat">
+                    <div class="team-stat-number" id="playerCount">0</div>
+                    <div class="team-stat-label">Players</div>
+                </div>
+                <div class="team-stat">
+                    <div class="team-stat-number" id="foreignCount">0</div>
+                    <div class="team-stat-label">Overseas</div>
+                </div>
+                <div class="team-stat">
+                    <div class="team-stat-number" id="indianCount">0</div>
+                    <div class="team-stat-label">Indian</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Squad Section -->
+    <section class="squad-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">SQUAD 2026</h2>
+                <p class="section-subtitle">Meet our powerhouse lineup</p>
+            </div>
+            <div class="players-grid" id="playersContainer">
+                <!-- Players will be loaded dynamically -->
+                <button id="testModalBtn" style="margin:2rem auto;display:block;padding:1rem 2rem;font-size:1.2rem;">Test Player Modal</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Player Modal -->
+    <div class="player-modal" id="playerModal">
+        <div class="player-modal-content">
+            <button class="modal-close" id="modalCloseButton">&times;</button>
+            <div class="modal-player-header">
+                <div class="modal-player-logo">
+                    <img src="assets/rcb_logo_new.svg" alt="Player" id="modalPlayerLogo">
+                </div>
+                <h2 class="modal-player-name" id="modalPlayerName"></h2>
+                <p class="modal-player-role" id="modalPlayerRole"></p>
+                <div class="modal-player-badges" id="modalPlayerBadges"></div>
+            </div>
+            <div class="modal-player-details" id="modalPlayerDetails"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts: Modal first, then loader -->
+    <script src="js/player-modal.js?v=1.0"></script>
+    <script src="js/team-page-loader.js?v=2.2"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Challengers Bangalore - IPL Cricket Hub</title>
+    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/shared-modern.css">
+    <link rel="stylesheet" href="css/team-styles.css">
     <style>
     .blurred {
         filter: blur(8px) brightness(0.7);
