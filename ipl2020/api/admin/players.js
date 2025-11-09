@@ -4,10 +4,10 @@
  * Uses Upstash Redis (automatically configured by Vercel)
  */
 
-import { Redis } from '@upstash/redis'
+import { kv } from '@vercel/kv'
 
-// Initialize Upstash Redis client
-const redis = Redis.fromEnv();
+// Initialize KV client (uses Upstash Redis behind the scenes)
+const redis = kv;
 
 export default async function handler(req, res) {
   // Enable CORS

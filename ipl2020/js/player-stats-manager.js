@@ -285,14 +285,31 @@ async function savePlayerStats(event) {
             teamPlayers = result.data || result || [];
         }
 
-        // Update the player in the team array
+        // Update the player in the team array (update existing or add new)
         const index = teamPlayers.findIndex(p => p.name === player.name);
+        const playerPayload = {
+            name: updatedPlayer.name,
+            role: updatedPlayer.role,
+            number: updatedPlayer.jersey || updatedPlayer.number || null,
+            jersey: updatedPlayer.jersey || updatedPlayer.number || null,
+            age: updatedPlayer.age || updatedPlayer.stats?.age || null,
+            nationality: updatedPlayer.nationality || null,
+            isCaptain: updatedPlayer.isCaptain || false,
+            isViceCaptain: updatedPlayer.isViceCaptain || false,
+            isForeign: updatedPlayer.isForeign || false,
+            photo: updatedPlayer.photo || null,
+            stats: updatedPlayer.stats || {}
+        };
+
         if (index !== -1) {
+            // Update existing player entry
             teamPlayers[index] = {
                 ...teamPlayers[index],
-                role: updatedPlayer.role,
-                stats: updatedPlayer.stats
+                ...playerPayload
             };
+        } else {
+            // Player not found in stored array - add as new entry
+            teamPlayers.push(playerPayload);
         }
 
         // Save back to Vercel KV API
