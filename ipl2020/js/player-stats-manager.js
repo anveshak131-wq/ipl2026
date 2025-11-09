@@ -46,25 +46,17 @@ async function loadPlayers() {
 
     try {
         playersData = [];
-        
+        let debugOutput = '';
         // Load players from Vercel KV API for all teams
         for (const team of IPL_TEAMS) {
             try {
-                console.log(`Fetching ${team} players from API...`);
                 const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
-                
-                console.log(`${team} response status:`, response.status);
-                
+                debugOutput += `<div><b>${team} response:</b> ${response.status}</div>`;
                 if (response.ok) {
                     const result = await response.json();
-                    console.log(`${team} API result:`, result);
-                    
+                    debugOutput += `<pre>${JSON.stringify(result, null, 2)}</pre>`;
                     const teamPlayers = result.data || result || [];
-                    
                     if (Array.isArray(teamPlayers) && teamPlayers.length > 0) {
-                        console.log(`${team} players found:`, teamPlayers.length);
-                        
-                        // Add each player with team info
                         teamPlayers.forEach(player => {
                             if (player.name) {
                                 playersData.push({
@@ -82,54 +74,30 @@ async function loadPlayers() {
                                     isCaptain: player.isCaptain,
                                     isViceCaptain: player.isViceCaptain,
                                     isForeign: player.isForeign,
-                                    stats: {
-                                        matches: player.stats?.matches || 0,
-                                        innings: player.stats?.innings || 0,
-                                        runs: player.stats?.runs || 0,
-                                        battingAvg: player.stats?.battingAvg || 0,
-                                        strikeRate: player.stats?.strikeRate || 0,
-                                        highestScore: player.stats?.highestScore || 0,
-                                        centuries: player.stats?.centuries || 0,
-                                        fifties: player.stats?.fifties || 0,
-                                        sixes: player.stats?.sixes || 0,
-                                        fours: player.stats?.fours || 0,
-                                        wickets: player.stats?.wickets || 0,
-                                        bowlingAvg: player.stats?.bowlingAvg || 0,
-                                        economy: player.stats?.economy || 0,
-                                        bestBowling: player.stats?.bestBowling || '',
-                                        fiveWickets: player.stats?.fiveWickets || 0,
-                                        fourWickets: player.stats?.fourWickets || 0,
-                                        catches: player.stats?.catches || 0,
-                                        stumpings: player.stats?.stumpings || 0,
-                                        runOuts: player.stats?.runOuts || 0
-                                    }
+                                    stats: player.stats || {}
                                 });
                             }
                         });
-                    } else {
-                        console.log(`${team} has no players`);
                     }
                 } else {
-                    console.warn(`${team} request failed:`, response.status);
+                    debugOutput += `<div style='color:red'>${team} request failed: ${response.status}</div>`;
                 }
             } catch (err) {
-                console.error(`Failed to load ${team} players:`, err);
+                debugOutput += `<div style='color:red'>Failed to load ${team} players: ${err}</div>`;
             }
         }
-        
-        console.log('Total players loaded:', playersData.length);
-        console.log('All players:', playersData);
-
         displayPlayers(playersData);
         updateStats();
-
+        // If no players, show debug output
+        if (playersData.length === 0) {
+            grid.innerHTML += `<div class='empty-state' style='grid-column: 1 / -1;'><h4>Debug API Output:</h4>${debugOutput}</div>`;
+        }
     } catch (error) {
-        console.error('Failed to load players:', error);
         grid.innerHTML = `
             <div class="empty-state" style="grid-column: 1 / -1;">
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Failed to Load Players</h3>
-                <p>Please check your connection and try refreshing the page.</p>
+                <p>${error}</p>
             </div>
         `;
     }
