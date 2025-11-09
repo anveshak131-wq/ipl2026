@@ -168,3 +168,41 @@ if (document.readyState === 'loading') {
 } else {
     initModal();
 }
+
+// Debug: Add test button to open modal with sample data
+document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('testModalBtn');
+    if (btn) {
+        btn.onclick = function() {
+            if (typeof window.showPlayerModal === 'function') {
+                window.showPlayerModal({
+                    name: 'Virat Kohli',
+                    role: 'Batsman',
+                    age: 37,
+                    nationality: 'Indian',
+                    isCaptain: true,
+                    isForeign: false,
+                    stats: {
+                        matches: 237,
+                        runs: 7263,
+                        battingAvg: 37.25,
+                        strikeRate: 130.02,
+                        highestScore: 113,
+                        centuries: 7,
+                        fifties: 50,
+                        wickets: 4,
+                        bowlingAvg: 45.0,
+                        economy: 8.5,
+                        bestBowling: '2/25',
+                        fiveWickets: 0
+                    },
+                    jersey: 18,
+                    'batting style': 'Right-handed',
+                    'bowling style': 'Right-arm medium'
+                });
+            } else {
+                alert('Modal not initialized!');
+            }
+        };
+    }
+});
