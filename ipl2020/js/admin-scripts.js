@@ -204,12 +204,47 @@ function savePlayers() {
     const mergedPlayers = Object.values(nameMap).sort((a, b) => a.name.localeCompare(b.name));
     localStorage.setItem(key, JSON.stringify(mergedPlayers));
 
-    // Show success
-    let msg = `${mergedPlayers.length} player(s) saved for ${team}!`;
-    if (foundCaptain) msg += ' (Captain set)';
-    if (foundViceCaptain) msg += ' (Vice-Captain set)';
-    showSuccess('playersManualSuccess', msg);
-    hideError('playersManualError');
+    // Also POST to Vercel KV API so all pages see the update
+    // Normalize payload for API
+    const apiPlayers = mergedPlayers.map(p => ({
+        name: p.name,
+        role: p.role,
+        age: p.age,
+        nationality: p.nationality,
+        isForeign: p.isForeign || (p.nationality && p.nationality.toLowerCase() !== 'indian'),
+        isCaptain: p.isCaptain || false,
+        isViceCaptain: p.isViceCaptain || false,
+        battingStyle: p['batting style'] || '',
+        bowlingStyle: p['bowling style'] || '',
+        allrounderType: p['allrounder type'] || '',
+        stats: {},
+        jersey: p.jersey || p.number || null,
+        photo: p.image || ''
+    }));
+
+    fetch(`/api/admin/players`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ team: team.toUpperCase(), players: apiPlayers })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Failed to sync with server');
+        return res.json();
+    })
+    .then(data => {
+        let msg = `${apiPlayers.length} player(s) saved for ${team}!`;
+        if (foundCaptain) msg += ' (Captain set)';
+        if (foundViceCaptain) msg += ' (Vice-Captain set)';
+        showSuccess('playersManualSuccess', msg);
+        hideError('playersManualError');
+        // Optionally reload stats manager if open
+        if (window.location.pathname.includes('admin-player-stats')) {
+            setTimeout(() => window.location.reload(), 1000);
+        }
+    })
+    .catch(err => {
+        showError('playersManualError', 'Saved locally, but failed to sync with server. Try again.');
+    });
 
     // Clear form
     document.getElementById('playersList').innerHTML = '';
