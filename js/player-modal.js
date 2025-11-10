@@ -1,10 +1,8 @@
-// Global modal state and elements
-window.modalState = {
-    initialized: false,
-    elements: null
-};
+/**
+ * Simple Player Modal Handler
+ * Clean implementation with proper error handling
+ */
 
-// Team logo mapping
 const TEAM_LOGOS = {
     'MI': 'assets/mi_logo_new.svg',
     'CSK': 'assets/csk_logo_new.svg',
@@ -18,6 +16,9 @@ const TEAM_LOGOS = {
     'GT': 'assets/gt_logo_new.svg',
     'LSG': 'assets/lsg_logo_new.svg'
 };
+
+// Global state
+window.playerModalReady = false;
 
 // Helper function to safely get element by ID
 function safeGetElement(id) {
