@@ -44,6 +44,15 @@ function getRedis() {
 }
 
 export default async function handler(req, res) {
+  // Immediate logging to verify function is being called
+  console.log('=== API /admin/players called ===');
+  console.log('Method:', req.method);
+  console.log('Query:', req.query);
+  console.log('Environment check:', {
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL ? 'Set' : 'Missing',
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? 'Set' : 'Missing'
+  });
+  
   // Wrap everything in try-catch to prevent crashes
   try {
     // Enable CORS
@@ -52,6 +61,7 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === 'OPTIONS') {
+      console.log('OPTIONS request - returning 200');
       return res.status(200).end();
     }
     // GET - Fetch players for a team
