@@ -1,386 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>MI - IPL2026</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" type="image/x-icon" href="mi_logo_new.svg">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-	<style type="text/css">
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
-
-		body {
-			font-family: 'Poppins', sans-serif;
-			background: linear-gradient(135deg, #004BA0 0%, #00396D 50%, #002244 100%);
-			background-size: 400% 400%;
-			animation: gradient 15s ease infinite;
-			min-height: 100vh;
-			position: relative;
-			overflow-x: hidden;
-			color: white;
-		}
-
-		body::before {
-			content: '';
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-			pointer-events: none;
-			z-index: 0;
-		}
-
-		@keyframes gradient {
-			0% { background-position: 0% 50%; }
-			50% { background-position: 100% 50%; }
-			100% { background-position: 0% 50%; }
-		}
-
-	.container {
-		max-width: 1400px;
-		margin: 0 auto;
-		padding: 0 20px;
-		position: relative;
-		z-index: 1;
-	}
-
-	main {
-		margin-top: 100px;
-		padding: 3rem 0;
-	}
-
-	header {
-		background: rgba(30, 30, 60, 0.98);
-		backdrop-filter: blur(10px);
-		border-bottom: 2px solid #00D8FF;
-		position: fixed;
-		width: 100%;
-		top: 0;
-		z-index: 1000;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-	}
-
-	nav {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1.2rem 0;
-	}
-
-		.logo {
-			font-size: 1.5rem;
-			font-weight: 700;
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-			text-decoration: none;
-			color: white;
-		}
-
-		.logo img {
-			height: 30px;
-			width: 30px;
-		}
-
-		.nav-links {
-			display: flex;
-			list-style: none;
-			gap: 1.5rem;
-		}
-
-	.nav-links a {
-		color: white;
-		text-decoration: none;
-		padding: 0.7rem 1.5rem;
-		border-radius: 50px;
-		transition: all 0.3s ease;
-		font-weight: 600;
-		position: relative;
-		background: transparent;
-	}
-
-	.nav-links a::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border-radius: 50px;
-		background: linear-gradient(45deg, #004BA0, #00396D);
-		opacity: 0;
-		transition: opacity 0.3s ease;
-		z-index: -1;
-	}
-
-	.nav-links a:hover::before {
-		opacity: 1;
-	}
-
-	.nav-links a:hover {
-		transform: translateY(-2px);
-		color: white;
-	}
-
-	.nav-links a.active {
-		background: linear-gradient(45deg, #004BA0, #00396D);
-		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-		color: white;
-	}
-
-		.team-header {
-			text-align: center;
-			padding: 3rem 0;
-		}
-
-		.team-logo {
-			width: 200px;
-			height: 200px;
-			margin: 0 auto 1rem;
-			filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-			animation: float 3s ease-in-out infinite;
-		}
-
-		@keyframes float {
-			0%, 100% { transform: translateY(0px); }
-			50% { transform: translateY(-10px); }
-		}
-
-		.team-name {
-			font-size: 3rem;
-			font-weight: 800;
-			margin-bottom: 0.5rem;
-			color: white;
-		}
-
-		.team-full-name {
-			font-size: 1.2rem;
-			color: rgba(255, 255, 255, 0.9);
-			margin-bottom: 2rem;
-		}
-
-		.trophy-section {
-			background: rgba(0, 216, 255, 0.2);
-			border-radius: 20px;
-			padding: 2rem;
-			margin: 2rem 0;
-			text-align: center;
-			border: 2px solid rgba(0, 216, 255, 0.3);
-		}
-
-		.trophy-section h2 {
-			font-size: 2rem;
-			margin-bottom: 1rem;
-			color: #00D8FF;
-		}
-
-		.trophy-info {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			gap: 1rem;
-			font-size: 1.2rem;
-		}
-
-		.trophy-icon {
-			font-size: 3rem;
-			color: #00D8FF;
-		}
-
-		.trophy-details {
-			text-align: left;
-		}
-
-		.content-section {
-			background: rgba(255, 255, 255, 0.1);
-			backdrop-filter: blur(10px);
-			border-radius: 20px;
-			padding: 2rem;
-			margin: 2rem 0;
-		}
-
-		.content-section h2 {
-			font-size: 1.8rem;
-			margin-bottom: 1rem;
-			color: #00D8FF;
-		}
-
-		.content-section p {
-			font-size: 1.1rem;
-			line-height: 1.8;
-			color: rgba(255, 255, 255, 0.9);
-			margin-bottom: 1rem;
-		}
-
-		.uploaded-players {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-			gap: 1rem;
-			margin-top: 1.5rem;
-		}
-
-		.player-item {
-			background: rgba(0, 0, 0, 0.3);
-			border-radius: 10px;
-			padding: 1rem;
-			text-align: center;
-			transition: all 0.3s;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-		}
-
-		.player-item:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-			background: rgba(0, 0, 0, 0.4);
-		}
-
-		.player-item .role {
-			font-size: 0.85rem;
-			color: #00D8FF;
-			margin-top: 0.3rem;
-		}
-
-		.player-item .name {
-			font-weight: 600;
-			color: white;
-			font-size: 0.95rem;
-		}
-
-		.no-players-message {
-			text-align: center;
-			padding: 2rem;
-			color: rgba(255, 255, 255, 0.6);
-			font-style: italic;
-		}
-
-		@media (max-width: 768px) {
-			.team-name {
-				font-size: 2rem;
-			}
-			.nav-links {
-				flex-wrap: wrap;
-				gap: 0.5rem;
-			}
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Mumbai Indians - IPL 2026 | Complete Squad & Player Stats</title>
+    <meta name="description" content="Explore Mumbai Indians (MI) complete squad for IPL 2026. View player profiles, statistics, and team information.">
+    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/shared-modern.css">
+    <link rel="stylesheet" href="css/team-modern.css">
+    <style>
+        :root {
+            --team-primary: #004BA0;
+            --team-secondary: #0072CE;
+            --team-accent: #00D9FF;
+        }
+        
+        .team-logo-glow {
+            background: linear-gradient(135deg, var(--team-primary), var(--team-accent));
+        }
+        
+        .team-stat-card:hover {
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(0, 75, 160, 0.3);
+        }
+        
+        .player-card-modern:hover {
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 75, 160, 0.4),
+                inset 0 0 30px rgba(0, 75, 160, 0.2);
+        }
+    </style>
 </head>
-<body>
-	<header>
-		<nav class="container">
-			<a href="index.html" class="logo">
-				<img src="mi_logo_new.svg" alt="MI Logo" />
-				<span>MI</span>
-			</a>
-			<ul class="nav-links">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="mi.html" class="active">About</a></li>
-				<li><a href="fixtures_modern.html">Fixtures</a></li>
-				<li><a href="points_modern.html">Points</a></li>
-				<li><a href="scores_modern.html">Scores</a></li>
-				<li><a href="about.html">About IPL</a></li>
-			</ul>
-		</nav>
-	</header>
-
-	<main>
-		<div class="container">
-		<div class="team-header">
-			<img src="mi_logo_new.svg" alt="MI" class="team-logo">
-			<h1 class="team-name">Mumbai Indians</h1>
-			<p class="team-full-name">MI</p>
-		</div>
-
-		<div class="trophy-section">
-			<h2><i class="fas fa-trophy"></i> Trophies & Achievements</h2>
-			<div class="trophy-info">
-				<i class="fas fa-trophy trophy-icon"></i>
-				<div class="trophy-details">
-					<div><strong>IPL Titles:</strong> 5</div>
-					<div><strong>Winner:</strong> 2013, 2015, 2017, 2019, 2020 🏆</div>
-					<div><strong>Playoff Appearances:</strong> Multiple</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="content-section">
-			<h2><i class="fas fa-info-circle"></i> About the Team</h2>
-			<p>
-				Mumbai Indians is a franchise cricket team based in Mumbai, Maharashtra, that competes in the Indian Premier League. Founded in 2008, the team is owned by India's biggest conglomerate, Reliance Industries, through its 100% subsidiary IndiaWin Sports. Since its establishment, the team has played its home matches in the 33,108-capacity Wankhede Stadium in Mumbai.
-			</p>
-			<p>
-				In 2017, the Mumbai Indians became the first franchise to cross the $100 million mark in brand value among the IPL franchises. The brand value of Mumbai Indians, in 2019, is estimated to be around ₹809 crore (roughly $115 million), the highest among all the IPL franchises for the fourth consecutive year.
-			</p>
-			<p>
-				Mumbai Indians is the most successful franchise in IPL history with 5 championship titles, having won in 2013, 2015, 2017, 2019, and 2020. The team is known for its strong squad, strategic gameplay, and passionate fan base.
-			</p>
-		</div>
-
-		<div class="content-section">
-			<h2><i class="fas fa-users"></i> Squad</h2>
-			<div id="uploadedPlayers">
-				<div class="no-players-message">Loading players...</div>
-			</div>
-		</div>
-
-		<div class="content-section">
-			<h2><i class="fas fa-link"></i> Official Information</h2>
-			<p>
-				Founded: 2008<br>
-				Captain: Hardik Pandya<br>
-				Home Ground: Wankhede Stadium, Mumbai<br>
-				Owner: Reliance Industries
-			</p>
-			<p style="margin-top: 1rem;">
-				For latest news, visit <a href="https://www.mumbaiindians.com/" style="color: #00D8FF;">https://www.mumbaiindians.com/</a>
-			</p>
-		</div>
-		</div>
-	</main>
-
-	<script>
-		// Load uploaded players from localStorage
-		document.addEventListener('DOMContentLoaded', function() {
-			const playersContainer = document.getElementById('uploadedPlayers');
-			
-			try {
-				// Get players from localStorage (key format: uploaded_mi_players)
-				const playersData = localStorage.getItem('uploaded_mi_players');
-				
-				if (playersData) {
-					const players = JSON.parse(playersData);
-					
-					if (players && players.length > 0) {
-						let html = '<div class="uploaded-players">';
-						
-						players.forEach(player => {
-							const playerName = player.name || player.Name || 'Unknown';
-							const playerRole = player.role || player.Role || 'Player';
-							
-							html += `
-								<div class="player-item">
-									<div class="name">${playerName}</div>
-									<div class="role">${playerRole}</div>
-								</div>
-							`;
-						});
-						
-						html += '</div>';
-						playersContainer.innerHTML = html;
-					} else {
-						playersContainer.innerHTML = '<div class="no-players-message">No players uploaded yet. Go to <a href="admin-upload.html" style="color: #00D8FF;">Admin Upload</a> to add players.</div>';
-					}
-				} else {
-					playersContainer.innerHTML = '<div class="no-players-message">No players uploaded yet. Go to <a href="admin-upload.html" style="color: #00D8FF;">Admin Upload</a> to add players.</div>';
-				}
-			} catch (error) {
-				console.error('Error loading players:', error);
-				playersContainer.innerHTML = '<div class="no-players-message">Error loading players. Please try again.</div>';
-			}
-		});
-	</script>
+<body data-team="MI">
+    <div class="team-background"></div>
+    <nav class="team-nav" id="teamNav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/ipl_logo_new.svg" alt="IPL">
+                <span>IPL 2026</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fixtures_modern.html">Fixtures</a></li>
+                <li><a href="points_modern.html">Points</a></li>
+                <li><a href="scores_modern.html">Scores</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="team-hero">
+        <div class="team-hero-container">
+            <div class="team-logo-wrapper">
+                <div class="team-logo-glow"></div>
+                <div class="team-logo-circle">
+                    <img src="assets/mi_logo_new.svg" alt="Mumbai Indians">
+                </div>
+            </div>
+            <h1 class="team-title">MUMBAI INDIANS</h1>
+            <p class="team-subtitle">Mumbai • Wankhede Stadium</p>
+            <div class="team-stats-grid">
+                <div class="team-stat-card">
+                    <div class="team-stat-number" id="playerCount">0</div>
+                    <div class="team-stat-label">Total Players</div>
+                </div>
+                <div class="team-stat-card">
+                    <div class="team-stat-number" id="foreignCount">0</div>
+                    <div class="team-stat-label">Overseas</div>
+                </div>
+                <div class="team-stat-card">
+                    <div class="team-stat-number" id="indianCount">0</div>
+                    <div class="team-stat-label">Indian</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="squad-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">SQUAD 2026</h2>
+                <p class="section-subtitle">Meet the champions of Mumbai Indians</p>
+            </div>
+            <div class="players-grid" id="playersContainer">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 1rem; color: var(--text-muted);">Loading squad...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="player-modal" id="playerModal">
+        <div class="player-modal-backdrop"></div>
+        <div class="player-modal-content">
+            <button class="modal-close" id="modalCloseButton">&times;</button>
+            <div class="modal-player-header">
+                <div class="modal-player-logo">
+                    <img src="assets/mi_logo_new.svg" alt="Player" id="modalPlayerLogo">
+                </div>
+                <h2 class="modal-player-name" id="modalPlayerName"></h2>
+                <p class="modal-player-role" id="modalPlayerRole"></p>
+                <div class="modal-player-badges" id="modalPlayerBadges"></div>
+            </div>
+            <div class="modal-player-details" id="modalPlayerDetails"></div>
+        </div>
+    </div>
+    <footer class="team-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="js/player-modal.js"></script>
+    <script src="js/team-page-loader.js"></script>
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('teamNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+        document.getElementById('playerModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('player-modal-backdrop')) {
+                if (typeof window.closePlayerModal === 'function') {
+                    window.closePlayerModal();
+                }
+            }
+        });
+    </script>
 </body>
 </html>

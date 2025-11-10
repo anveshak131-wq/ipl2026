@@ -21,7 +21,7 @@ const TEAM_CODE_MAP = {
     'dc': 'DC',
     'srh': 'SRH',
     'rr': 'RR',
-    'kxip': 'KXIP',
+    'kxip': 'PBKS',
     'pbks': 'PBKS',
     'gt': 'GT',
     'lsg': 'LSG'
@@ -158,23 +158,28 @@ function displayPlayers(players, teamCode) {
  */
 function createPlayerCard(player, teamCode) {
     const card = document.createElement('div');
-    card.className = 'player-card';
+    card.className = 'player-card-modern';
     
     let badges = '';
-    if (player.isCaptain) badges += '<span class="badge badge-captain">👑 Captain</span>';
-    if (player.isViceCaptain) badges += '<span class="badge badge-captain">⭐ Vice Captain</span>';
-    if (player.isForeign) badges += '<span class="badge badge-foreign">🌏 Overseas</span>';
-    if ((player.role || '').toLowerCase() === 'wicket-keeper') badges += '<span class="badge badge-wk">🧤 WK</span>';
+    if (player.isCaptain) badges += '<span class="badge-modern badge-captain">👑 Captain</span>';
+    if (player.isViceCaptain) badges += '<span class="badge-modern badge-vice-captain">⭐ Vice Captain</span>';
+    if (player.isForeign) badges += '<span class="badge-modern badge-overseas">🌏 Overseas</span>';
+    if ((player.role || '').toLowerCase() === 'wicket-keeper' || (player.role || '').toLowerCase().includes('wicket')) {
+        badges += '<span class="badge-modern badge-wk">🧤 Wicket-Keeper</span>';
+    }
     
     const teamLogo = `assets/${teamCode.toLowerCase()}_logo_new.svg`;
     
     card.innerHTML = `
-        <div class="player-image">
-            <img src="${teamLogo}" alt="${player.name || 'Player'}" onerror="this.src='assets/ipl_logo_new.svg'">
+        <div class="player-image-wrapper">
+            <div class="player-image-glow"></div>
+            <div class="player-image-circle">
+                <img src="${teamLogo}" alt="${player.name || 'Player'}" onerror="this.src='assets/ipl_logo_new.svg'">
+            </div>
         </div>
         <h3 class="player-name">${player.name || 'Unknown'}</h3>
         <p class="player-role">${player.role || 'Player'}</p>
-        <div class="player-badges">
+        <div class="player-badges-modern">
             ${badges}
         </div>
     `;
@@ -271,15 +276,40 @@ if (document.readyState === 'loading') {
 }
 
 function initTeamPage() {
-    // Try to detect team code from page URL or title
-    const path = window.location.pathname;
-    // Match both /rcb.html and /rcb
-    const teamMatch = path.match(/\/([a-z]{2,5})(\.html)?$/i);
+    // Try to detect team code from multiple sources
+    let teamCode = null;
     
-    if (teamMatch) {
-        const teamCode = teamMatch[1].toLowerCase();
+    // Method 1: Check data-team attribute on body
+    const bodyTeam = document.body.getAttribute('data-team');
+    if (bodyTeam) {
+        teamCode = bodyTeam.toLowerCase();
+        console.log('Detected team from data-team attribute:', teamCode);
+    }
+    
+    // Method 2: Try to detect from page URL
+    if (!teamCode) {
+        const path = window.location.pathname;
+        const teamMatch = path.match(/\/([a-z]{2,5})(\.html)?$/i);
+        if (teamMatch) {
+            teamCode = teamMatch[1].toLowerCase();
+            console.log('Detected team from URL:', teamCode);
+        }
+    }
+    
+    // Method 3: Try to detect from filename (for kxip/pbks)
+    if (!teamCode) {
+        const filename = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase();
+        if (filename && TEAM_CODE_MAP[filename]) {
+            teamCode = filename;
+            console.log('Detected team from filename:', teamCode);
+        }
+    }
+    
+    if (teamCode) {
+        // Normalize team code - use the detected code directly
+        // The TEAM_CODE_MAP will handle conversion to uppercase for API
         loadTeamPlayers(teamCode);
     } else {
-        console.warn('Could not detect team code from URL');
+        console.warn('Could not detect team code. Please ensure data-team attribute is set on body tag.');
     }
 }
