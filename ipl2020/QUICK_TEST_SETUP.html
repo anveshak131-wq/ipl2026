@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Test Setup - IPL Cricket Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .test-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .test-card h2 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .test-card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .links {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .links h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .link-btn {
+            display: inline-block;
+            background: #fff;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #667eea;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .link-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Quick Test Setup</h1>
+        <p class="subtitle">One-click setup for testing IPL Cricket Hub features</p>
+
+        <!-- Test 1: Create Sample Fixtures -->
+        <div class="test-card">
+            <h2>1️⃣ Create Sample Fixtures</h2>
+            <p>Creates 3 fixtures: one LIVE match (now), one UPCOMING (tomorrow), and one COMPLETED (yesterday)</p>
+            <button class="btn btn-success" onclick="createSampleFixtures()">
+                📅 Create Sample Fixtures
+            </button>
+            <div id="fixturesStatus"></div>
+        </div>
+
+        <!-- Test 2: Setup Live Match -->
+        <div class="test-card">
+            <h2>2️⃣ Setup Live Match</h2>
+            <p>Creates a live match (RCB vs MI) and enables live status</p>
+            <button class="btn btn-success" onclick="setupLiveMatch()">
+                🔴 Setup Live Match
+            </button>
+            <div id="liveMatchStatus"></div>
+        </div>
+
+        <!-- Test 3: Add Toss Information -->
+        <div class="test-card">
+            <h2>3️⃣ Add Toss Information</h2>
+            <p>Adds toss data with AI-generated insight</p>
+            <button class="btn btn-success" onclick="addTossInfo()">
+                🪙 Add Toss Information
+            </button>
+            <div id="tossStatus"></div>
+        </div>
+
+        <!-- Test 4: Clear All Data -->
+        <div class="test-card">
+            <h2>🗑️ Clear All Test Data</h2>
+            <p>Removes all localStorage data to start fresh</p>
+            <button class="btn btn-danger" onclick="clearAllData()">
+                ❌ Clear All Data
+            </button>
+            <div id="clearStatus"></div>
+        </div>
+
+        <!-- Test 5: View Data -->
+        <div class="test-card">
+            <h2>🔍 View localStorage Data</h2>
+            <p>See what's currently stored in browser</p>
+            <button class="btn btn-info" onclick="viewData()">
+                👁️ View Data
+            </button>
+            <div id="dataView"></div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="links">
+            <h3>📱 Quick Links</h3>
+            <a href="admin-upload.html" class="link-btn" target="_blank">Admin Upload</a>
+            <a href="admin-live-match.html" class="link-btn" target="_blank">Live Match Control</a>
+            <a href="live-match-updates.html" class="link-btn" target="_blank">Live Match Updates (User View)</a>
+            <a href="fixtures_modern.html" class="link-btn" target="_blank">Fixtures Page</a>
+        </div>
+    </div>
+
+    <script>
+        function createSampleFixtures() {
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const yesterday = new Date(now.getTime() - 24*60*60*1000).toISOString().split('T')[0];
+            const tomorrow = new Date(now.getTime() + 24*60*60*1000).toISOString().split('T')[0];
+            
+            const currentTime = now.toTimeString().split(' ')[0].substring(0, 5);
+            
+            const fixtures = [
+                {
+                    date: today,
+                    time: currentTime,
+                    team1: 'RCB',
+                    team2: 'MI',
+                    venue: 'M. Chinnaswamy Stadium, Bengaluru',
+                    status: 'live'
+                },
+                {
+                    date: tomorrow,
+                    time: '19:30',
+                    team1: 'CSK',
+                    team2: 'KKR',
+                    venue: 'MA Chidambaram Stadium, Chennai',
+                    status: 'upcoming'
+                },
+                {
+                    date: yesterday,
+                    time: '19:30',
+                    team1: 'DC',
+                    team2: 'SRH',
+                    venue: 'Arun Jaitley Stadium, Delhi',
+                    status: 'completed'
+                }
+            ];
+            
+            localStorage.setItem('uploaded_fixtures', JSON.stringify(fixtures));
+            
+            document.getElementById('fixturesStatus').innerHTML = 
+                '<div class="status success">✅ Created 3 sample fixtures! Check admin-upload.html or fixtures_modern.html</div>';
+        }
+
+        function setupLiveMatch() {
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const currentTime = now.toTimeString().split(' ')[0].substring(0, 5);
+            
+            const fixtures = [{
+                date: today,
+                time: currentTime,
+                team1: 'RCB',
+                team2: 'MI',
+                venue: 'M. Chinnaswamy Stadium, Bengaluru',
+                status: 'live'
+            }];
+            
+            localStorage.setItem('uploaded_fixtures', JSON.stringify(fixtures));
+            localStorage.setItem('live_match_status', JSON.stringify({isLive: true}));
+            
+            document.getElementById('liveMatchStatus').innerHTML = 
+                '<div class="status success">✅ Live match created (RCB vs MI)! Open admin-live-match.html to see auto-selection</div>';
+        }
+
+        function addTossInfo() {
+            const tossData = {
+                winner: 'teamA',
+                decision: 'bat',
+                insight: 'Royal Challengers Bangalore has opted to bat first at M. Chinnaswamy Stadium. This is a strategic decision considering the pitch conditions and dew factor expected later in the evening. Teams batting second have won 58% of matches at this venue in previous seasons.',
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('live_match_toss', JSON.stringify(tossData));
+            localStorage.setItem('live_match_status', JSON.stringify({isLive: true}));
+            
+            // Also create the fixture
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const currentTime = now.toTimeString().split(' ')[0].substring(0, 5);
+            
+            const fixtures = [{
+                date: today,
+                time: currentTime,
+                team1: 'RCB',
+                team2: 'MI',
+                venue: 'M. Chinnaswamy Stadium, Bengaluru',
+                status: 'live'
+            }];
+            
+            localStorage.setItem('uploaded_fixtures', JSON.stringify(fixtures));
+            
+            document.getElementById('tossStatus').innerHTML = 
+                '<div class="status success">✅ Toss added (RCB won, chose to bat)! Open live-match-updates.html to see the toss section</div>';
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all test data?')) {
+                localStorage.clear();
+                document.getElementById('clearStatus').innerHTML = 
+                    '<div class="status info">🧹 All data cleared! You can start fresh now.</div>';
+                
+                // Clear all status messages
+                document.getElementById('fixturesStatus').innerHTML = '';
+                document.getElementById('liveMatchStatus').innerHTML = '';
+                document.getElementById('tossStatus').innerHTML = '';
+                document.getElementById('dataView').innerHTML = '';
+            }
+        }
+
+        function viewData() {
+            const data = {
+                fixtures: localStorage.getItem('uploaded_fixtures'),
+                toss: localStorage.getItem('live_match_toss'),
+                liveStatus: localStorage.getItem('live_match_status')
+            };
+            
+            let html = '<div class="code-block">';
+            html += '<strong>Fixtures:</strong><br>';
+            html += JSON.stringify(JSON.parse(data.fixtures || '[]'), null, 2);
+            html += '<br><br><strong>Toss:</strong><br>';
+            html += JSON.stringify(JSON.parse(data.toss || '{}'), null, 2);
+            html += '<br><br><strong>Live Status:</strong><br>';
+            html += JSON.stringify(JSON.parse(data.liveStatus || '{}'), null, 2);
+            html += '</div>';
+            
+            document.getElementById('dataView').innerHTML = html;
+        }
+
+        // Show welcome message
+        console.log('%c🏏 IPL Cricket Hub - Quick Test Setup', 'color: #667eea; font-size: 20px; font-weight: bold');
+        console.log('%cUse the buttons above to quickly setup test data!', 'color: #764ba2; font-size: 14px');
+    </script>
+</body>
+</html>

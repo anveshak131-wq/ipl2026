@@ -1,10 +1,8 @@
-# 🏏 IPL Cricket Hub Official Website
+# IPL 2026 Website 🏏
 
-Welcome to the official IPL Cricket Hub website repository!
+A modern, responsive website for the Indian Premier League 2026 season built with cutting-edge web technologies.
 
-**✨ Fully Redesigned | Modern Design | Production Ready** - Your ultimate destination for Indian Premier League cricket information built with cutting-edge web technologies.
-
-![IPL Cricket Hub](https://img.shields.io/badge/IPL-Cricket_Hub-blue)
+![IPL 2026](https://img.shields.io/badge/IPL-2026-blue)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
@@ -29,7 +27,7 @@ Welcome to the official IPL Cricket Hub website repository!
 - Responsive navigation with mobile menu
 
 #### 📅 **Fixtures** (`fixtures_modern.html`)
-- Complete IPL match schedule
+- Complete IPL 2026 match schedule
 - Advanced filtering by team, status, and date
 - Live match indicators
 - Interactive match cards
@@ -192,39 +190,5 @@ If you find this project helpful, please give it a ⭐ on GitHub!
 
 ---
 
-# IPL Cricket Hub Admin Panel
-
-## Overview
-This project now supports **manual-only** data entry for all IPL Cricket Hub admin tasks. All CSV/file upload features have been removed. All data is managed via the admin panel and stored in localStorage.
-
-## Key Features
-- **Manual entry only** for players, fixtures, and points table (no file upload).
-- All data is editable and deletable at any time via the admin panel.
-- Data persists in localStorage until explicitly changed or deleted.
-- **Players:**
-  - Add, edit, and delete players for each team.
-  - Set Captain, Vice-Captain, and Wicket-Keeper status.
-  - Nationality and Bowling Style are dropdowns with common options.
-  - If you select "Other" for Bowling Style, an extra box appears to specify the style, and this value is saved as the player's bowling style.
-  - Foreign players are auto-detected and shown with a 🌍 symbol.
-  - Duplicate players for a team are prevented (deduplication by normalized name).
-  - Batting/Bowling styles are shown only when a player is clicked.
-- **Fixtures:**
-  - Add, edit, and delete fixtures manually.
-- **Points Table:**
-  - Add, edit, and delete points table rows manually.
-- All changes are reflected on the frontend and persist until changed or deleted.
-
-## Usage
-1. Open `admin-upload.html` in your browser.
-2. Select the section (Players, Fixtures, Points Table) you want to manage.
-3. Enter data manually using the provided forms.
-4. Save your changes. Data is stored in your browser and reflected on the website.
-
-## Notes
-- **No file upload or download is available.**
-- Clearing your browser storage will erase all manually entered data.
-- For more details, see `UPLOAD_INSTRUCTIONS.md`.
-
-**Made with ❤️ for IPL Cricket Fans** 🏏
+**Made with ❤️ for IPL 2026** 🏏
 

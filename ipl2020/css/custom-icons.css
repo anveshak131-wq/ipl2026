@@ -1,0 +1,172 @@
+/* Custom Icon Styles for IPL Cricket Hub */
+
+.custom-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    position: relative;
+}
+
+.custom-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Icon size variants */
+.custom-icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.custom-icon-md {
+    width: 24px;
+    height: 24px;
+}
+
+.custom-icon-lg {
+    width: 32px;
+    height: 32px;
+}
+
+.custom-icon-xl {
+    width: 48px;
+    height: 48px;
+}
+
+.custom-icon-2xl {
+    width: 64px;
+    height: 64px;
+}
+
+/* Specific icon classes for easy use */
+.icon-trophy::before,
+.icon-calendar::before,
+.icon-lightning::before,
+.icon-sparkles::before,
+.icon-target::before,
+.icon-users::before,
+.icon-fire::before,
+.icon-star::before,
+.icon-swords::before,
+.icon-mobile::before,
+.icon-mail::before,
+.icon-heart::before,
+.icon-globe::before,
+.icon-bulb::before,
+.icon-cricket::before,
+.icon-play::before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    margin-right: 0.25em;
+}
+
+.icon-trophy::before {
+    background-image: url('../assets/icons/trophy.svg');
+}
+
+.icon-calendar::before {
+    background-image: url('../assets/icons/calendar.svg');
+}
+
+.icon-lightning::before {
+    background-image: url('../assets/icons/lightning.svg');
+}
+
+.icon-sparkles::before {
+    background-image: url('../assets/icons/sparkles.svg');
+}
+
+.icon-target::before {
+    background-image: url('../assets/icons/target.svg');
+}
+
+.icon-users::before {
+    background-image: url('../assets/icons/users.svg');
+}
+
+.icon-fire::before {
+    background-image: url('../assets/icons/fire.svg');
+}
+
+.icon-star::before {
+    background-image: url('../assets/icons/star.svg');
+}
+
+.icon-swords::before {
+    background-image: url('../assets/icons/swords.svg');
+}
+
+.icon-mobile::before {
+    background-image: url('../assets/icons/mobile.svg');
+}
+
+.icon-mail::before {
+    background-image: url('../assets/icons/mail.svg');
+}
+
+.icon-heart::before {
+    background-image: url('../assets/icons/heart.svg');
+}
+
+.icon-globe::before {
+    background-image: url('../assets/icons/globe.svg');
+}
+
+.icon-bulb::before {
+    background-image: url('../assets/icons/bulb.svg');
+}
+
+.icon-cricket::before {
+    background-image: url('../assets/icons/cricket.svg');
+}
+
+.icon-play::before {
+    background-image: url('../assets/icons/play-button.svg');
+}
+
+/* Animated icons */
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes iconSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.custom-icon-pulse {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+.custom-icon-spin {
+    animation: iconSpin 3s linear infinite;
+}
+
+.custom-icon-bounce {
+    animation: iconBounce 1s ease-in-out infinite;
+}
+
+/* Hover effects */
+.custom-icon-hover:hover {
+    transform: scale(1.2);
+    transition: transform 0.3s ease;
+}
+
+/* Glow effect for icons */
+.custom-icon-glow {
+    filter: drop-shadow(0 0 8px currentColor);
+}

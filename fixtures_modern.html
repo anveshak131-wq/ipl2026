@@ -3,38 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Match Fixtures - IPL Cricket Hub</title>
-    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/shared-modern.css">
-    <link rel="stylesheet" href="css/fixtures-styles.css">
+    <title>Fixtures - IPL 2026</title>
+    <link rel="shortcut icon" href="index.ico" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --secondary-gradient: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: #ffd700;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: var(--glass-bg);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: var(--secondary-gradient);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        main {
+            margin-top: 100px;
+            padding: 3rem 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .filters {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-group select option {
+            background: #333;
+            color: white;
+        }
+
+        .btn-clear {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 15px;
+            background: var(--secondary-gradient);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: fit-content;
+            align-self: flex-end;
+        }
+
+        .btn-clear:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .fixtures-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 2.5rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .fixtures-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+            overflow-x: auto;
+        }
+
+        .fixtures-table th {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            position: sticky;
+            top: 0;
+        }
+
+        .fixtures-table td {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .fixtures-table tr:hover td {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .match-number {
+            font-weight: 700;
+            color: #ffd700;
+            font-size: 1.1rem;
+        }
+
+        .team-vs {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-logo-small {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+
+        .vs-text {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .match-time {
+            font-weight: 600;
+            color: #4ecdc4;
+        }
+
+        .status {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .status.upcoming {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .status.live {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+            animation: pulse 2s infinite;
+        }
+
+        .status.completed {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: white;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .btn-clear {
+                width: 100%;
+            }
+
+            .fixtures-table {
+                font-size: 0.9rem;
+            }
+
+            .fixtures-table th,
+            .fixtures-table td {
+                padding: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Animated Mesh Background -->
-    <div class="mesh-background">
-        <div class="mesh-gradient mesh-gradient-1"></div>
-        <div class="mesh-gradient mesh-gradient-2"></div>
-        <div class="mesh-gradient mesh-gradient-3"></div>
-        <div class="mesh-gradient mesh-gradient-4"></div>
-        <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-            <div class="shape shape-5"></div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
+    <header>
+        <nav class="container">
             <a href="index.html" class="logo">
-                <img src="assets/ipl_logo_new.svg" alt="IPL Logo">
-                <span>IPL Cricket Hub</span>
+                <img src="ipl_logo_new.svg" alt="IPL Logo" style="height: 40px; width: 40px; margin-right: 10px;" />
+                <span>IPL 2026</span>
             </a>
-            <ul class="nav-links" id="navLinks">
+            <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="index.html#teams">Teams</a></li>
                 <li><a href="fixtures_modern.html" class="active">Fixtures</a></li>
@@ -42,143 +374,178 @@
                 <li><a href="scores_modern.html">Scores</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
-            <div class="mobile-toggle" id="mobileToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="header-container">
-            <div class="header-badge">
-                <span><i class="fas fa-calendar-alt"></i> Season 19 Schedule</span>
-            </div>
-            <h1>MATCH FIXTURES</h1>
-            <p>Complete schedule of all IPL matches. Stay updated with match timings, venues, and live match information.</p>
-            
-            <!-- Filter Controls -->
-            <div class="filter-controls">
-                <button class="filter-btn active" data-filter="all">
-                    <i class="fas fa-clipboard-list"></i>
-                    All Matches
-                </button>
-                <button class="filter-btn" data-filter="upcoming">
-                    <i class="fas fa-clock"></i>
-                    Upcoming
-                </button>
-                <button class="filter-btn" data-filter="completed">
-                    <i class="fas fa-check"></i>
-                    Completed
-                </button>
-                <button class="filter-btn" data-filter="live">
-                    <i class="fas fa-circle" style="color:#FF4655"></i>
-                    Live
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Match Stats Overview -->
-    <section class="stats-overview">
+    <main>
         <div class="container">
-            <div class="stats-grid">
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-baseball-ball"></i></div>
-                    <div class="stat-number" id="totalMatches">0</div>
-                    <div class="stat-label">Total Matches</div>
+            <div class="page-header">
+                <h1><i class="fas fa-calendar-alt"></i> Fixtures</h1>
+                <p>Complete IPL 2026 match schedule</p>
+                <div style="background: rgba(255, 193, 7, 0.2); border: 2px solid #ffc107; border-radius: 10px; padding: 1rem; margin-top: 1rem; color: #fff; text-align: center;">
+                    <i class="fas fa-exclamation-triangle" style="color: #ffc107;"></i>
+                    <strong> Note:</strong> Fixtures are tentative and subject to change. The final schedule will be updated once confirmed by IPL authorities.
                 </div>
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
-                    <div class="stat-number" id="venues">TBD</div>
-                    <div class="stat-label">Venues</div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label><i class="fas fa-filter"></i> Filter by Team</label>
+                        <select id="teamFilter">
+                            <option value="">All Teams</option>
+                            <option value="RCB">Royal Challengers Bangalore</option>
+                            <option value="MI">Mumbai Indians</option>
+                            <option value="CSK">Chennai Super Kings</option>
+                            <option value="SRH">Sunrisers Hyderabad</option>
+                            <option value="KXIP">Kings XI Punjab</option>
+                            <option value="KKR">Kolkata Knight Riders</option>
+                            <option value="DC">Delhi Capitals</option>
+                            <option value="RR">Rajasthan Royals</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-info-circle"></i> Filter by Status</label>
+                        <select id="statusFilter">
+                            <option value="">All Matches</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="live">Live</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-calendar"></i> Filter by Date</label>
+                        <input type="date" id="dateFilter">
+                    </div>
+                    <button class="btn-clear" onclick="clearFilters()">
+                        <i class="fas fa-redo"></i> Clear
+                    </button>
                 </div>
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-                    <div class="stat-number" id="daysLeft">TBD</div>
-                    <div class="stat-label">Days of Cricket</div>
+            </div>
+
+            <div class="fixtures-container">
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading fixtures...</p>
                 </div>
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-fire"></i></div>
-                    <div class="stat-number" id="liveNow">0</div>
-                    <div class="stat-label">Live Now</div>
+
+                <div id="fixturesTableWrapper" style="display: none;">
+                    <table class="fixtures-table">
+                        <thead>
+                            <tr>
+                                <th>Match #</th>
+                                <th>Date</th>
+                                <th>Teams</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Venue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fixturesBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Fixtures Section -->
-    <section class="fixtures-section">
-        <div class="container">
-            <div id="fixturesContainer" class="fixtures-container">
-                <!-- Fixtures will be loaded dynamically -->
-            </div>
-            
-            <!-- Loading State -->
-            <div class="loading-state" id="loadingState">
-                <div class="spinner"></div>
-                <p>Loading fixtures...</p>
-            </div>
-            
-            <!-- Empty State -->
-            <div class="empty-state" id="emptyState" style="display: none;">
-                <i class="fas fa-calendar-alt"></i>
-                <h3>No Matches Found</h3>
-                <p>Try selecting a different filter</p>
-            </div>
-        </div>
-    </section>
+    <script>
+        // Fixtures array - data from backend
+        let fixtures = [];
 
-    <!-- Quick Actions -->
-    <section class="quick-actions">
-        <div class="container">
-            <div class="actions-grid reveal">
-                <a href="points_modern.html" class="action-card">
-                    <div class="action-icon"><i class="fas fa-trophy"></i></div>
-                    <h3>Points Table</h3>
-                    <p>Check team standings</p>
-                    →
-                </a>
-                <a href="scores_modern.html" class="action-card">
-                    <div class="action-icon"><i class="fas fa-chart-bar"></i></div>
-                    <h3>Live Scores</h3>
-                    <p>Real-time match updates</p>
-                    →
-                </a>
-                <a href="index.html#teams" class="action-card">
-                    <div class="action-icon"><i class="fas fa-users"></i></div>
-                    <h3>Teams</h3>
-                    <p>Explore all squads</p>
-                    →
-                </a>
-            </div>
-        </div>
-    </section>
+        const teamLogos = {
+            'RCB': 'rcb_logo_new.svg', 'MI': 'mi_logo_new.svg', 'CSK': 'csk_logo_new.svg',
+            'SRH': 'srh_logo_new.svg', 'PK': 'kxip_logo_new.svg', 'KKR': 'kkr_logo_new.svg',
+            'DC': 'dc_logo_new.svg', 'RR': 'rr_logo_new.svg', 'GT': 'gt_logo_new.svg', 'LSG': 'lsg_logo_new.svg'
+        };
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>IPL Cricket Hub</h3>
-                    <p>Your ultimate destination for IPL fixtures, scores, and updates.</p>
-                </div>
-                <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="index.html#teams">Teams</a>
-                    <a href="points_modern.html">Points</a>
-                    <a href="scores_modern.html">Scores</a>
-                    <a href="about.html">About</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 SportsUP99. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+        const loading = document.getElementById('loading');
+        const fixturesTableWrapper = document.getElementById('fixturesTableWrapper');
+        const fixturesBody = document.getElementById('fixturesBody');
+        const teamFilter = document.getElementById('teamFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const dateFilter = document.getElementById('dateFilter');
 
-    <script src="js/fixtures-scripts.js"></script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFixtures();
+            setupEventListeners();
+        });
+
+        function loadFixtures() {
+            loading.style.display = 'block';
+            fixturesTableWrapper.style.display = 'none';
+
+            setTimeout(() => {
+                displayFixtures(fixtures);
+                loading.style.display = 'none';
+            }, 1000);
+        }
+
+        function displayFixtures(fixturesToShow) {
+            if (fixturesToShow.length === 0) {
+                fixturesBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 3rem;">No matches found</td></tr>';
+            } else {
+                fixturesBody.innerHTML = '';
+                fixturesToShow.forEach(fixture => {
+                    const row = createFixtureRow(fixture);
+                    fixturesBody.appendChild(row);
+                });
+            }
+            fixturesTableWrapper.style.display = 'table';
+        }
+
+        function createFixtureRow(fixture) {
+            const row = document.createElement('tr');
+            const formattedDate = new Date(fixture.date).toLocaleDateString('en-US', {
+                weekday: 'short', month: 'short', day: 'numeric'
+            });
+
+            row.innerHTML = `
+                <td><span class="match-number">#${fixture.match}</span></td>
+                <td>${formattedDate}</td>
+                <td>
+                    <div class="team-vs">
+                        <img src="${teamLogos[fixture.team1]}" alt="${fixture.team1}" class="team-logo-small">
+                        <strong>${fixture.team1}</strong>
+                        <span class="vs-text">vs</span>
+                        <strong>${fixture.team2}</strong>
+                        <img src="${teamLogos[fixture.team2]}" alt="${fixture.team2}" class="team-logo-small">
+                    </div>
+                </td>
+                <td><span class="match-time">${fixture.time}</span></td>
+                <td><span class="status ${fixture.status}">${fixture.status}</span></td>
+                <td>${fixture.venue}</td>
+            `;
+
+            return row;
+        }
+
+        function setupEventListeners() {
+            teamFilter.addEventListener('change', filterFixtures);
+            statusFilter.addEventListener('change', filterFixtures);
+            dateFilter.addEventListener('change', filterFixtures);
+        }
+
+        function filterFixtures() {
+            const teamValue = teamFilter.value;
+            const statusValue = statusFilter.value;
+            const dateValue = dateFilter.value;
+
+            const filtered = fixtures.filter(fixture => {
+                const teamMatch = !teamValue || fixture.team1 === teamValue || fixture.team2 === teamValue;
+                const statusMatch = !statusValue || fixture.status === statusValue;
+                const dateMatch = !dateValue || fixture.date === dateValue;
+                return teamMatch && statusMatch && dateMatch;
+            });
+
+            displayFixtures(filtered);
+        }
+
+        function clearFilters() {
+            teamFilter.value = '';
+            statusFilter.value = '';
+            dateFilter.value = '';
+            displayFixtures(fixtures);
+        }
+    </script>
 </body>
 </html>

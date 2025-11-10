@@ -3,38 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Points Table - IPL Cricket Hub</title>
-    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/shared-modern.css">
-    <link rel="stylesheet" href="css/points-styles.css">
+    <title>Points Table - IPL 2026</title>
+    <link rel="shortcut icon" href="index.ico" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --secondary-gradient: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-color: #ffd700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: var(--glass-bg);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: var(--secondary-gradient);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        main {
+            margin-top: 100px;
+            padding: 3rem 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .points-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 2.5rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--glass-bg);
+            color: white;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn.active {
+            background: var(--secondary-gradient);
+            border-color: transparent;
+        }
+
+        .points-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+            overflow-x: auto;
+        }
+
+        .points-table th {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1.2rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .points-table td {
+            padding: 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .points-table tr:hover td {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .position {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--accent-color);
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            justify-content: flex-start;
+        }
+
+        .team-logo-small {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+
+        .team-name {
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .points {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .nrr {
+            font-weight: 600;
+        }
+
+        .nrr.positive {
+            color: #4ecdc4;
+        }
+
+        .nrr.negative {
+            color: #ff6b6b;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: white;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .points-table {
+                font-size: 0.85rem;
+            }
+
+            .points-table th,
+            .points-table td {
+                padding: 0.8rem 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Animated Mesh Background -->
-    <div class="mesh-background">
-        <div class="mesh-gradient mesh-gradient-1"></div>
-        <div class="mesh-gradient mesh-gradient-2"></div>
-        <div class="mesh-gradient mesh-gradient-3"></div>
-        <div class="mesh-gradient mesh-gradient-4"></div>
-        <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-            <div class="shape shape-5"></div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
+    <header>
+        <nav class="container">
             <a href="index.html" class="logo">
-                <img src="assets/ipl_logo_new.svg" alt="IPL Logo">
-                <span>IPL Cricket Hub</span>
+                <img src="ipl_logo_new.svg" alt="IPL Logo" style="height: 40px; width: 40px; margin-right: 10px;" />
+                <span>IPL 2026</span>
             </a>
-            <ul class="nav-links" id="navLinks">
+            <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="index.html#teams">Teams</a></li>
                 <li><a href="fixtures_modern.html">Fixtures</a></li>
@@ -42,195 +360,177 @@
                 <li><a href="scores_modern.html">Scores</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
-            <div class="mobile-toggle" id="mobileToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="header-container">
-            <div class="header-badge">
-                <span><i class="fas fa-trophy"></i> Season 19 Standings</span>
-            </div>
-            <h1>POINTS TABLE</h1>
-            <p>Track team standings, performance metrics, and qualification scenarios. Updated after every match throughout the season.</p>
-        </div>
-    </section>
-
-    <!-- Stats Cards -->
-    <section class="stats-overview">
+    <main>
         <div class="container">
+            <div class="page-header">
+                <h1><i class="fas fa-trophy"></i> Points Table</h1>
+                <p>Current IPL 2026 standings</p>
+            </div>
+
             <div class="stats-grid">
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-crown"></i></div>
-                    <div class="stat-number" id="topTeam">TBD</div>
-                    <div class="stat-label">League Leader</div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTeams">8</div>
+                    <div class="stat-label">Total Teams</div>
                 </div>
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+                <div class="stat-card">
                     <div class="stat-number" id="matchesPlayed">0</div>
                     <div class="stat-label">Matches Played</div>
                 </div>
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-fire"></i></div>
-                    <div class="stat-number" id="topNRR">-</div>
-                    <div class="stat-label">Highest NRR</div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMatches">56</div>
+                    <div class="stat-label">Total Matches</div>
                 </div>
-                <div class="stat-card reveal">
-                    <div class="stat-icon"><i class="fas fa-bolt"></i></div>
-                    <div class="stat-number" id="qualified">0</div>
-                    <div class="stat-label">Qualified</div>
+                <div class="stat-card">
+                    <div class="stat-number" id="remainingMatches">56</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+            </div>
+
+            <div class="points-container">
+                <div class="table-header">
+                    <h2 class="table-title">League Standings</h2>
+                    <div class="table-controls">
+                        <button class="btn active" onclick="sortTable('points')">Points</button>
+                        <button class="btn" onclick="sortTable('nrr')">Net RR</button>
+                        <button class="btn" onclick="sortTable('wins')">Wins</button>
+                    </div>
+                </div>
+
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading standings...</p>
+                </div>
+
+                <div id="tableWrapper" style="display: none;">
+                    <table class="points-table">
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Team</th>
+                                <th>P</th>
+                                <th>W</th>
+                                <th>L</th>
+                                <th>T</th>
+                                <th>NR</th>
+                                <th>Pts</th>
+                                <th>NRR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pointsBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Points Table -->
-    <section class="points-table-section">
-        <div class="container">
-            <div class="table-header">
-                <h2>Current Standings</h2>
-                <div class="table-controls">
-                    <button class="control-btn" onclick="sortTable('points')">
-                        ↓
-                        Sort by Points
-                    </button>
-                    <button class="control-btn" onclick="sortTable('nrr')">
-                        <i class="fas fa-chart-line"></i>
-                        Sort by NRR
-                    </button>
-                </div>
-            </div>
+    <script>
+        const teamsData = [
+            { name: "Royal Challengers Bangalore", shortName: "RCB", logo: "rcb_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Mumbai Indians", shortName: "MI", logo: "mi_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Chennai Super Kings", shortName: "CSK", logo: "csk_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Sunrisers Hyderabad", shortName: "SRH", logo: "srh_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Punjab Kings", shortName: "PK", logo: "kxip_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Kolkata Knight Riders", shortName: "KKR", logo: "kkr_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Delhi Capitals", shortName: "DC", logo: "dc_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Rajasthan Royals", shortName: "RR", logo: "rr_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Gujarat Titans", shortName: "GT", logo: "gt_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 },
+            { name: "Lucknow Super Giants", shortName: "LSG", logo: "lsg_logo_new.svg", played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0, nrr: 0.000 }
+        ];
 
-            <div class="table-container reveal">
-                <table class="points-table" id="pointsTable">
-                    <thead>
-                        <tr>
-                            <th class="rank-col">Rank</th>
-                            <th class="team-col">Team</th>
-                            <th class="stat-col">M</th>
-                            <th class="stat-col">W</th>
-                            <th class="stat-col">L</th>
-                            <th class="stat-col">NR</th>
-                            <th class="stat-col">Pts</th>
-                            <th class="stat-col">NRR</th>
-                            <th class="form-col">Form</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- Table rows will be generated dynamically -->
-                    </tbody>
-                </table>
-            </div>
+        const loading = document.getElementById('loading');
+        const tableWrapper = document.getElementById('tableWrapper');
+        const pointsBody = document.getElementById('pointsBody');
+        let currentSort = 'points';
 
-            <!-- Legend -->
-            <div class="table-legend reveal">
-                <div class="legend-item">
-                    <span class="legend-color qualified"></span>
-                    <span>Qualified for Playoffs</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-color eliminated"></span>
-                    <span>Eliminated</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-abbr">M</span> - Matches
-                </div>
-                <div class="legend-item">
-                    <span class="legend-abbr">W</span> - Won
-                </div>
-                <div class="legend-item">
-                    <span class="legend-abbr">L</span> - Lost
-                </div>
-                <div class="legend-item">
-                    <span class="legend-abbr">NR</span> - No Result
-                </div>
-                <div class="legend-item">
-                    <span class="legend-abbr">Pts</span> - Points
-                </div>
-                <div class="legend-item">
-                    <span class="legend-abbr">NRR</span> - Net Run Rate
-                </div>
-            </div>
-        </div>
-    </section>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPointsTable();
+            updateStats();
+        });
 
-    <!-- Qualification Scenarios -->
-    <section class="scenarios-section">
-        <div class="container">
-            <h2 class="section-title reveal">Qualification Scenarios</h2>
-            <div class="scenarios-grid">
-                <div class="scenario-card reveal">
-                    <div class="scenario-icon"><i class="fas fa-bullseye"></i></div>
-                    <h3>Top 4 Qualify</h3>
-                    <p>Teams finishing in the top 4 positions will advance to the playoffs.</p>
-                </div>
-                <div class="scenario-card reveal">
-                    <div class="scenario-icon"><i class="fas fa-chart-bar"></i></div>
-                    <h3>Points System</h3>
-                    <p>Win = 2 points, Loss = 0 points, No Result = 1 point per team.</p>
-                </div>
-                <div class="scenario-card reveal">
-                    <div class="scenario-icon"><i class="fas fa-balance-scale"></i></div>
-                    <h3>Tiebreaker</h3>
-                    <p>If teams are tied on points, Net Run Rate (NRR) determines the rank.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+        function loadPointsTable() {
+            loading.style.display = 'block';
+            tableWrapper.style.display = 'none';
 
-    <!-- Quick Actions -->
-    <section class="quick-actions">
-        <div class="container">
-            <div class="actions-grid reveal">
-                <a href="fixtures_modern.html" class="action-card">
-                    <div class="action-icon"><i class="fas fa-calendar-alt"></i></div>
-                    <h3>Match Fixtures</h3>
-                    <p>View complete schedule</p>
-                    →
+            setTimeout(() => {
+                displayPointsTable();
+                loading.style.display = 'none';
+                tableWrapper.style.display = 'block';
+            }, 1000);
+        }
+
+        function displayPointsTable() {
+            pointsBody.innerHTML = '';
+            teamsData.forEach((team, index) => {
+                const row = createPointsRow(team, index + 1);
+                pointsBody.appendChild(row);
+            });
+        }
+
+        function createPointsRow(team, position) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><span class="position">${position}</span></td>
+                <td>
+                    <div class="team-info">
+                        <img src="${team.logo}" alt="${team.shortName}" class="team-logo-small">
+                        <span class="team-name">${team.shortName}</span>
+                    </div>
+                </td>
+                <td>${team.played}</td>
+                <td>${team.won}</td>
+                <td>${team.lost}</td>
+                <td>${team.tied}</td>
+                <td>${team.noResult}</td>
+                <td><span class="points">${team.points}</span></td>
+                <td><span class="nrr ${team.nrr >= 0 ? 'positive' : 'negative'}">${team.nrr.toFixed(3)}</span></td>
+            `;
+            return row;
+        }
+
+        function sortTable(criteria) {
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentSort = criteria;
+            teamsData.sort((a, b) => {
+                let aValue, bValue;
+                if (criteria === 'points') {
+                    aValue = a.points;
+                    bValue = b.points;
+                } else if (criteria === 'nrr') {
+                    aValue = a.nrr;
+                    bValue = b.nrr;
+                } else {
+                    aValue = a.won;
+                    bValue = b.won;
+                }
+                return bValue - aValue;
+            });
+
+            displayPointsTable();
+        }
+
+        function updateStats() {
+            const totalPlayed = teamsData.reduce((sum, team) => sum + team.played, 0);
+            const remaining = 56 - totalPlayed;
+
+            document.getElementById('matchesPlayed').textContent = totalPlayed;
+            document.getElementById('remainingMatches').textContent = remaining;
+        }
+    </script>
+
+    <footer style="background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); text-align: center; padding: 2rem 0; margin-top: 4rem; border-top: 1px solid rgba(255, 255, 255, 0.2);">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="admin-upload.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 0.9rem;">
+                    <i class="fas fa-cog"></i> Admin Upload
                 </a>
-                <a href="scores_modern.html" class="action-card">
-                    <div class="action-icon"><i class="fas fa-chart-bar"></i></div>
-                    <h3>Live Scores</h3>
-                    <p>Real-time match updates</p>
-                    →
-                </a>
-                <a href="index.html#teams" class="action-card">
-                    <div class="action-icon"><i class="fas fa-users"></i></div>
-                    <h3>Teams</h3>
-                    <p>Explore all squads</p>
-                    →
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>IPL Cricket Hub</h3>
-                    <p>Your ultimate destination for IPL standings, statistics, and updates.</p>
-                </div>
-                <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="fixtures_modern.html">Fixtures</a>
-                    <a href="scores_modern.html">Scores</a>
-                    <a href="index.html#teams">Teams</a>
-                    <a href="about.html">About</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 SportsUP99. All rights reserved.</p>
-            </div>
+            </p>
         </div>
     </footer>
-
-    <script src="js/points-scripts.js"></script>
 </body>
 </html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TEAM_NAME}} - IPL 2026</title>
+    <link rel="shortcut icon" href="{{TEAM_ICON}}" />
+    <link rel="icon" type="image/svg+xml" href="{{TEAM_LOGO}}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Team-specific colors - will be replaced for each team */
+            --team-primary: {{PRIMARY_COLOR}};
+            --team-secondary: {{SECONDARY_COLOR}};
+            --team-accent: {{ACCENT_COLOR}};
+            --team-gradient: linear-gradient(135deg, {{PRIMARY_COLOR}} 0%, {{SECONDARY_COLOR}} 50%, {{ACCENT_COLOR}} 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--team-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Unified Navigation - Same as index.html */
+        header {
+            background: rgba(30, 30, 60, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--team-accent);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo img {
+            height: 40px;
+            width: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            background: transparent;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: linear-gradient(45deg, var(--team-primary), var(--team-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-links a:hover::before {
+            opacity: 1;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(45deg, var(--team-primary), var(--team-secondary));
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 3px;
+        }
+
+        /* Team Header Section */
+        .team-hero {
+            padding: 150px 0 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        .team-logo-large {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 2rem;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .team-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .team-hero p {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--team-accent);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .content-section h2 i {
+            color: var(--team-accent);
+            font-size: 2rem;
+        }
+
+        .content-section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .info-card i {
+            font-size: 2.5rem;
+            color: var(--team-accent);
+            margin-bottom: 1rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(30, 30, 60, 0.98);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .team-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .content-section {
+                padding: 2rem;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <nav class="container">
+            <a href="index.html" class="logo">
+                <img src="{{TEAM_LOGO}}" alt="Team Logo" />
+                <span>{{TEAM_SHORT}}</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="{{TEAM_PAGE}}" class="active">About</a></li>
+                <li><a href="fixtures_modern.html">Fixtures</a></li>
+                <li><a href="points_modern.html">Points</a></li>
+                <li><a href="scores_modern.html">Scores</a></li>
+                <li><a href="about.html">About IPL</a></li>
+            </ul>
+            <div class="mobile-menu" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="team-hero">
+            <div class="container">
+                <img src="{{TEAM_LOGO}}" alt="Team Logo" class="team-logo-large">
+                <h1>{{TEAM_NAME}}</h1>
+                <p>{{TEAM_FULL_NAME}}</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="content-section">
+                <h2><i class="fas fa-trophy"></i> Trophies & Achievements</h2>
+                <div class="info-grid">
+                    {{TROPHY_INFO}}
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-info-circle"></i> About the Team</h2>
+                <p>{{TEAM_DESCRIPTION}}</p>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-users"></i> Complete Squad</h2>
+                <p style="text-align: center; font-size: 1.3rem; padding: 2rem 0;">
+                    Team roster will be updated once confirmed. Check back soon!
+                </p>
+            </div>
+
+            <div class="content-section">
+                <h2><i class="fas fa-link"></i> Official Information</h2>
+                <div class="info-grid">
+                    {{OFFICIAL_INFO}}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="admin-upload.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 0.9rem;">
+                    <i class="fas fa-cog"></i> Admin Upload
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Smooth scrolling and header effects
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.5)';
+            } else {
+                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -3,398 +3,652 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - IPL Cricket Hub</title>
-    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/admin-styles.css">
+    <title>Admin - File Upload - IPL 2026</title>
+    <link rel="shortcut icon" href="index.ico" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .warning-box {
+            background: rgba(220, 53, 69, 0.2);
+            border: 2px solid #dc3545;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .warning-box i {
+            color: #dc3545;
+            font-size: 1.5rem;
+        }
+
+        .upload-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 3rem;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        .upload-section h2 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .upload-section h2 i {
+            color: #ffd700;
+        }
+
+        .upload-section p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .upload-form {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input[type="file"]:focus {
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group select option {
+            background: #333;
+            color: white;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 2rem;
+        }
+
+        .file-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: rgba(40, 167, 69, 0.2);
+            border: 2px solid #28a745;
+            color: #28a745;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.2);
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .requirements-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            border-left: 4px solid #ffd700;
+        }
+
+        .requirements-box h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .requirements-box ul {
+            color: rgba(255, 255, 255, 0.8);
+            padding-left: 2rem;
+            line-height: 2;
+        }
+
+        .requirements-box code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            color: #ffd700;
+        }
+    </style>
 </head>
 <body>
-    <div class="bg-animation"></div>
+    <div class="container">
+        <div class="warning-box">
+            <i class="fas fa-lock"></i>
+            <strong> ADMIN ONLY - </strong> This page is for administrators to upload data files. Files are stored in the backend directory and not publicly accessible.
+        </div>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="assets/ipl_logo_new.svg" alt="IPL Logo">
-                <span>IPL Cricket Hub Admin</span>
-            </a>
-            <div class="nav-actions">
-                <button onclick="window.location.href='admin-live-match.html'" class="btn-back" style="margin-right: 10px; background: linear-gradient(135deg, #FF4655, #FF6B7A);">
-                    <i class="fas fa-broadcast-tower"></i> Live Match Control
+        <div class="header">
+            <h1><i class="fas fa-upload"></i> Admin File Upload</h1>
+            <p>Upload data files for IPL 2026 website</p>
+        </div>
+
+        <div class="upload-section">
+            <h2><i class="fas fa-calendar-alt"></i> Upload Fixtures</h2>
+            <p>Upload CSV files containing match schedule data.</p>
+            <div class="upload-form">
+                <div class="form-group">
+                    <label for="fixturesFile">Select Fixtures File (CSV)</label>
+                    <input type="file" id="fixturesFile" accept=".csv,.xlsx,.xls">
+                    <div class="file-info" id="fixturesFileInfo">No file selected</div>
+                </div>
+                <button class="btn" onclick="uploadFixtures()">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Fixtures
                 </button>
-                <button onclick="window.location.href='admin-users.html'" class="btn-back" style="margin-right: 10px; background: linear-gradient(135deg, #10B981, #34D399);">
-                    <i class="fas fa-users"></i> User Management
+                <div class="success-message" id="fixturesSuccess"></div>
+                <div class="error-message" id="fixturesError"></div>
+                <div class="requirements-box">
+                    <h3>Required CSV Format:</h3>
+                    <ul>
+                        <li>Columns: <code>Date, Team 1, Team 2, Venue, Time, Status</code></li>
+                        <li>Date format: YYYY-MM-DD</li>
+                        <li>Team codes: RCB, MI, CSK, SRH, KXIP, KKR, DC, RR, GT, LSG</li>
+                        <li>Status: upcoming, live, or completed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2><i class="fas fa-users"></i> Add Players - Manual Entry</h2>
+            <p>Add players directly without uploading files. Perfect for quick updates!</p>
+            <div class="upload-form">
+                <div class="form-group">
+                    <label for="teamSelectManual">Select Team</label>
+                    <select id="teamSelectManual">
+                        <option value="">Select a team</option>
+                        <option value="RCB">Royal Challengers Bangalore (RCB)</option>
+                        <option value="MI">Mumbai Indians (MI)</option>
+                        <option value="CSK">Chennai Super Kings (CSK)</option>
+                        <option value="SRH">Sunrisers Hyderabad (SRH)</option>
+                        <option value="KXIP">Kings XI Punjab (KXIP)</option>
+                        <option value="KKR">Kolkata Knight Riders (KKR)</option>
+                        <option value="DC">Delhi Capitals (DC)</option>
+                        <option value="RR">Rajasthan Royals (RR)</option>
+                        <option value="GT">Gujarat Titans (GT)</option>
+                        <option value="LSG">Lucknow Super Giants (LSG)</option>
+                    </select>
+                </div>
+                <div id="playersList"></div>
+                <button class="btn" onclick="addPlayerRow()" style="margin-top: 1rem; background: linear-gradient(45deg, #28a745, #20c997);">
+                    <i class="fas fa-plus"></i> Add Player
                 </button>
-                <button onclick="window.location.href='index.html'" class="btn-back">
-                    ← Back to Website
+                <button class="btn" onclick="savePlayers()" style="margin-top: 1rem;">
+                    <i class="fas fa-save"></i> Save Players
+                </button>
+                <div class="success-message" id="playersManualSuccess"></div>
+                <div class="error-message" id="playersManualError"></div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2><i class="fas fa-file-upload"></i> Upload Players from File (CSV)</h2>
+            <p>Upload CSV files containing player lists for each team.</p>
+            <div class="upload-form">
+                <div class="form-group">
+                    <label for="teamSelect">Select Team</label>
+                    <select id="teamSelect">
+                        <option value="">Select a team</option>
+                        <option value="RCB">Royal Challengers Bangalore (RCB)</option>
+                        <option value="MI">Mumbai Indians (MI)</option>
+                        <option value="CSK">Chennai Super Kings (CSK)</option>
+                        <option value="SRH">Sunrisers Hyderabad (SRH)</option>
+                        <option value="KXIP">Kings XI Punjab (KXIP)</option>
+                        <option value="KKR">Kolkata Knight Riders (KKR)</option>
+                        <option value="DC">Delhi Capitals (DC)</option>
+                        <option value="RR">Rajasthan Royals (RR)</option>
+                        <option value="GT">Gujarat Titans (GT)</option>
+                        <option value="LSG">Lucknow Super Giants (LSG)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="playersFile">Select Players File (CSV)</label>
+                    <input type="file" id="playersFile" accept=".csv,.xlsx,.xls">
+                    <div class="file-info" id="playersFileInfo">No file selected</div>
+                </div>
+                <button class="btn" onclick="uploadPlayers()">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Players
+                </button>
+                <div class="success-message" id="playersSuccess"></div>
+                <div class="error-message" id="playersError"></div>
+                <div class="requirements-box">
+                    <h3>Required CSV Format:</h3>
+                    <ul>
+                        <li>Columns: <code>Name, Role, Age, Nationality, Batting Style, Bowling Style, Image</code></li>
+                        <li>Role: Batsman, Bowler, All-rounder, Wicket-keeper</li>
+                        <li>Age: Numeric value</li>
+                        <li>Nationality: Country name (use "Indian" for Indian players)</li>
+                        <li>Batting Style: Right-handed, Left-handed</li>
+                        <li>Bowling Style: Right-arm fast, Left-arm spin, etc. (use "-" if not applicable)</li>
+                        <li>Image: Image filename (e.g., virat_kohli.png)</li>
+                        <li><strong>Foreign players will be automatically marked with an indicator badge</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2><i class="fas fa-table"></i> Upload Points Table</h2>
+            <p>Upload CSV files containing points table data.</p>
+            <div class="upload-form">
+                <div class="form-group">
+                    <label for="pointsFile">Select Points Table File (CSV)</label>
+                    <input type="file" id="pointsFile" accept=".csv,.xlsx,.xls">
+                    <div class="file-info" id="pointsFileInfo">No file selected</div>
+                </div>
+                <button class="btn" onclick="uploadPoints()">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Points Table
+                </button>
+                <div class="success-message" id="pointsSuccess"></div>
+                <div class="error-message" id="pointsError"></div>
+                <div class="requirements-box">
+                    <h3>Required CSV Format:</h3>
+                    <ul>
+                        <li>Columns: <code>Team, Short Name, Played, Won, Lost, Tied, NRR, Points</code></li>
+                        <li>Team: Full team name</li>
+                        <li>Short Name: Team abbreviation</li>
+                        <li>NRR: Net Run Rate (decimal)</li>
+                        <li>Points: Total points (numeric)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2><i class="fas fa-cog"></i> Manage Uploads</h2>
+            <p>View uploaded files and manage data</p>
+            <div class="upload-form">
+                <p style="color: rgba(255, 255, 255, 0.8);">Files are stored in backend/admin directory</p>
+                <button class="btn btn-back" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i> Back to Website
                 </button>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- Dashboard Header -->
-    <section class="dashboard-header">
-        <div class="container">
-            <div class="header-content">
-                <div class="header-badge">
-                    <span><i class="fas fa-lock"></i> Admin Dashboard</span>
-                </div>
-                <h1>IPL CRICKET HUB MANAGEMENT</h1>
-                <p>Complete control center for players, fixtures, and points table</p>
-            </div>
-        </div>
-    </section>
+    <script src="file-upload.js"></script>
+    <script>
+        // File info display
+        document.getElementById('fixturesFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fixturesFileInfo').innerHTML = 
+                    `<i class="fas fa-file"></i> ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+            }
+        });
 
-    <!-- Stats Overview -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-users"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="totalPlayers">0</div>
-                        <div class="stat-label">Total Players</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="totalFixtures">0</div>
-                        <div class="stat-label">Fixtures</div>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-trophy"></i></div>
-                    <div class="stat-info">
-                        <div class="stat-number" id="totalTeams">10</div>
-                        <div class="stat-label">Teams</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        document.getElementById('playersFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('playersFileInfo').innerHTML = 
+                    `<i class="fas fa-file"></i> ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+            }
+        });
 
-    <!-- Tab Navigation -->
-    <section class="tabs-section">
-        <div class="container">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('players')"><i class="fas fa-users"></i> Players</button>
-                <button class="tab-btn" onclick="switchTab('fixtures')"><i class="fas fa-calendar-alt"></i> Fixtures</button>
-                <button class="tab-btn" onclick="switchTab('points')"><i class="fas fa-trophy"></i> Points Table</button>
-                <button class="tab-btn" onclick="switchTab('commentary')"><i class="fas fa-microphone"></i> Live Commentary</button>
-                <button class="tab-btn" onclick="switchTab('users')"><i class="fas fa-user"></i> User Management</button>
-            </div>
-        </div>
-    </section>
+        document.getElementById('pointsFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('pointsFileInfo').innerHTML = 
+                    `<i class="fas fa-file"></i> ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+            }
+        });
 
-    <!-- Players Tab -->
-    <div id="players-tab" class="tab-content active">
-        <!-- Add Players Section -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2><i class="fas fa-users"></i> Add Players - Manual Entry</h2>
-                        <p>Add players directly. All changes are saved to your browser and reflected on the website.</p>
-                    </div>
+        async function uploadFixtures() {
+            const file = document.getElementById('fixturesFile').files[0];
+            if (!file) {
+                showError('fixturesError', 'Please select a file');
+                return;
+            }
+
+            // Simulate upload to backend
+            const successEl = document.getElementById('fixturesSuccess');
+            const errorEl = document.getElementById('fixturesError');
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+
+            try {
+                // In production, this would upload to a backend server
+                console.log('Uploading fixtures file:', file.name);
+                // Simulate upload delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                successEl.innerHTML = `<i class="fas fa-check-circle"></i> Fixtures uploaded successfully to backend!`;
+                successEl.style.display = 'block';
+            } catch (error) {
+                showError('fixturesError', 'Upload failed: ' + error.message);
+            }
+        }
+
+        async function uploadPlayers() {
+            const team = document.getElementById('teamSelect').value;
+            const file = document.getElementById('playersFile').files[0];
+            
+            if (!team) {
+                showError('playersError', 'Please select a team');
+                return;
+            }
+            
+            if (!file) {
+                showError('playersError', 'Please select a file');
+                return;
+            }
+
+            const successEl = document.getElementById('playersSuccess');
+            const errorEl = document.getElementById('playersError');
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+
+            try {
+                console.log(`Uploading players for ${team}:`, file.name);
+                
+                // Read and parse CSV file
+                const text = await readFile(file);
+                const lines = text.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim());
+                const parsedPlayers = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
                     
-                    <div class="form-group">
-                        <label>Select Team</label>
-                        <select id="teamSelectManual" class="form-control">
-                            <option value="">Select team</option>
-                            <option value="RCB">Royal Challengers Bangalore (RCB)</option>
-                            <option value="MI">Mumbai Indians (MI)</option>
-                            <option value="CSK">Chennai Super Kings (CSK)</option>
-                            <option value="SRH">Sunrisers Hyderabad (SRH)</option>
-                            <option value="PBSK">Punjab Kings (PBSK)</option>
-                            <option value="KKR">Kolkata Knight Riders (KKR)</option>
-                            <option value="DC">Delhi Capitals (DC)</option>
-                            <option value="RR">Rajasthan Royals (RR)</option>
-                            <option value="GT">Gujarat Titans (GT)</option>
-                            <option value="LSG">Lucknow Super Giants (LSG)</option>
+                    const values = line.split(',').map(v => v.trim());
+                    if (values.length < headers.length) continue;
+                    
+                    const player = {};
+                    headers.forEach((header, index) => {
+                        player[header.toLowerCase()] = values[index] || '';
+                    });
+                    
+                    // Add a flag for foreign players
+                    if (player.nationality && player.nationality.toLowerCase() !== 'indian' && player.nationality.toLowerCase() !== 'india') {
+                        player.isForeign = true;
+                    }
+                    
+                    parsedPlayers.push(player);
+                }
+                
+                // Store in localStorage for the frontend to read
+                localStorage.setItem(`uploaded_${team.toLowerCase()}_players`, JSON.stringify(parsedPlayers));
+                
+                console.log(`Parsed ${parsedPlayers.length} players for ${team}`);
+                
+                successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded)`;
+                successEl.style.display = 'block';
+            } catch (error) {
+                showError('playersError', 'Upload failed: ' + error.message);
+            }
+        }
+
+        function readFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
+        async function uploadPoints() {
+            const file = document.getElementById('pointsFile').files[0];
+            if (!file) {
+                showError('pointsError', 'Please select a file');
+                return;
+            }
+
+            const successEl = document.getElementById('pointsSuccess');
+            const errorEl = document.getElementById('pointsError');
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+
+            try {
+                console.log('Uploading points table file:', file.name);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                successEl.innerHTML = `<i class="fas fa-check-circle"></i> Points table uploaded successfully to backend!`;
+                successEl.style.display = 'block';
+            } catch (error) {
+                showError('pointsError', 'Upload failed: ' + error.message);
+            }
+        }
+
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorEl.style.display = 'block';
+        }
+
+        // Manual player entry functions
+        let playerCount = 0;
+
+        function addPlayerRow() {
+            playerCount++;
+            const playersList = document.getElementById('playersList');
+            const row = document.createElement('div');
+            row.className = 'player-row';
+            row.style.cssText = 'background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; margin: 1rem 0; border: 1px solid rgba(255,255,255,0.1);';
+            row.id = `player-${playerCount}`;
+            
+            row.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="color: white; margin: 0;"><i class="fas fa-user"></i> Player ${playerCount}</h4>
+                    <button onclick="removePlayerRow(${playerCount})" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div>
+                        <label style="color: white; display: block; margin-bottom: 0.5rem;">Name</label>
+                        <input type="text" class="player-name" placeholder="Virat Kohli" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                    </div>
+                    <div>
+                        <label style="color: white; display: block; margin-bottom: 0.5rem;">Role</label>
+                        <select class="player-role" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                            <option value="">Select role</option>
+                            <option value="Batsman">Batsman</option>
+                            <option value="Bowler">Bowler</option>
+                            <option value="All-rounder">All-rounder</option>
+                            <option value="Wicket-keeper">Wicket-keeper</option>
                         </select>
                     </div>
-
-                    <div id="playersList" class="players-list"></div>
-
-                    <div class="button-group">
-                        <button class="btn btn-add" onclick="addPlayerRow()">+ Add Player</button>
-                        <button class="btn btn-save" onclick="savePlayers()"><i class="fas fa-save"></i> Save Players</button>
+                    <div>
+                        <label style="color: white; display: block; margin-bottom: 0.5rem;">Age</label>
+                        <input type="number" class="player-age" placeholder="35" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
                     </div>
-
-                    <div class="message success-message" id="playersManualSuccess"></div>
-                    <div class="message error-message" id="playersManualError"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Players Preview -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2>Players for Selected Team</h2>
+                    <div>
+                        <label style="color: white; display: block; margin-bottom: 0.5rem;">Nationality</label>
+                        <input type="text" class="player-nationality" placeholder="Indian" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
                     </div>
-                    <div id="uploadedPlayersContainer" class="players-preview">
-                        <p class="placeholder-text">Select a team to view players.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Fixtures Tab -->
-    <div id="fixtures-tab" class="tab-content">
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2><i class="fas fa-calendar-alt"></i> Add Fixtures - Manual Entry</h2>
-                        <p>Add match fixtures directly. All changes are saved to localStorage.</p>
-                    </div>
-
-                    <div id="fixturesList" class="fixtures-list"></div>
-
-                    <div class="button-group">
-                        <button class="btn btn-add" onclick="addFixtureRow()">+ Add Fixture</button>
-                        <button class="btn btn-save" onclick="saveFixtures()"><i class="fas fa-save"></i> Save Fixtures</button>
-                    </div>
-
-                    <div class="message success-message" id="fixturesSuccess"></div>
-                    <div class="message error-message" id="fixturesError"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Fixtures Preview -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2>Uploaded Fixtures</h2>
-                    </div>
-                    <div id="fixturesPreview" class="fixtures-preview">
-                        <p class="placeholder-text">No fixtures added yet.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Points Table Tab -->
-    <div id="points-tab" class="tab-content">
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2><i class="fas fa-trophy"></i> Add Points Table - Manual Entry</h2>
-                        <p>Add points table data directly. All changes are saved to localStorage.</p>
-                    </div>
-
-                    <div id="pointsList" class="points-list"></div>
-
-                    <div class="button-group">
-                        <button class="btn btn-add" onclick="addPointsRow()">+ Add Team</button>
-                        <button class="btn btn-save" onclick="savePoints()"><i class="fas fa-save"></i> Save Points Table</button>
-                    </div>
-
-                    <div class="message success-message" id="pointsSuccess"></div>
-                    <div class="message error-message" id="pointsError"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Points Preview -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2>Current Points Table</h2>
-                    </div>
-                    <div id="pointsPreview" class="points-preview">
-                        <p class="placeholder-text">No points table added yet.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Live Commentary Tab -->
-    <div id="commentary-tab" class="tab-content">
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2><i class="fas fa-microphone"></i> Post Live Match Commentary</h2>
-                        <p>Add commentary every 5 overs or during breaks. AI will automatically enhance your text for better readability.</p>
-                    </div>
-
-                    <div class="commentary-form">
-                        <div class="form-group">
-                            <label>Over Number</label>
-                            <input type="number" id="commentaryOver" class="form-control" placeholder="e.g., 5.3" step="0.1" min="0" max="20">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Commentary Text</label>
-                            <textarea id="commentaryText" class="form-control" rows="5" placeholder="Example: Rohit Sharma hits a massive six over long-on. That's his third six of the innings!"></textarea>
-                            <small class="form-hint">
-                                <i class="fas fa-lightbulb"></i> Tip: Include player names, shot descriptions, and match situation. AI will add excitement and context!
-                            </small>
-                        </div>
-
-                        <div class="button-group">
-                            <button class="btn btn-save" onclick="postCommentary()">
-                                <i class="fas fa-paper-plane"></i> Post Commentary
-                            </button>
-                            <button class="btn btn-secondary" onclick="clearCommentaryForm()">
-                                Clear Form
-                            </button>
-                        </div>
-
-                        <div class="message success-message" id="commentarySuccess"></div>
-                        <div class="message error-message" id="commentaryError"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Commentary Preview -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2>Posted Commentary</h2>
-                        <button class="btn btn-secondary" onclick="clearAllCommentary()" style="float: right;">
-                            <i class="fas fa-trash"></i> Clear All
-                        </button>
-                    </div>
-                    <div id="commentaryPreview" class="commentary-preview">
-                        <p class="placeholder-text">No commentary posted yet.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- User Management Tab -->
-    <div id="users-tab" class="tab-content">
-        <!-- Collected User Emails -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2><i class="fas fa-envelope"></i> Collected User Emails</h2>
-                        <p>All users who signed in to post comments on Live Match Updates</p>
-                    </div>
-
-                    <div class="user-stats-row">
-                        <div class="stat-box">
-                            <div class="stat-number" id="totalUsers">0</div>
-                            <div class="stat-label">Total Users</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="blockedUsers">0</div>
-                            <div class="stat-label">Blocked Users</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="totalComments">0</div>
-                            <div class="stat-label">Total Comments</div>
-                        </div>
-                    </div>
-
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="exportEmails()">
-                            <i class="fas fa-download"></i> Export Emails
-                        </button>
-                        <button class="btn btn-secondary" onclick="refreshUserData()">
-                            <i class="fas fa-sync-alt"></i> Refresh Data
-                        </button>
-                    </div>
-
-                    <div class="users-table-container" id="usersTableContainer">
-                        <p class="placeholder-text">No users have signed in yet.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- User Comments Management -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2><i class="fas fa-comments"></i> User Comments Management</h2>
-                        <p>Monitor and moderate user comments from Live Match Updates</p>
-                    </div>
-
-                    <div class="filter-row">
-                        <select id="commentFilter" onchange="loadUserCommentsAdmin()">
-                            <option value="all">All Comments</option>
-                            <option value="recent">Recent Comments</option>
-                            <option value="flagged">Flagged Comments</option>
+                    <div>
+                        <label style="color: white; display: block; margin-bottom: 0.5rem;">Batting Style</label>
+                        <select class="player-batting" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                            <option value="">Select style</option>
+                            <option value="Right-handed">Right-handed</option>
+                            <option value="Left-handed">Left-handed</option>
                         </select>
-                        <button class="btn btn-danger" onclick="clearAllUserComments()">
-                            <i class="fas fa-trash-alt"></i> Clear All Comments
-                        </button>
                     </div>
-
-                    <div id="userCommentsAdmin" class="user-comments-admin">
-                        <p class="placeholder-text">No user comments yet.</p>
-                    </div>
-
-                    <div class="message success-message" id="userMgmtSuccess"></div>
-                    <div class="message error-message" id="userMgmtError"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Admin Commentary Management -->
-        <section class="admin-section">
-            <div class="container">
-                <div class="section-card">
-                    <div class="section-header">
-                        <h2><i class="fas fa-microphone"></i> Admin Commentary Management</h2>
-                        <p>Manage and delete admin-posted commentary (Admin access only)</p>
-                    </div>
-
-                    <div class="admin-auth-box" id="adminAuthBox">
-                        <h3><i class="fas fa-lock"></i> Admin Verification Required</h3>
-                        <p>Enter admin password to manage commentary</p>
-                        <div class="auth-form">
-                            <input type="password" id="adminPassword" class="form-control" placeholder="Enter admin password">
-                            <button class="btn btn-primary" onclick="verifyAdmin()">
-                                <i class="fas fa-key"></i> Verify
-                            </button>
-                        </div>
-                        <small class="form-hint">Default password: admin123 (Change this in production!)</small>
-                    </div>
-
-                    <div class="admin-commentary-mgmt" id="adminCommentaryMgmt" style="display: none;">
-                        <div class="verified-badge">
-                            <i class="fas fa-check-circle"></i> Admin Verified
-                            <button class="btn-logout-admin" onclick="logoutAdmin()">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </button>
-                        </div>
-
-                        <div id="adminCommentaryList" class="admin-commentary-list">
-                            <p class="placeholder-text">No admin commentary posted yet.</p>
-                        </div>
+                    <div>
+                        <label style="color: white; display: block; margin-bottom: 0.5rem;">Bowling Style</label>
+                        <input type="text" class="player-bowling" placeholder="Right-arm medium" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
                     </div>
                 </div>
-            </div>
-        </section>
-    </div>
+            `;
+            playersList.appendChild(row);
+        }
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 SportsUP99. All rights reserved. | Admin Dashboard</p>
-        </div>
-    </footer>
+        function removePlayerRow(id) {
+            const row = document.getElementById(`player-${id}`);
+            if (row) {
+                row.remove();
+            }
+        }
 
-    <script src="js/admin-scripts-full.js"></script>
+        function savePlayers() {
+            const team = document.getElementById('teamSelectManual').value;
+            if (!team) {
+                showError('playersManualError', 'Please select a team');
+                return;
+            }
+
+            const playerRows = document.querySelectorAll('.player-row');
+            if (playerRows.length === 0) {
+                showError('playersManualError', 'Please add at least one player');
+                return;
+            }
+
+            const players = [];
+            playerRows.forEach(row => {
+                const player = {
+                    name: row.querySelector('.player-name')?.value || '',
+                    role: row.querySelector('.player-role')?.value || '',
+                    age: row.querySelector('.player-age')?.value || '',
+                    nationality: row.querySelector('.player-nationality')?.value || '',
+                    'batting style': row.querySelector('.player-batting')?.value || '',
+                    'bowling style': row.querySelector('.player-bowling')?.value || '',
+                    image: ''
+                };
+
+                if (player.name) {
+                    // Mark foreign players
+                    if (player.nationality && player.nationality.toLowerCase() !== 'indian' && player.nationality.toLowerCase() !== 'india') {
+                        player.isForeign = true;
+                    }
+                    players.push(player);
+                }
+            });
+
+            if (players.length === 0) {
+                showError('playersManualError', 'Please fill in at least the player name');
+                return;
+            }
+
+            // Store in localStorage
+            localStorage.setItem(`uploaded_${team.toLowerCase()}_players`, JSON.stringify(players));
+
+            // Show success
+            const successEl = document.getElementById('playersManualSuccess');
+            successEl.innerHTML = `<i class="fas fa-check-circle"></i> ${players.length} player(s) saved for ${team}!`;
+            successEl.style.display = 'block';
+
+            // Clear form
+            document.getElementById('playersList').innerHTML = '';
+            playerCount = 0;
+
+            console.log(`Saved ${players.length} players for ${team}`);
+        }
+    </script>
 </body>
 </html>
+

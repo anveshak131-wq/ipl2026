@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams - IPL 2026</title>
+    <link rel="shortcut icon" href="index.ico" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1a0f2e;
+            background-image: 
+                linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%),
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(240, 147, 251, 0.2) 0%, transparent 50%);
+            background-size: 200% 200%;
+            animation: gradientShift 20s ease infinite;
+            min-height: 100vh;
+            padding-top: 80px;
+            color: white;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        header {
+            background: rgba(30, 30, 60, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #ffd700;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 4rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+        }
+
+        .team-logo {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin: 0 auto 1rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .team-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .team-full-name {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+        }
+
+        .team-trophies {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 50px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .trophy-icon {
+            color: #ffd700;
+            font-size: 1.5rem;
+        }
+
+        .trophy-count {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .trophy-years {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 0.5rem;
+        }
+
+        .team-info {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+        }
+
+        .view-details {
+            margin-top: 1rem;
+            padding: 0.7rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover .view-details {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 2rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .teams-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <img src="ipl_logo_new.svg" alt="IPL Logo" style="height: 40px; width: 40px; margin-right: 10px;" />
+                <span>IPL 2026</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="teams.html" style="color: #ffd700;">Teams</a></li>
+                <li><a href="fixtures_modern.html">Fixtures</a></li>
+                <li><a href="points_modern.html">Points</a></li>
+                <li><a href="scores_modern.html">Scores</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">
+            <i class="fas fa-users"></i> IPL Teams
+        </h1>
+        <p class="page-subtitle">Explore all 10 teams, their achievements, and players</p>
+
+        <div class="teams-grid">
+            <!-- Royal Challengers Bangalore - FIRST TEAM -->
+            <a href="rcb.html" class="team-card">
+                <img src="rcb_logo_new.svg" alt="RCB" class="team-logo">
+                <div class="team-name">RCB</div>
+                <div class="team-full-name">Royal Challengers Bangalore</div>
+                <div class="team-trophies">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <span class="trophy-count">1</span>
+                </div>
+                <div class="trophy-years">Winner: 2025</div>
+                <div class="team-info">
+                    Finally won their first IPL title in 2025! Popular team known for star players. Previously finished runners-up three times. Home to Virat Kohli.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Mumbai Indians -->
+            <a href="mi.html" class="team-card">
+                <img src="mi_logo_new.svg" alt="MI" class="team-logo">
+                <div class="team-name">MI</div>
+                <div class="team-full-name">Mumbai Indians</div>
+                <div class="team-trophies">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <span class="trophy-count">5</span>
+                </div>
+                <div class="trophy-years">Winner: 2013, 2015, 2017, 2019, 2020</div>
+                <div class="team-info">
+                    The most successful franchise in IPL history with 5 championship titles. Based in Mumbai, Maharashtra.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Chennai Super Kings -->
+            <a href="csk.html" class="team-card">
+                <img src="csk_logo_new.svg" alt="CSK" class="team-logo">
+                <div class="team-name">CSK</div>
+                <div class="team-full-name">Chennai Super Kings</div>
+                <div class="team-trophies">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <span class="trophy-count">5</span>
+                </div>
+                <div class="trophy-years">Winner: 2010, 2011, 2018, 2021, 2023</div>
+                <div class="team-info">
+                    One of the most consistent teams with 5 IPL titles. Led by MS Dhoni, the legendary captain.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Kolkata Knight Riders -->
+            <a href="kkr.html" class="team-card">
+                <img src="kkr_logo_new.svg" alt="KKR" class="team-logo">
+                <div class="team-name">KKR</div>
+                <div class="team-full-name">Kolkata Knight Riders</div>
+                <div class="team-trophies">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <span class="trophy-count">3</span>
+                </div>
+                <div class="trophy-years">Winner: 2012, 2014</div>
+                <div class="team-info">
+                    Champions in 2012 and 2014. Owned by Bollywood superstar Shah Rukh Khan. Based in Kolkata.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Sunrisers Hyderabad -->
+            <a href="srh.html" class="team-card">
+                <img src="srh_logo_new.svg" alt="SRH" class="team-logo">
+                <div class="team-name">SRH</div>
+                <div class="team-full-name">Sunrisers Hyderabad</div>
+                <div class="team-trophies">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <span class="trophy-count">1</span>
+                </div>
+                <div class="trophy-years">Winner: 2016</div>
+                <div class="team-info">
+                    Won their first and only IPL title in 2016, defeating RCB. Based in Hyderabad, Telangana.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Delhi Capitals -->
+            <a href="dc.html" class="team-card">
+                <img src="dc_logo_new.svg" alt="DC" class="team-logo">
+                <div class="team-name">DC</div>
+                <div class="team-full-name">Delhi Capitals</div>
+                <div class="team-trophies">
+                    <i class="fas fa-medal trophy-icon"></i>
+                    <span class="trophy-count">0</span>
+                </div>
+                <div class="trophy-years">Runners-up: 2020</div>
+                <div class="team-info">
+                    Strong franchise reaching finals in 2020. Based in Delhi. Formerly Delhi Daredevils.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Rajasthan Royals -->
+            <a href="rr.html" class="team-card">
+                <img src="rr_logo_new.svg" alt="RR" class="team-logo">
+                <div class="team-name">RR</div>
+                <div class="team-full-name">Rajasthan Royals</div>
+                <div class="team-trophies">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <span class="trophy-count">1</span>
+                </div>
+                <div class="trophy-years">Winner: 2008</div>
+                <div class="team-info">
+                    First ever IPL champions in 2008 season. Led by Shane Warne. Based in Jaipur, Rajasthan.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Kings XI Punjab / Punjab Kings -->
+            <a href="kxip.html" class="team-card">
+                <img src="kxip_logo_new.svg" alt="KXIP" class="team-logo">
+                <div class="team-name">KXIP</div>
+                <div class="team-full-name">Punjab Kings</div>
+                <div class="team-trophies">
+                    <i class="fas fa-medal trophy-icon"></i>
+                    <span class="trophy-count">0</span>
+                </div>
+                <div class="trophy-years">Runners-up: 2014</div>
+                <div class="team-info">
+                    Previously known as Kings XI Punjab. Reached finals in 2014. Based in Mohali, Punjab.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Gujarat Titans -->
+            <a href="gt.html" class="team-card">
+                <img src="gt_logo_new.svg" alt="GT" class="team-logo">
+                <div class="team-name">GT</div>
+                <div class="team-full-name">Gujarat Titans</div>
+                <div class="team-trophies">
+                    <i class="fas fa-trophy trophy-icon"></i>
+                    <span class="trophy-count">1</span>
+                </div>
+                <div class="trophy-years">Winner: 2022</div>
+                <div class="team-info">
+                    The newest IPL franchise, won the championship in their debut season 2022. Based in Ahmedabad, Gujarat.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+
+            <!-- Lucknow Super Giants -->
+            <a href="lsg.html" class="team-card">
+                <img src="lsg_logo_new.svg" alt="LSG" class="team-logo">
+                <div class="team-name">LSG</div>
+                <div class="team-full-name">Lucknow Super Giants</div>
+                <div class="team-trophies">
+                    <i class="fas fa-medal trophy-icon"></i>
+                    <span class="trophy-count">0</span>
+                </div>
+                <div class="trophy-years">Runners-up: 2022</div>
+                <div class="team-info">
+                    Entered IPL in 2022 alongside Gujarat Titans. Reached playoffs in debut season. Based in Lucknow, Uttar Pradesh.
+                </div>
+                <div class="view-details">View Team & Players →</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

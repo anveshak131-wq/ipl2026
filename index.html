@@ -2,270 +2,893 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="theme-color" content="#0A0E27">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>IPL Cricket Hub - India's Biggest Cricket Carnival</title>
-    <link rel="shortcut icon" href="/assets/ipl_logo_new.svg" />
-    <link rel="apple-touch-icon" href="/assets/ipl_logo_new.svg" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/shared-modern.css">
-    <link rel="stylesheet" href="/css/new-home-styles.css">
-    <link rel="stylesheet" href="/css/custom-icons.css">
-    <link rel="stylesheet" href="/css/advanced-animations.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL 2026 - Indian Premier League</title>
+    <link rel="shortcut icon" href="ipl_logo_new.svg" />
+    <link rel="icon" type="image/svg+xml" href="ipl_logo_new.svg" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ui-components.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            --accent-color: #ffd700;
+            --text-light: rgba(255, 255, 255, 0.95);
+            --solid-bg: rgba(102, 126, 234, 0.95);
+            --nav-bg: rgba(30, 30, 60, 0.98);
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1a0f2e;
+            background-image: 
+                linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%),
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(240, 147, 251, 0.2) 0%, transparent 50%);
+            background-size: 200% 200%;
+            animation: gradientShift 20s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Fixed Navigation with Solid Background */
+        header {
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--accent-color);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            background: transparent;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-links a:hover::before {
+            opacity: 1;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 3px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 150px 0 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #fff, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 4rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Teams Section */
+        .teams-section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .team-card:hover::before {
+            left: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .team-logo {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        .team-card:hover .team-logo {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .team-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .team-info {
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* AI Prediction Section */
+        .ai-section {
+            padding: 4rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            margin: 3rem 0;
+        }
+
+        .ai-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(240, 147, 251, 0.3));
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .prediction-box {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .prediction-box i {
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--nav-bg);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .teams-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .team-card {
+                padding: 1.5rem;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
-    <!-- Animated Mesh Background -->
-    <div class="mesh-background">
-        <div class="mesh-gradient mesh-gradient-1"></div>
-        <div class="mesh-gradient mesh-gradient-2"></div>
-        <div class="mesh-gradient mesh-gradient-3"></div>
-        <div class="mesh-gradient mesh-gradient-4"></div>
-        <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-            <div class="shape shape-5"></div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav id="navbar" class="modern-nav">
-        <div class="nav-container">
-            <a href="" class="logo">
-                <div class="logo-icon">
-                <img src="assets/ipl_logo_new.svg" alt="IPL Logo">
-                    <div class="logo-glow"></div>
-                </div>
-                <span>IPL Cricket Hub</span>
+    <header id="header">
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="ipl_logo_new.svg" alt="IPL Logo" style="height: 40px; width: 40px; margin-right: 10px;" />
+                <span>IPL 2026</span>
             </a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#teams" class="nav-link">Teams</a></li>
-                <li><a href="fixtures_modern.html" class="nav-link">Fixtures</a></li>
-                <li><a href="points_modern.html" class="nav-link">Points</a></li>
-                <li><a href="scores_modern.html" class="nav-link">Scores</a></li>
-                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="teams.html">Teams</a></li>
+                <li><a href="fixtures_modern.html">Fixtures</a></li>
+                <li><a href="points_modern.html">Points</a></li>
+                <li><a href="scores_modern.html">Scores</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
-            <div class="mobile-toggle" id="mobileToggle">
+            <div class="mobile-menu" onclick="toggleMobileMenu()">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section" id="home">
-        <div class="hero-container">
-            <div class="hero-content-wrapper">
-                <div class="hero-badge">
-                    <span class="badge-icon"><img src="assets/icons/lightning.svg" alt="" class="custom-icon custom-icon-md"></span>
-                    <span class="badge-text">Season 19 - 2026</span>
-                </div>
-                <h1 class="hero-title">
-                    <span class="title-line">CRICKET</span>
-                    <span class="title-line gradient-text">REDEFINED</span>
-                </h1>
-                <p class="hero-description">
-                    Experience the ultimate fusion of athleticism and entertainment. Join millions of fans across 10 powerhouse teams competing for cricket supremacy in the world's most electrifying T20 tournament.
-                </p>
-                <div class="hero-stats-preview">
-                    <div class="stat-preview-item">
-                        <span class="stat-number">74</span>
-                        <span class="stat-label">Matches</span>
-                    </div>
-                    <div class="stat-preview-item">
-                        <span class="stat-number">10</span>
-                        <span class="stat-label">Teams</span>
-                    </div>
-                    <div class="stat-preview-item">
-                        <span class="stat-number">1M+</span>
-                        <span class="stat-label">Fans</span>
-                    </div>
-                </div>
-                <div class="hero-buttons">
-                    <a href="#teams" class="btn-modern btn-primary-modern">
-                        <span class="btn-icon"><img src="assets/icons/trophy.svg" alt="" class="custom-icon custom-icon-lg"></span>
-                        <span class="btn-text">Explore Teams</span>
-                        <div class="btn-shine"></div>
-                    </a>
-                    <a href="fixtures_modern.html" class="btn-modern btn-secondary-modern">
-                        <span class="btn-icon"><img src="assets/icons/calendar.svg" alt="" class="custom-icon custom-icon-lg"></span>
-                        <span class="btn-text">View Schedule</span>
-                        <div class="btn-shine"></div>
-                    </a>
-                </div>
-            </div>
-            <div class="hero-visual-modern">
-                <div class="hero-3d-container">
-                    <div class="hero-circle hero-circle-large"></div>
-                    <div class="hero-circle hero-circle-medium"></div>
-                    <div class="hero-circle hero-circle-small"></div>
-                    <div class="trophy-3d"><img src="assets/icons/trophy.svg" alt="Trophy" class="custom-icon custom-icon-2xl custom-icon-pulse"></div>
-                    <div class="particle particle-1"></div>
-                    <div class="particle particle-2"></div>
-                    <div class="particle particle-3"></div>
-                    <div class="particle particle-4"></div>
-                    <div class="particle particle-5"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Bar -->
-    <section class="stats-bar-modern">
-        <div class="stats-container-modern">
-            <div class="stat-card-modern">
-                <div class="stat-icon-modern"><img src="assets/icons/users.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                <div class="stat-number-modern" data-target="10">0</div>
-                <div class="stat-label-modern">Elite Teams</div>
-            </div>
-            <div class="stat-card-modern">
-                <div class="stat-icon-modern"><img src="assets/icons/swords.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                <div class="stat-number-modern" data-target="74">0</div>
-                <div class="stat-label-modern">Epic Battles</div>
-            </div>
-            <div class="stat-card-modern">
-                <div class="stat-icon-modern"><img src="assets/icons/star.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                <div class="stat-number-modern" data-target="500">0</div>
-                <div class="stat-label-modern">World Stars</div>
-            </div>
-            <div class="stat-card-modern">
-                <div class="stat-icon-modern"><img src="assets/icons/fire.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                <div class="stat-number-modern">∞</div>
-                <div class="stat-label-modern">Pure Excitement</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Teams Section -->
-    <section class="teams-section-modern" id="teams">
-        <div class="section-header-modern">
-            <div class="section-badge-modern">
-                <span><img src="assets/icons/lightning.svg" alt="" class="custom-icon custom-icon-sm"> Powerhouse Rosters</span>
-            </div>
-            <h2 class="section-title-modern">MEET THE LEGENDS</h2>
-            <p class="section-subtitle-modern">10 franchises, 500+ elite cricketers, one dream - lifting the prestigious IPL trophy</p>
-        </div>
-        <div class="teams-grid-modern" id="teamsGrid">
-            <!-- Teams will be loaded dynamically -->
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section-modern">
-        <div class="section-header-modern">
-            <div class="section-badge-modern">
-                <span><img src="assets/icons/sparkles.svg" alt="" class="custom-icon custom-icon-sm"> Premium Experience</span>
-            </div>
-            <h2 class="section-title-modern">WHY IPL CRICKET HUB?</h2>
-        </div>
-        <div class="features-grid-modern">
-            <a href="live-match-updates.html" class="feature-card-modern">
-                <div class="feature-icon-wrapper">
-                    <div class="feature-icon-modern"><img src="assets/icons/target.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <div class="feature-icon-glow"></div>
-                </div>
-                <h3 class="feature-title-modern">Live Match Updates</h3>
-                <p class="feature-description-modern">Real-time scores, ball-by-ball commentary, and instant highlights delivered straight to you.</p>
-                <div class="feature-arrow">→</div>
-            </a>
-            <div class="feature-card-modern">
-                <div class="feature-icon-wrapper">
-                    <div class="feature-icon-modern"><img src="assets/icons/mobile.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <div class="feature-icon-glow"></div>
-                </div>
-                <h3 class="feature-title-modern">Mobile First</h3>
-                <p class="feature-description-modern">Perfect experience across all devices. Never miss a moment, anywhere, anytime.</p>
-                <div class="feature-arrow">→</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section-modern">
-        <div class="cta-container-modern">
-            <div class="cta-content-wrapper">
-                <h2 class="cta-title-modern">READY TO WITNESS HISTORY?</h2>
-                <p class="cta-subtitle-modern">Join the biggest cricket carnival on the planet. Every match is a masterpiece, every moment unforgettable.</p>
-                <div class="hero-buttons">
-                    <a href="fixtures_modern.html" class="btn-modern btn-primary-modern">
-                        <span class="btn-icon"><img src="assets/icons/calendar.svg" alt="" class="custom-icon custom-icon-lg"></span>
-                        <span class="btn-text">View Full Schedule</span>
-                        <div class="btn-shine"></div>
-                    </a>
-                    <a href="points_modern.html" class="btn-modern btn-secondary-modern">
-                        <span class="btn-icon"><img src="assets/icons/trophy.svg" alt="" class="custom-icon custom-icon-lg"></span>
-                        <span class="btn-text">Check Standings</span>
-                        <div class="btn-shine"></div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer-modern">
-        <div class="footer-container-modern">
-            <div class="footer-grid-modern">
-                <div class="footer-brand-modern">
-                    <h3>IPL Cricket Hub</h3>
-                    <p>The pinnacle of T20 cricket is back! Witness the perfect blend of skill, strategy, and sheer excitement.</p>
-                    <div class="social-links-modern">
-                        <a href="https://www.youtube.com/@SportsUP99info" target="_blank" class="social-link-modern" aria-label="YouTube">
-                            <span><img src="assets/icons/play-button.svg" alt="YouTube" class="custom-icon custom-icon-lg"></span>
-                            <div class="social-link-bg"></div>
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>IPL 2026</h1>
+                    <p>Experience the pinnacle of T20 cricket with the world's most exciting cricket league</p>
+                    <div class="cta-buttons">
+                        <a href="#teams" class="btn btn-primary">
+                            <i class="fas fa-users"></i>
+                            Explore Teams
                         </a>
-                        <a href="mailto:sportsup99.info@gmail.com" class="social-link-modern" aria-label="Email">
-                            <span><img src="assets/icons/mail.svg" alt="Email" class="custom-icon custom-icon-lg"></span>
-                            <div class="social-link-bg"></div>
+                        <a href="fixtures_modern.html" class="btn btn-secondary">
+                            <i class="fas fa-calendar-alt"></i>
+                            View Fixtures
                         </a>
                     </div>
                 </div>
-                <div class="footer-section-modern">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links-modern">
-                        <li><a href="#teams">Teams</a></li>
-                        <li><a href="fixtures_modern.html">Fixtures</a></li>
-                        <li><a href="points_modern.html">Points Table</a></li>
-                        <li><a href="scores_modern.html">Scores</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section-modern">
-                    <h4>Resources</h4>
-                    <ul class="footer-links-modern">
-                        <li><a href="about.html">About IPL</a></li>
-                        <li><a href="#">News</a></li>
-                        <li><a href="#">Gallery</a></li>
-                        <li><a href="#">Videos</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section-modern">
-                    <h4>Support</h4>
-                    <ul class="footer-links-modern">
-                        <li><a href="help.html">Help Center</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Service</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalMatches">56</div>
+                        <div class="stat-label">Total Matches</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalTeams">10</div>
+                        <div class="stat-label">Teams</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="liveMatches">0</div>
+                        <div class="stat-label">Live Now</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedMatches">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
                 </div>
             </div>
-            <div class="footer-bottom-modern">
-                <p>&copy; 2026 SportsUP99. All rights reserved. | Designed with <img src="assets/icons/heart.svg" alt="love" class="custom-icon custom-icon-sm"> for Cricket Fans Worldwide</p>
+        </section>
+
+        <section class="ai-section">
+            <div class="container">
+                <h2 class="section-title">🤖 AI Match Predictions</h2>
+                <p class="section-subtitle">Powered by AI to predict match outcomes based on team stats and performance</p>
+                <div class="ai-card">
+                    <button onclick="generateAIPrediction()" class="btn btn-primary">
+                        <i class="fas fa-robot"></i>
+                        Get AI Prediction
+                    </button>
+                    <div id="aiResults"></div>
+                </div>
             </div>
+        </section>
+
+        <section id="teams" class="teams-section">
+            <div class="container">
+                <h2 class="section-title">Our Teams</h2>
+                <p class="section-subtitle">Ten powerhouse teams competing for glory</p>
+                <div class="teams-grid" id="teamsGrid">
+                    <!-- Teams will be loaded with AJAX -->
+                </div>
+            </div>
+        </section>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem; color: white;">Loading teams...</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="admin-upload.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 0.9rem;">
+                    <i class="fas fa-cog"></i> Admin Upload
+                </a>
+            </p>
         </div>
     </footer>
 
-    <script src="js/new-home-scripts.js"></script>
-    <script src="js/advanced-interactions.js"></script>
+    <!-- Dynamic Data Service -->
+    <script src="data-service.js"></script>
     
-    <!-- AI Chatbot -->
-    <link rel="stylesheet" href="css/ai-chatbot.css?v=3.0">
-    <script src="js/ai-chatbot.js?v=3.0"></script>
+    <!-- Core JavaScript with AJAX -->
+    <script>
+        // Team Data Service
+        class TeamService {
+            constructor() {
+                this.teams = [
+                    {
+                        name: "Royal Challengers Bangalore",
+                        shortName: "RCB",
+                        logo: "rcb_logo_new.svg",
+                        page: "rcb.html",
+                        players: "rcb_players/rcb_players.html",
+                        color: "#D2001A",
+                        description: "The Royal Challengers Bangalore are a franchise cricket team based in Bangalore, Karnataka."
+                    },
+                    {
+                        name: "Mumbai Indians",
+                        shortName: "MI",
+                        logo: "mi_logo_new.svg",
+                        page: "mi.html",
+                        players: "mi_players/mi_players.html",
+                        color: "#004BA0",
+                        description: "The Mumbai Indians is a franchise cricket team based Mumbai, Maharashtra."
+                    },
+                    {
+                        name: "Chennai Super Kings",
+                        shortName: "CSK",
+                        logo: "csk_logo_new.svg",
+                        page: "csk.html",
+                        players: "csk_players/csk_players.html",
+                        color: "#FFD700",
+                        description: "Chennai Super Kings is a franchise cricket team based in Chennai, Tamil Nadu."
+                    },
+                    {
+                        name: "Sunrisers Hyderabad",
+                        shortName: "SRH",
+                        logo: "srh_logo_new.svg",
+                        page: "srh.html",
+                        players: "srh_players/srh_players.html",
+                        color: "#FF6B35",
+                        description: "The Sunrisers Hyderabad are a franchise cricket team based in Hyderabad, Telangana."
+                    },
+                    {
+                        name: "Kings XI Punjab",
+                        shortName: "KXIP",
+                        logo: "kxip_logo_new.svg",
+                        page: "kxip.html",
+                        players: "kxip_players/kxip_players.html",
+                        color: "#ED1C24",
+                        description: "Kings XI Punjab is a franchise cricket team based in Mohali, Punjab."
+                    },
+                    {
+                        name: "Kolkata Knight Riders",
+                        shortName: "KKR",
+                        logo: "kkr_logo_new.svg",
+                        page: "kkr.html",
+                        players: "kkr_players/kkr_players.html",
+                        color: "#2E0854",
+                        description: "Kolkata Knight Riders is a franchise cricket team based in Kolkata, West Bengal."
+                    },
+                    {
+                        name: "Delhi Capitals",
+                        shortName: "DC",
+                        logo: "dc_logo_new.svg",
+                        page: "dc.html",
+                        players: "dc_players/dc_players.html",
+                        color: "#004C93",
+                        description: "Delhi Capitals is a franchise cricket team based in New Delhi."
+                    },
+                    {
+                        name: "Rajasthan Royals",
+                        shortName: "RR",
+                        logo: "rr_logo_new.svg",
+                        page: "rr.html",
+                        players: "rr_players/rr_players.html",
+                        color: "#FFD700",
+                        description: "Rajasthan Royals is a franchise cricket team based in Jaipur, Rajasthan."
+                    },
+                    {
+                        name: "Gujarat Titans",
+                        shortName: "GT",
+                        logo: "gt_logo_new.svg",
+                        page: "gt.html",
+                        players: "gt_players/gt_players.html",
+                        color: "#1B4F72",
+                        description: "Gujarat Titans is a franchise cricket team based in Ahmedabad, Gujarat."
+                    },
+                    {
+                        name: "Lucknow Super Giants",
+                        shortName: "LSG",
+                        logo: "lsg_logo_new.svg",
+                        page: "lsg.html",
+                        players: "lsg_players/lsg_players.html",
+                        color: "#0081C9",
+                        description: "Lucknow Super Giants is a franchise cricket team based in Lucknow, Uttar Pradesh."
+                    }
+                ];
+            }
+
+            // Simulated AJAX call
+            async fetchTeams() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(this.teams);
+                    }, 800);
+                });
+            }
+        }
+
+        // AI Prediction Service
+        class AIService {
+            constructor() {
+                this.predictions = [
+                    { winner: "MI", confidence: 75, reason: "Strong bowling attack and depth in batting lineup" },
+                    { winner: "CSK", confidence: 68, reason: "Experienced squad with excellent fielding stats" },
+                    { winner: "RCB", confidence: 82, reason: "Explosive top order and home ground advantage" },
+                    { winner: "SRH", confidence: 71, reason: "Balanced team with strong all-rounders" }
+                ];
+            }
+
+            async predictNextMatch() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const match = {
+                            team1: "MI",
+                            team2: "CSK",
+                            prediction: this.predictions[Math.floor(Math.random() * this.predictions.length)]
+                        };
+                        resolve(match);
+                    }, 1500);
+                });
+            }
+        }
+
+        // Main Application
+        class IPLApp {
+            constructor() {
+                this.teamService = new TeamService();
+                this.aiService = new AIService();
+                this.init();
+            }
+
+            init() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.loadTeams();
+                    this.updateStats();
+                    this.setupEventListeners();
+                    this.animateStats();
+                });
+            }
+
+            async loadTeams() {
+                const loading = document.getElementById('loading');
+                const teamsGrid = document.getElementById('teamsGrid');
+                
+                loading.style.display = 'block';
+                teamsGrid.innerHTML = '';
+
+                try {
+                    const teams = await this.teamService.fetchTeams();
+                    
+                    teams.forEach((team, index) => {
+                        const teamCard = this.createTeamCard(team, index);
+                        teamsGrid.appendChild(teamCard);
+                    });
+                } catch (error) {
+                    console.error('Error loading teams:', error);
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+
+            createTeamCard(team, index) {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                card.innerHTML = `
+                    <img src="${team.logo}" alt="${team.name}" class="team-logo">
+                    <h3 class="team-name">${team.shortName}</h3>
+                    <p class="team-info">${team.name}</p>
+                `;
+
+                card.addEventListener('click', () => window.location.href = team.page);
+                return card;
+            }
+
+            updateStats() {
+                const stats = {
+                    totalMatches: 56,
+                    totalTeams: 8,
+                    liveMatches: Math.floor(Math.random() * 2),
+                    completedMatches: Math.floor(Math.random() * 10)
+                };
+
+                Object.keys(stats).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        this.animateNumber(element, 0, stats[key], 2000);
+                    }
+                });
+            }
+
+            animateNumber(element, start, end, duration) {
+                const startTime = performance.now();
+                const range = end - start;
+
+                const updateNumber = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const current = Math.floor(start + (range * progress));
+                    element.textContent = current;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(updateNumber);
+                    }
+                };
+
+                requestAnimationFrame(updateNumber);
+            }
+
+            animateStats() {
+                const statCards = document.querySelectorAll('.stat-card');
+                statCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'fadeInUp 0.6s ease-out';
+                    }, index * 100);
+                });
+            }
+
+            setupEventListeners() {
+                // Smooth scrolling
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+                });
+
+                // Scroll effect on header
+                window.addEventListener('scroll', () => {
+                    const header = document.getElementById('header');
+                    if (window.scrollY > 100) {
+                        header.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.5)';
+                    } else {
+                        header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+                    }
+                });
+            }
+        }
+
+        // AI Prediction Function
+        async function generateAIPrediction() {
+            const aiResults = document.getElementById('aiResults');
+            const aiService = new AIService();
+            
+            aiResults.innerHTML = '<div class="spinner"></div><p style="margin-top: 1rem;">AI is analyzing...</p>';
+            
+            try {
+                const prediction = await aiService.predictNextMatch();
+                aiResults.innerHTML = `
+                    <div class="prediction-box">
+                        <i class="fas fa-brain"></i>
+                        <div>
+                            <h3 style="margin-bottom: 0.5rem;">Match: ${prediction.team1} vs ${prediction.team2}</h3>
+                            <p style="margin-bottom: 0.5rem;"><strong>Predicted Winner:</strong> ${prediction.prediction.winner}</p>
+                            <p style="margin-bottom: 0.5rem;"><strong>Confidence:</strong> ${prediction.prediction.confidence}%</p>
+                            <p><strong>Reason:</strong> ${prediction.prediction.reason}</p>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                aiResults.innerHTML = '<p style="color: #ff6b6b;">Error generating prediction. Please try again.</p>';
+            }
+        }
+
+        // Mobile Menu Toggle
+        window.toggleMobileMenu = function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            window.iplApp = new IPLApp();
+        });
+    </script>
 </body>
 </html>

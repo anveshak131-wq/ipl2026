@@ -3,35 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - IPL Cricket Hub</title>
-    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/shared-modern.css">
-    <link rel="stylesheet" href="css/about-styles.css">
-    <link rel="stylesheet" href="css/custom-icons.css">
+    <title>About - IPL 2026</title>
+    <link rel="shortcut icon" href="index.ico" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --secondary-gradient: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-color: #ffd700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: var(--glass-bg);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: var(--secondary-gradient);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        main {
+            margin-top: 100px;
+            padding: 3rem 0;
+        }
+
+        .content-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 3rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-info {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 3rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .contact-info h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-top: 1rem;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .content-section,
+            .contact-info {
+                padding: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Animated Mesh Background -->
-    <div class="mesh-background">
-        <div class="mesh-gradient mesh-gradient-1"></div>
-        <div class="mesh-gradient mesh-gradient-2"></div>
-        <div class="mesh-gradient mesh-gradient-3"></div>
-        <div class="mesh-gradient mesh-gradient-4"></div>
-        <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-            <div class="shape shape-5"></div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
+    <header>
+        <nav class="container">
             <a href="index.html" class="logo">
-                <img src="assets/ipl_logo_new.svg" alt="IPL Logo">
-                <span>IPL Cricket Hub</span>
+                <img src="ipl_logo_new.svg" alt="IPL Logo" style="height: 40px; width: 40px; margin-right: 10px;" />
+                <span>IPL 2026</span>
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -41,196 +205,138 @@
                 <li><a href="scores_modern.html">Scores</a></li>
                 <li><a href="about.html" class="active">About</a></li>
             </ul>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-container">
-            <div class="hero-badge">
-                <span><img src="assets/icons/sparkles.svg" alt="" class="custom-icon custom-icon-sm"> About IPL Cricket Hub</span>
-            </div>
-            <h1 class="hero-title">THE ULTIMATE<br>CRICKET EXPERIENCE</h1>
-            <p class="hero-subtitle">India's Premier League returns bigger, bolder, and more exciting than ever before</p>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats-section">
+    <main>
         <div class="container">
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-icon"><img src="assets/icons/trophy.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <div class="stat-number">19</div>
-                    <div class="stat-label">Seasons</div>
+            <div class="content-section">
+                <h1><i class="fas fa-info-circle"></i> About IPL 2026</h1>
+                <div style="text-align: left; max-width: 900px; margin: 0 auto;">
+                    <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin-bottom: 2rem;">
+                        Welcome to the ultimate destination for IPL 2026! Experience the thrill of India's premier T20 cricket league 
+                        with real-time updates, comprehensive match schedules, detailed team standings, and live scores from every match.
+                    </p>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; border: 2px solid rgba(255, 215, 0, 0.3);">
+                        <h2 style="color: #ffd700; margin-bottom: 1.5rem; font-size: 2rem;"><i class="fas fa-trophy"></i> What is IPL 2026?</h2>
+                        <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin-bottom: 1.5rem;">
+                            The Indian Premier League (IPL) is the most-watched T20 cricket league in the world. IPL 2026 brings together 
+                            the best cricketing talent from around the globe, showcasing thrilling matches between 10 powerhouse teams. 
+                            This elite tournament represents the pinnacle of T20 cricket, combining sporting excellence with entertainment.
+                        </p>
+                        <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.9); line-height: 1.8;">
+                            From nail-biting last-ball finishes to record-breaking performances, IPL 2026 promises to deliver unforgettable 
+                            cricketing moments that fans will cherish forever. Each match is a celebration of skill, strategy, and passion.
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 20px; margin-bottom: 2rem;">
+                        <h2 style="color: white; margin-bottom: 1.5rem; font-size: 1.8rem;"><i class="fas fa-star"></i> Key Features</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                                <i class="fas fa-calendar-alt" style="font-size: 2rem; color: #ffd700; display: block; margin-bottom: 1rem;"></i>
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.2rem;">Complete Fixtures</h3>
+                                <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">View the complete IPL 2026 schedule with all match dates, venues, and times. Filter matches by team, status, or date.</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                                <i class="fas fa-table" style="font-size: 2rem; color: #ffd700; display: block; margin-bottom: 1rem;"></i>
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.2rem;">Points Table</h3>
+                                <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">Real-time points table with team standings, win/loss records, and net run rates. Sort by different criteria to track your favorite team.</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                                <i class="fas fa-chart-line" style="font-size: 2rem; color: #ffd700; display: block; margin-bottom: 1rem;"></i>
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.2rem;">Live Scores</h3>
+                                <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">Get live match scores, ball-by-ball updates, and detailed scorecards for every IPL 2026 match.</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                                <i class="fas fa-robot" style="font-size: 2rem; color: #ffd700; display: block; margin-bottom: 1rem;"></i>
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.2rem;">AI Predictions</h3>
+                                <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">Advanced AI-powered match predictions based on team performance, player statistics, and historical data.</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                                <i class="fas fa-users" style="font-size: 2rem; color: #ffd700; display: block; margin-bottom: 1rem;"></i>
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.2rem;">Team Profiles</h3>
+                                <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">Detailed profiles of all 10 IPL teams including squad information, player statistics, and team history.</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                                <i class="fas fa-mobile-alt" style="font-size: 2rem; color: #ffd700; display: block; margin-bottom: 1rem;"></i>
+                                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.2rem;">Responsive Design</h3>
+                                <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">Perfect viewing experience on all devices - desktop, tablet, or mobile. Access IPL 2026 from anywhere, anytime.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 20px; margin-bottom: 2rem;">
+                        <h2 style="color: white; margin-bottom: 1.5rem; font-size: 1.8rem;"><i class="fas fa-users"></i> The 10 Teams</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Royal Challengers Bangalore</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Mumbai Indians</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Chennai Super Kings</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Sunrisers Hyderabad</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Kings XI Punjab</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Kolkata Knight Riders</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Delhi Capitals</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Rajasthan Royals</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Gujarat Titans</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <p style="color: #ffd700; font-weight: 600;">Lucknow Super Giants</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 20px;">
+                        <h2 style="color: white; margin-bottom: 1.5rem; font-size: 1.8rem;"><i class="fas fa-cog"></i> Technical Details</h2>
+                        <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin-bottom: 1rem;">
+                            This website is built with modern web technologies to provide the best user experience:
+                        </p>
+                        <ul style="color: rgba(255, 255, 255, 0.9); line-height: 2; padding-left: 2rem;">
+                            <li><strong>HTML5 & CSS3:</strong> Modern semantic markup and advanced styling with glassmorphism effects</li>
+                            <li><strong>JavaScript:</strong> Dynamic content loading and real-time data simulation</li>
+                            <li><strong>Responsive Design:</strong> Mobile-first approach ensuring optimal viewing on all devices</li>
+                            <li><strong>Font Awesome Icons:</strong> Beautiful iconography throughout the site</li>
+                            <li><strong>Google Fonts:</strong> Elegant Poppins typography for enhanced readability</li>
+                            <li><strong>Real-time Updates:</strong> Simulated live data refresh for match scores and standings</li>
+                            <li><strong>Interactive Features:</strong> Filtering, sorting, and dynamic content manipulation</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-icon"><img src="assets/icons/users.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <div class="stat-number">10</div>
-                    <div class="stat-label">Teams</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon"><img src="assets/icons/calendar.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <div class="stat-number">74</div>
-                    <div class="stat-label">Matches</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon"><img src="assets/icons/globe.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <div class="stat-number">1B+</div>
-                    <div class="stat-label">Fans</div>
-                </div>
+            </div>
+
+            <div class="contact-info">
+                <h2><i class="fas fa-envelope"></i> Contact</h2>
+                <h3>sportsup99@gmail.com</h3>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Story Section -->
-    <section class="story-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">OUR STORY</h2>
-                <p class="section-subtitle">The Journey of India's Greatest Cricket League</p>
-            </div>
-            <div class="story-content">
-                <div class="story-card">
-                    <div class="story-icon"><img src="assets/icons/target.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <h3>Our Mission</h3>
-                    <p>To bring the most thrilling T20 cricket experience to fans worldwide, showcasing the best talent, unforgettable moments, and pure entertainment.</p>
-                </div>
-                <div class="story-card">
-                    <div class="story-icon"><img src="assets/icons/bulb.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <h3>Our Vision</h3>
-                    <p>To be the world's premier cricket league, setting standards for excellence, innovation, and fan engagement in sports entertainment.</p>
-                </div>
-                <div class="story-card">
-                    <div class="story-icon"><img src="assets/icons/lightning.svg" alt="" class="custom-icon custom-icon-xl"></div>
-                    <h3>Our Values</h3>
-                    <p>Excellence, integrity, entertainment, and passion drive everything we do. We celebrate cricket, community, and the spirit of competition.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">WHY IPL CRICKET HUB?</h2>
-                <p class="section-subtitle">Experience cricket like never before</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-number">01</div>
-                    <h3>World-Class Players</h3>
-                    <p>Watch international superstars and rising talents compete at the highest level of T20 cricket.</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-number">02</div>
-                    <h3>Cutting-Edge Technology</h3>
-                    <p>Experience matches with advanced analytics, real-time stats, and immersive viewing experiences.</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-number">03</div>
-                    <h3>Electrifying Atmosphere</h3>
-                    <p>Feel the energy of packed stadiums, passionate fans, and unforgettable match-day experiences.</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-number">04</div>
-                    <h3>Global Reach</h3>
-                    <p>Connect with billions of fans worldwide through broadcasts in over 120 countries.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Team Section -->
-    <section class="team-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">MEET OUR TEAMS</h2>
-                <p class="section-subtitle">10 powerhouse franchises competing for glory</p>
-            </div>
-            <div class="teams-showcase">
-                <a href="rcb.html" class="team-badge">RCB</a>
-                <a href="mi.html" class="team-badge">MI</a>
-                <a href="csk.html" class="team-badge">CSK</a>
-                <a href="kkr.html" class="team-badge">KKR</a>
-                <a href="dc.html" class="team-badge">DC</a>
-                <a href="srh.html" class="team-badge">SRH</a>
-                <a href="rr.html" class="team-badge">RR</a>
-                <a href="kxip.html" class="team-badge">PBSK</a>
-                <a href="gt.html" class="team-badge">GT</a>
-                <a href="lsg.html" class="team-badge">LSG</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact-section">
-        <div class="container">
-            <div class="contact-card">
-                <div class="contact-icon"><img src="assets/icons/mail.svg" alt="" class="custom-icon custom-icon-2xl"></div>
-                <h2>GET IN TOUCH</h2>
-                <p>Have questions or feedback? We'd love to hear from you!</p>
-                <a href="mailto:sportsup99@gmail.com" class="contact-email">sportsup99@gmail.com</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer>
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>IPL Cricket Hub</h3>
-                    <p>The biggest cricket carnival is back! Experience the thrill, passion, and excitement of T20 cricket at its finest.</p>
-                </div>
-                <div class="footer-links-group">
-                    <div class="footer-section">
-                        <h4>Quick Links</h4>
-                        <a href="index.html">Home</a>
-                        <a href="index.html#teams">Teams</a>
-                        <a href="fixtures_modern.html">Fixtures</a>
-                        <a href="points_modern.html">Points</a>
-                    </div>
-                    <div class="footer-section">
-                        <h4>Support</h4>
-                        <a href="help.html">Help Center</a>
-                        <a href="privacy.html">Privacy Policy</a>
-                        <a href="terms.html">Terms of Service</a>
-                        <a href="contact.html">Contact</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 SportsUP99. All rights reserved. | Designed with <img src="assets/icons/heart.svg" alt="love" class="custom-icon custom-icon-sm"> for Cricket Fans</p>
-            </div>
+        <div class="container">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="admin-upload.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 0.9rem;">
+                    <i class="fas fa-cog"></i> Admin Upload
+                </a>
+            </p>
         </div>
     </footer>
-
-    <script>
-        // Scroll effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Animate stats on scroll
-        const statObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'scaleIn 0.5s ease forwards';
-                    statObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.2 });
-
-        document.querySelectorAll('.stat-box, .story-card, .feature-item').forEach(el => {
-            statObserver.observe(el);
-        });
-    </script>
 </body>
 </html>

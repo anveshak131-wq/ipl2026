@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Players Data</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .team { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 10px; }
+        .players { margin-left: 20px; }
+        .player { padding: 10px; background: white; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Debug: Check Uploaded Players in localStorage</h1>
+    <button onclick="location.reload()">Refresh</button>
+    <div id="results"></div>
+    
+    <script>
+        const teams = ['rcb', 'mi', 'csk', 'srh', 'kxip', 'kkr', 'dc', 'rr', 'gt', 'lsg'];
+        let results = '<h2>Storage Contents:</h2>';
+        
+        teams.forEach(team => {
+            const key = `uploaded_${team}_players`;
+            const data = localStorage.getItem(key);
+            results += `<div class="team"><h3>${team.toUpperCase()}</h3>`;
+            results += `<p>Key: <strong>${key}</strong></p>`;
+            
+            if (data) {
+                try {
+                    const players = JSON.parse(data);
+                    results += `<p>Found ${players.length} players</p>`;
+                    results += '<div class="players">';
+                    players.forEach((player, index) => {
+                        results += `<div class="player">
+                            <strong>Player ${index + 1}:</strong><br>
+                            Name: ${player.name || player.Name || 'N/A'}<br>
+                            Role: ${player.role || player.Role || 'N/A'}<br>
+                            <small>All keys: ${JSON.stringify(Object.keys(player))}</small>
+                        </div>`;
+                    });
+                    results += '</div>';
+                } catch (e) {
+                    results += `<p style="color: red;">Error parsing: ${e.message}</p>`;
+                    results += `<pre>${data}</pre>`;
+                }
+            } else {
+                results += '<p style="color: #999;">No data</p>';
+            }
+            results += '</div>';
+        });
+        
+        document.getElementById('results').innerHTML = results;
+    </script>
+</body>
+</html>
+

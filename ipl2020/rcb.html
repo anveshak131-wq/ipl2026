@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Challengers Bangalore - IPL Cricket Hub</title>
+    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/shared-modern.css">
+    <link rel="stylesheet" href="css/team-styles.css">
+    <style>
+        .blurred {
+            filter: blur(8px) brightness(0.7);
+            transition: filter 0.3s;
+            pointer-events: none;
+        }
+        .player-modal {
+            display: none;
+        }
+        .player-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10,14,39,0.85);
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s;
+        }
+        .player-modal-content {
+            background: rgba(16, 20, 48, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            transition: color 0.2s;
+            z-index: 1;
+        }
+        .modal-close:hover {
+            color: #fff;
+        }
+        .modal-player-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .modal-player-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+        }
+        .modal-player-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .modal-player-name {
+            font-size: 2.5rem;
+            color: #fff;
+            margin: 0.5rem 0;
+            font-family: "Bebas Neue", sans-serif;
+        }
+        .modal-player-role {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .modal-player-badges {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .modal-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .player-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .details-section h4 {
+            color: #FFD700;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .detail-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .detail-value {
+            color: #fff;
+            font-weight: 500;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body data-team="RCB">
+    <!-- Team Header -->
+    <section class="team-header">
+        <div class="team-header-container">
+            <div class="team-logo-hero">
+                <img src="assets/rcb_logo_new.svg" alt="ROYAL CHALLENGERS BANGALORE">
+            </div>
+            <h1 class="team-title">ROYAL CHALLENGERS BANGALORE</h1>
+            <p class="team-subtitle">Bengaluru</p>
+            <div class="team-stats-bar">
+                <div class="team-stat">
+                    <div class="team-stat-number" id="playerCount">0</div>
+                    <div class="team-stat-label">Players</div>
+                </div>
+                <div class="team-stat">
+                    <div class="team-stat-number" id="foreignCount">0</div>
+                    <div class="team-stat-label">Overseas</div>
+                </div>
+                <div class="team-stat">
+                    <div class="team-stat-number" id="indianCount">0</div>
+                    <div class="team-stat-label">Indian</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Squad Section -->
+    <section class="squad-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">SQUAD 2026</h2>
+                <p class="section-subtitle">Meet our powerhouse lineup</p>
+            </div>
+            <div class="players-grid" id="playersContainer">
+                <!-- Players will be loaded dynamically -->
+                <button id="testModalBtn" style="margin:2rem auto;display:block;padding:1rem 2rem;font-size:1.2rem;">Test Player Modal</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Player Modal -->
+    <div class="player-modal" id="playerModal">
+        <div class="player-modal-content">
+            <button class="modal-close" id="modalCloseButton">&times;</button>
+            <div class="modal-player-header">
+                <div class="modal-player-logo">
+                    <img src="assets/rcb_logo_new.svg" alt="Player" id="modalPlayerLogo">
+                </div>
+                <h2 class="modal-player-name" id="modalPlayerName"></h2>
+                <p class="modal-player-role" id="modalPlayerRole"></p>
+                <div class="modal-player-badges" id="modalPlayerBadges"></div>
+            </div>
+            <div class="modal-player-details" id="modalPlayerDetails"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/player-modal.js?v=1.1"></script>
+    <script src="js/team-page-loader.js?v=2.3"></script>
+</body>
+</html>
