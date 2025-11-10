@@ -1,8 +1,10 @@
 {
   "version": 2,
+  "buildCommand": "echo 'Static site - no build needed'",
+  "outputDirectory": "ipl2020",
   "builds": [
     {
-      "src": "**/*.html",
+      "src": "ipl2020/**/*.html",
       "use": "@vercel/static"
     }
   ],
