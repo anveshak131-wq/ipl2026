@@ -1,0 +1,11 @@
+{
+  "name": "ipl-cricket-hub",
+  "version": "2.0.0",
+  "description": "IPL Cricket Hub - Static Site",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'No build needed - static site'"
+  },
+  "dependencies": {}
+}
+
