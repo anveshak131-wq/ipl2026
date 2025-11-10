@@ -19,10 +19,54 @@ const TEAM_LOGOS = {
     'LSG': 'assets/lsg_logo_new.svg'
 };
 
+// Helper function to safely get element by ID
+function safeGetElement(id) {
+    try {
+        const elem = document.getElementById(id);
+        return elem && elem.nodeType === 1 ? elem : null;
+    } catch (e) {
+        console.error('Error getting element:', id, e);
+        return null;
+    }
+}
+
+// Helper function to safely set innerHTML
+function safeSetInnerHTML(element, html) {
+    if (!element) {
+        console.warn('Attempted to set innerHTML on null element');
+        return false;
+    }
+    if (element.nodeType !== 1) {
+        console.warn('Attempted to set innerHTML on invalid element');
+        return false;
+    }
+    try {
+        element.innerHTML = html;
+        return true;
+    } catch (e) {
+        console.error('Error setting innerHTML:', e);
+        return false;
+    }
+}
+
+// Helper function to safely set textContent
+function safeSetTextContent(element, text) {
+    if (!element || element.nodeType !== 1) {
+        return false;
+    }
+    try {
+        element.textContent = text;
+        return true;
+    } catch (e) {
+        console.error('Error setting textContent:', e);
+        return false;
+    }
+}
+
 // Initialize modal functionality
 function initModal() {
     // Skip if already initialized
-    if (window.modalState.initialized) {
+    if (window.modalState && window.modalState.initialized) {
         console.log('Modal already initialized');
         return;
     }
@@ -36,15 +80,15 @@ function initModal() {
         return;
     }
     
-    // Get all required elements
+    // Get all required elements with fresh queries
     const elements = {
-        modal: document.getElementById('playerModal'),
-        modalName: document.getElementById('modalPlayerName'),
-        modalRole: document.getElementById('modalPlayerRole'),
-        modalBadges: document.getElementById('modalPlayerBadges'),
-        modalDetails: document.getElementById('modalPlayerDetails'),
-        modalClose: document.getElementById('modalCloseButton'),
-        modalLogo: document.getElementById('modalPlayerLogo'),
+        modal: safeGetElement('playerModal'),
+        modalName: safeGetElement('modalPlayerName'),
+        modalRole: safeGetElement('modalPlayerRole'),
+        modalBadges: safeGetElement('modalPlayerBadges'),
+        modalDetails: safeGetElement('modalPlayerDetails'),
+        modalClose: safeGetElement('modalCloseButton'),
+        modalLogo: safeGetElement('modalPlayerLogo'),
         container: document.querySelector('.container'),
         header: document.querySelector('.team-header')
     };
@@ -56,18 +100,20 @@ function initModal() {
 
     if (missingElements.length > 0) {
         console.error('Missing essential modal elements:', missingElements);
-        // Try to ensure elements exist
-        ensureModalElements();
-        // Re-check after ensureModalElements
-        const recoveredElements = window.modalState?.elements || {};
-        if (recoveredElements.modal && recoveredElements.modalDetails) {
-            elements.modal = recoveredElements.modal;
-            elements.modalDetails = recoveredElements.modalDetails;
-            if (recoveredElements.modalName) elements.modalName = recoveredElements.modalName;
-            if (recoveredElements.modalClose) elements.modalClose = recoveredElements.modalClose;
-        } else {
-            console.error('Critical modal elements still missing after recovery attempt');
+        // Try one more time with direct queries
+        if (!elements.modal) elements.modal = safeGetElement('playerModal');
+        if (!elements.modalDetails) elements.modalDetails = safeGetElement('modalPlayerDetails');
+        if (!elements.modalName) elements.modalName = safeGetElement('modalPlayerName');
+        if (!elements.modalClose) elements.modalClose = safeGetElement('modalCloseButton');
+        
+        if (!elements.modal || !elements.modalDetails) {
+            console.error('Critical modal elements still missing after retry');
         }
+    }
+
+    // Initialize modalState if needed
+    if (!window.modalState) {
+        window.modalState = { initialized: false, elements: null };
     }
 
     // Store elements in modal state
@@ -102,37 +148,22 @@ window.initModal = initModal;
 // Helper: ensure modal elements are present
 function ensureModalElements() {
     try {
-        if (!window.modalState) window.modalState = { initialized: false, elements: null };
-        const elems = window.modalState.elements || {};
+        if (!window.modalState) {
+            window.modalState = { initialized: false, elements: null };
+        }
         
-        // Re-query any missing elements - always check if element exists and is valid
-        if (!elems.modal || elems.modal.nodeType !== 1) {
-            elems.modal = document.getElementById('playerModal') || document.querySelector('.player-modal');
-        }
-        if (!elems.modalName || elems.modalName.nodeType !== 1) {
-            elems.modalName = document.getElementById('modalPlayerName') || document.querySelector('.modal-player-name');
-        }
-        if (!elems.modalRole || elems.modalRole.nodeType !== 1) {
-            elems.modalRole = document.getElementById('modalPlayerRole') || document.querySelector('.modal-player-role');
-        }
-        if (!elems.modalBadges || elems.modalBadges.nodeType !== 1) {
-            elems.modalBadges = document.getElementById('modalPlayerBadges') || document.querySelector('.modal-player-badges');
-        }
-        if (!elems.modalDetails || elems.modalDetails.nodeType !== 1) {
-            elems.modalDetails = document.getElementById('modalPlayerDetails') || document.querySelector('.modal-player-details');
-        }
-        if (!elems.modalClose || elems.modalClose.nodeType !== 1) {
-            elems.modalClose = document.getElementById('modalCloseButton') || document.querySelector('.modal-close');
-        }
-        if (!elems.modalLogo || elems.modalLogo.nodeType !== 1) {
-            elems.modalLogo = document.getElementById('modalPlayerLogo');
-        }
-        if (!elems.container || elems.container.nodeType !== 1) {
-            elems.container = document.querySelector('.container');
-        }
-        if (!elems.header || elems.header.nodeType !== 1) {
-            elems.header = document.querySelector('.team-header');
-        }
+        // Always get fresh references
+        const elems = {
+            modal: safeGetElement('playerModal'),
+            modalName: safeGetElement('modalPlayerName'),
+            modalRole: safeGetElement('modalPlayerRole'),
+            modalBadges: safeGetElement('modalPlayerBadges'),
+            modalDetails: safeGetElement('modalPlayerDetails'),
+            modalClose: safeGetElement('modalCloseButton'),
+            modalLogo: safeGetElement('modalPlayerLogo'),
+            container: document.querySelector('.container'),
+            header: document.querySelector('.team-header')
+        };
 
         window.modalState.elements = elems;
         
@@ -151,103 +182,67 @@ function ensureModalElements() {
     }
 }
 
+// Export ensureModalElements for external use
+window.ensureModalElements = ensureModalElements;
+
 // Show player modal with comprehensive stats
 window.showPlayerModal = function(player) {
     console.log('showPlayerModal called with player:', player);
     
-    // Ensure modal is initialized
-    if (!window.modalState || !window.modalState.initialized) {
-        console.log('Modal not initialized, initializing now...');
-        if (typeof window.ensureModalElements === 'function') {
-            window.ensureModalElements();
-        }
-        if (typeof window.initModal === 'function') {
-            window.initModal();
-        } else if (typeof initModal === 'function') {
-            initModal();
-        }
-    }
-
-    // Ensure elements exist
-    if (typeof window.ensureModalElements === 'function') {
-        window.ensureModalElements();
+    if (!player) {
+        console.error('No player data provided');
+        return;
     }
     
-    let elements = window.modalState?.elements || {};
-    if (!elements.modal) {
-        console.error('Modal element not found. Attempting to recover...');
-        // Try to recover modal elements
-        if (typeof window.ensureModalElements === 'function') {
-            window.ensureModalElements();
-        }
-        // Re-check after recovery
-        const recoveredElements = window.modalState?.elements || {};
-        if (!recoveredElements.modal) {
-            console.error('Modal element still not found after recovery attempt');
-            alert('Modal is not available. Please refresh the page.');
-            return;
-        }
-        // Use recovered elements
-        elements = recoveredElements;
-        // Update modalState with recovered elements
-        window.modalState.elements = elements;
+    // Always ensure elements exist - get fresh references
+    ensureModalElements();
+    
+    // Get fresh element references right before use
+    const modal = safeGetElement('playerModal');
+    const modalName = safeGetElement('modalPlayerName');
+    const modalRole = safeGetElement('modalPlayerRole');
+    const modalBadges = safeGetElement('modalPlayerBadges');
+    const modalDetails = safeGetElement('modalPlayerDetails');
+    const modalLogo = safeGetElement('modalPlayerLogo');
+    const modalClose = safeGetElement('modalCloseButton');
+    const container = document.querySelector('.container');
+    const header = document.querySelector('.team-header');
+    
+    // Critical check - if modal or modalDetails don't exist, abort
+    if (!modal) {
+        console.error('Modal element not found in DOM');
+        alert('Modal is not available. Please refresh the page.');
+        return;
     }
-
-    // Re-query all critical elements to ensure they exist
-    if (!elements.modalName) {
-        elements.modalName = document.getElementById('modalPlayerName');
-    }
-    if (!elements.modalRole) {
-        elements.modalRole = document.getElementById('modalPlayerRole');
-    }
-    if (!elements.modalBadges) {
-        elements.modalBadges = document.getElementById('modalPlayerBadges');
-    }
-    if (!elements.modalDetails) {
-        elements.modalDetails = document.getElementById('modalPlayerDetails');
-    }
-    if (!elements.modalLogo) {
-        elements.modalLogo = document.getElementById('modalPlayerLogo');
-    }
-    if (!elements.modalClose) {
-        elements.modalClose = document.getElementById('modalCloseButton');
-    }
-
-    // Final check - if critical elements are still missing, abort
-    if (!elements.modal || !elements.modalDetails) {
-        console.error('Critical modal elements missing:', {
-            modal: !!elements.modal,
-            modalDetails: !!elements.modalDetails
-        });
-        alert('Modal elements are not available. Please refresh the page.');
+    
+    if (!modalDetails) {
+        console.error('Modal details element not found in DOM');
+        alert('Modal details element is not available. Please refresh the page.');
         return;
     }
 
     try {
-        // Set player name
-        if (elements.modalName) {
-            elements.modalName.textContent = player.name || 'Unknown Player';
-        }
+        // Set player name - get fresh reference
+        safeSetTextContent(modalName, player.name || 'Unknown Player');
 
-        // Set player role and team
+        // Set player role and team - get fresh reference
         const roleText = player.role || 'Player';
         const teamText = player.team || '';
-        if (elements.modalRole) {
-            elements.modalRole.textContent = teamText ? `${roleText} • ${teamText}` : roleText;
-        }
+        const roleDisplay = teamText ? `${roleText} • ${teamText}` : roleText;
+        safeSetTextContent(modalRole, roleDisplay);
 
-        // Set team logo
-        if (elements.modalLogo) {
+        // Set team logo - get fresh reference
+        if (modalLogo) {
             const teamCode = player.team || 'RCB';
             const logoPath = TEAM_LOGOS[teamCode] || TEAM_LOGOS['RCB'] || 'assets/ipl_logo_new.svg';
-            elements.modalLogo.src = logoPath;
-            elements.modalLogo.alt = teamCode;
-            elements.modalLogo.onerror = function() {
+            modalLogo.src = logoPath;
+            modalLogo.alt = teamCode;
+            modalLogo.onerror = function() {
                 this.src = 'assets/ipl_logo_new.svg';
             };
         }
 
-        // Set badges
+        // Set badges - get fresh reference and use safe function
         let badgesHTML = '';
         if (player.isCaptain) badgesHTML += '<span class="modal-badge badge-captain">👑 Captain</span>';
         if (player.isViceCaptain) badgesHTML += '<span class="modal-badge badge-captain">⭐ Vice Captain</span>';
@@ -255,10 +250,14 @@ window.showPlayerModal = function(player) {
         if ((player.role || '').toLowerCase().includes('wicket') || (player.role || '').toLowerCase() === 'wicket-keeper') {
             badgesHTML += '<span class="modal-badge badge-wk">🧤 Wicket-Keeper</span>';
         }
-        if (elements.modalBadges) {
-            elements.modalBadges.innerHTML = badgesHTML || '<span class="modal-badge">Player</span>';
-        } else {
-            console.warn('modalBadges element not found, skipping badge display');
+        if (!badgesHTML) {
+            badgesHTML = '<span class="modal-badge">Player</span>';
+        }
+        
+        // Get fresh reference for badges before setting
+        const badgesElement = safeGetElement('modalPlayerBadges');
+        if (!safeSetInnerHTML(badgesElement, badgesHTML)) {
+            console.warn('Failed to set badges HTML');
         }
 
         // Parse stats (handle both object and string)
@@ -387,66 +386,80 @@ window.showPlayerModal = function(player) {
 
         detailsHTML += '</div>';
 
-        // Set details HTML - with additional null check
-        if (elements.modalDetails && elements.modalDetails.nodeType === 1) {
-            elements.modalDetails.innerHTML = detailsHTML;
-        } else {
-            console.error('modalDetails element is null or invalid:', elements.modalDetails);
-            // Try one more time to find it
-            const retryElement = document.getElementById('modalPlayerDetails');
-            if (retryElement) {
-                retryElement.innerHTML = detailsHTML;
-                elements.modalDetails = retryElement;
-                window.modalState.elements = elements;
+        // Set details HTML - get fresh reference right before setting
+        const detailsElement = safeGetElement('modalPlayerDetails');
+        if (!safeSetInnerHTML(detailsElement, detailsHTML)) {
+            console.error('Failed to set modal details HTML. Element:', detailsElement);
+            // Last resort - try direct query
+            const lastTry = document.getElementById('modalPlayerDetails');
+            if (lastTry && lastTry.nodeType === 1) {
+                lastTry.innerHTML = detailsHTML;
             } else {
-                console.error('Could not find modalPlayerDetails element in DOM');
+                console.error('Could not set modal details - element not found in DOM');
             }
         }
 
         // Show modal and blur background
-        if (elements.modal) {
-            elements.modal.classList.add('active');
+        if (modal) {
+            modal.classList.add('active');
         }
         document.body.style.overflow = 'hidden';
         
-        if (elements.container) {
-            elements.container.classList.add('blurred');
+        if (container) {
+            container.classList.add('blurred');
         }
-        if (elements.header) {
-            elements.header.classList.add('blurred');
+        if (header) {
+            header.classList.add('blurred');
+        }
+        
+        // Update modalState with fresh references
+        if (window.modalState) {
+            window.modalState.elements = {
+                modal: modal,
+                modalName: modalName,
+                modalRole: modalRole,
+                modalBadges: badgesElement,
+                modalDetails: detailsElement || safeGetElement('modalPlayerDetails'),
+                modalClose: modalClose,
+                modalLogo: modalLogo,
+                container: container,
+                header: header
+            };
         }
     } catch (error) {
         console.error('Error showing player modal:', error);
+        console.error('Error stack:', error.stack);
     }
 };
 
 // Close player modal
 window.closePlayerModal = function() {
-    if (!window.modalState.initialized) {
+    if (!window.modalState || !window.modalState.initialized) {
         console.error('Modal not initialized');
         return;
     }
 
-    const elements = window.modalState.elements || {};
+    // Get fresh references
+    const modal = safeGetElement('playerModal');
+    const container = document.querySelector('.container');
+    const header = document.querySelector('.team-header');
+    
     try {
-        if (elements.modal) {
-            elements.modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
         }
         document.body.style.overflow = 'auto';
         
-        if (elements.container) {
-            elements.container.classList.remove('blurred');
+        if (container) {
+            container.classList.remove('blurred');
         }
-        if (elements.header) {
-            elements.header.classList.remove('blurred');
+        if (header) {
+            header.classList.remove('blurred');
         }
     } catch (error) {
         console.error('Error closing modal:', error);
     }
 };
-
-// Export ensureModalElements for external use
-window.ensureModalElements = ensureModalElements;
 
 // Initialize when DOM is loaded
 function initializeModalOnLoad() {
@@ -494,4 +507,3 @@ function initializeModalOnLoad() {
 
 // Start initialization
 initializeModalOnLoad();
-
