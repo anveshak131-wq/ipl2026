@@ -120,6 +120,52 @@ async function loadPlayers() {
             
             console.log(`Loaded ${playersData.length} total players from API`);
             
+            // If API failed for all teams, try localStorage fallback (for static hosting)
+            if (playersData.length === 0 && hasErrors) {
+                console.log('API failed, trying localStorage fallback...');
+                try {
+                    for (const team of IPL_TEAMS) {
+                        const stored = localStorage.getItem(`players_${team}`);
+                        if (stored) {
+                            try {
+                                const teamPlayers = JSON.parse(stored);
+                                if (Array.isArray(teamPlayers) && teamPlayers.length > 0) {
+                                    teamPlayers.forEach(player => {
+                                        if (player && player.name) {
+                                            playersData.push({
+                                                id: `${team}_${player.name}`,
+                                                name: player.name,
+                                                team: team,
+                                                role: player.role || player.position || 'Player',
+                                                jersey: player.number || player.jersey || null,
+                                                photo: player.photo || player.image || null,
+                                                age: player.age || null,
+                                                nationality: player.nationality || null,
+                                                battingStyle: player['batting style'] || player.battingStyle || null,
+                                                bowlingStyle: player['bowling style'] || player.bowlingStyle || null,
+                                                allrounderType: player['allrounder type'] || player.allrounderType || null,
+                                                isCaptain: player.isCaptain || false,
+                                                isViceCaptain: player.isViceCaptain || false,
+                                                isForeign: player.isForeign || false,
+                                                stats: player.stats || {}
+                                            });
+                                        }
+                                    });
+                                    debugOutput += `<div style='color:orange'>${team}: Loaded ${teamPlayers.length} players from localStorage</div>`;
+                                }
+                            } catch (e) {
+                                console.warn(`Failed to parse localStorage for ${team}:`, e);
+                            }
+                        }
+                    }
+                    if (playersData.length > 0) {
+                        debugOutput = `<div style='color:orange; margin-bottom: 1rem;'><b>⚠️ Using localStorage (static hosting mode)</b><br>Data is stored in your browser only.</div>` + debugOutput;
+                    }
+                } catch (e) {
+                    console.error('localStorage fallback error:', e);
+                }
+            }
+            
             displayPlayers(playersData);
             updateStats();
             
@@ -286,13 +332,23 @@ async function savePlayerStats(event) {
     };
 
     try {
-        // Get all players for this team from Vercel KV API
-        const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
+        // Get all players for this team from API, fallback to localStorage
         let teamPlayers = [];
-        
-        if (response.ok) {
-            const result = await response.json();
-            teamPlayers = result.data || result || [];
+        try {
+            const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
+            if (response.ok) {
+                const result = await response.json();
+                teamPlayers = result.data || result || [];
+            } else {
+                throw new Error('API failed, trying localStorage');
+            }
+        } catch (apiError) {
+            // Fallback to localStorage for static hosting
+            console.log('API load failed, using localStorage:', apiError);
+            const stored = localStorage.getItem(`players_${team}`);
+            if (stored) {
+                teamPlayers = JSON.parse(stored);
+            }
         }
 
         // Update the player in the team array (update existing or add new)
@@ -322,15 +378,21 @@ async function savePlayerStats(event) {
             teamPlayers.push(playerPayload);
         }
 
-        // Save back to Vercel KV API
-        const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ team, players: teamPlayers })
-        });
+        // Try to save to API first, fallback to localStorage for static hosting
+        try {
+            const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ team, players: teamPlayers })
+            });
 
-        if (!saveResponse.ok) {
-            throw new Error('Failed to save to API');
+            if (!saveResponse.ok) {
+                throw new Error('API save failed, using localStorage');
+            }
+        } catch (apiError) {
+            // Fallback to localStorage for static hosting
+            console.log('API save failed, using localStorage fallback:', apiError);
+            localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
         }
 
         // Update local data
@@ -363,27 +425,43 @@ async function deletePlayer() {
     const team = player.team;
 
     try {
-        // Get all players for this team from Vercel KV API
-        const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
+        // Get all players for this team from API, fallback to localStorage
         let teamPlayers = [];
-        
-        if (response.ok) {
-            const result = await response.json();
-            teamPlayers = result.data || result || [];
+        try {
+            const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
+            if (response.ok) {
+                const result = await response.json();
+                teamPlayers = result.data || result || [];
+            } else {
+                throw new Error('API failed, trying localStorage');
+            }
+        } catch (apiError) {
+            // Fallback to localStorage for static hosting
+            console.log('API load failed, using localStorage:', apiError);
+            const stored = localStorage.getItem(`players_${team}`);
+            if (stored) {
+                teamPlayers = JSON.parse(stored);
+            }
         }
 
         // Remove the player from the team array
         teamPlayers = teamPlayers.filter(p => p.name !== player.name);
 
-        // Save back to Vercel KV API
-        const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ team, players: teamPlayers })
-        });
+        // Try to save to API first, fallback to localStorage for static hosting
+        try {
+            const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ team, players: teamPlayers })
+            });
 
-        if (!saveResponse.ok) {
-            throw new Error('Failed to delete from API');
+            if (!saveResponse.ok) {
+                throw new Error('API save failed, using localStorage');
+            }
+        } catch (apiError) {
+            // Fallback to localStorage for static hosting
+            console.log('API save failed, using localStorage fallback:', apiError);
+            localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
         }
 
         // Remove from local data
