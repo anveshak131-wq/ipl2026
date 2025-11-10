@@ -9,7 +9,8 @@ if (!window.modalState) {
 }
 
 const BACKEND_API_URL = 'https://ipl-backend-api.vercel.app'; // Update with your deployed backend URL
-const API_BASE = window.location.origin;
+const VERCEL_API_BASE = 'https://iplcrickethub-kappa.vercel.app';
+const API_BASE = VERCEL_API_BASE; // Use Vercel API for player data
 
 // Team code mapping (lowercase to uppercase)
 const TEAM_CODE_MAP = {
@@ -44,11 +45,24 @@ async function loadTeamPlayers(teamCode) {
     const apiUrl = `${API_BASE}/api/admin/players?team=${teamCodeUpper}`;
     
     try {
-        console.log(`🔄 Fetching ${teamCodeUpper} players from remote stats endpoint...`);
-        const response = await fetch(apiUrl);
+        console.log(`🔄 Fetching ${teamCodeUpper} players from Vercel API: ${apiUrl}`);
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            console.error(`❌ API Error: ${response.status} ${response.statusText}`);
+            throw new Error(`API request failed: ${response.status}`);
+        }
+        
         const result = await response.json();
-        if (response.ok && result) {
+        console.log(`📦 API Response for ${teamCodeUpper}:`, result);
+        
+        if (result) {
             const playersData = Array.isArray(result.data) ? result.data : (Array.isArray(result) ? result : []);
+            console.log(`📊 Found ${playersData.length} players for ${teamCodeUpper}`);
             if (playersData.length > 0) {
                 players = playersData.map(p => {
                     let stats = p.stats || {};
@@ -73,15 +87,18 @@ async function loadTeamPlayers(teamCode) {
                         photo: p.photo || p.image || null
                     };
                 });
-                console.log(`✅ Loaded ${players.length} players from remote stats endpoint`);
+                console.log(`✅ Loaded ${players.length} players from Vercel API`);
             } else {
-                console.warn('⚠️ No players found in remote stats response');
+                console.warn('⚠️ No players found in API response');
             }
-        } else {
-            console.warn('⚠️ API response not OK:', response.status);
         }
     } catch (e) {
-        console.error('❌ Failed to fetch from remote stats endpoint:', e);
+        console.error('❌ Failed to fetch from Vercel API:', e);
+        console.error('Error details:', {
+            message: e.message,
+            stack: e.stack,
+            apiUrl: `${API_BASE}/api/admin/players?team=${teamCodeUpper}`
+        });
     }
     if (players.length > 0) {
         displayPlayers(players, teamCode);

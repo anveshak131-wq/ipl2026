@@ -195,11 +195,17 @@ async function fetchPlayerStatsFromVercel(playerName, teamCode) {
         const teamCodeUpper = teamCode ? teamCode.toUpperCase() : '';
         const apiUrl = `${VERCEL_API_BASE}/api/admin/players?team=${teamCodeUpper}`;
         
-        console.log(`🔄 Fetching detailed stats for ${playerName} from Vercel API...`);
-        const response = await fetch(apiUrl);
+        console.log(`🔄 Fetching detailed stats for ${playerName} from Vercel API: ${apiUrl}`);
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors'
+        });
         
         if (!response.ok) {
-            console.warn(`⚠️ API response not OK: ${response.status}`);
+            console.warn(`⚠️ API response not OK: ${response.status} ${response.statusText}`);
             return null;
         }
         
