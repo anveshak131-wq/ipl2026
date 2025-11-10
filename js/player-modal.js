@@ -29,6 +29,13 @@ function initModal() {
     
     console.log('Initializing modal...');
     
+    // Ensure DOM is ready
+    if (document.readyState === 'loading') {
+        console.log('DOM still loading, waiting...');
+        document.addEventListener('DOMContentLoaded', initModal);
+        return;
+    }
+    
     // Get all required elements
     const elements = {
         modal: document.getElementById('playerModal'),
@@ -51,6 +58,16 @@ function initModal() {
         console.error('Missing essential modal elements:', missingElements);
         // Try to ensure elements exist
         ensureModalElements();
+        // Re-check after ensureModalElements
+        const recoveredElements = window.modalState?.elements || {};
+        if (recoveredElements.modal && recoveredElements.modalDetails) {
+            elements.modal = recoveredElements.modal;
+            elements.modalDetails = recoveredElements.modalDetails;
+            if (recoveredElements.modalName) elements.modalName = recoveredElements.modalName;
+            if (recoveredElements.modalClose) elements.modalClose = recoveredElements.modalClose;
+        } else {
+            console.error('Critical modal elements still missing after recovery attempt');
+        }
     }
 
     // Store elements in modal state
@@ -88,18 +105,45 @@ function ensureModalElements() {
         if (!window.modalState) window.modalState = { initialized: false, elements: null };
         const elems = window.modalState.elements || {};
         
-        // Re-query any missing elements
-        elems.modal = elems.modal || document.getElementById('playerModal') || document.querySelector('.player-modal');
-        elems.modalName = elems.modalName || document.getElementById('modalPlayerName') || document.querySelector('.modal-player-name');
-        elems.modalRole = elems.modalRole || document.getElementById('modalPlayerRole') || document.querySelector('.modal-player-role');
-        elems.modalBadges = elems.modalBadges || document.getElementById('modalPlayerBadges') || document.querySelector('.modal-player-badges');
-        elems.modalDetails = elems.modalDetails || document.getElementById('modalPlayerDetails') || document.querySelector('.modal-player-details');
-        elems.modalClose = elems.modalClose || document.getElementById('modalCloseButton') || document.querySelector('.modal-close');
-        elems.modalLogo = elems.modalLogo || document.getElementById('modalPlayerLogo');
-        elems.container = elems.container || document.querySelector('.container');
-        elems.header = elems.header || document.querySelector('.team-header');
+        // Re-query any missing elements - always check if element exists and is valid
+        if (!elems.modal || elems.modal.nodeType !== 1) {
+            elems.modal = document.getElementById('playerModal') || document.querySelector('.player-modal');
+        }
+        if (!elems.modalName || elems.modalName.nodeType !== 1) {
+            elems.modalName = document.getElementById('modalPlayerName') || document.querySelector('.modal-player-name');
+        }
+        if (!elems.modalRole || elems.modalRole.nodeType !== 1) {
+            elems.modalRole = document.getElementById('modalPlayerRole') || document.querySelector('.modal-player-role');
+        }
+        if (!elems.modalBadges || elems.modalBadges.nodeType !== 1) {
+            elems.modalBadges = document.getElementById('modalPlayerBadges') || document.querySelector('.modal-player-badges');
+        }
+        if (!elems.modalDetails || elems.modalDetails.nodeType !== 1) {
+            elems.modalDetails = document.getElementById('modalPlayerDetails') || document.querySelector('.modal-player-details');
+        }
+        if (!elems.modalClose || elems.modalClose.nodeType !== 1) {
+            elems.modalClose = document.getElementById('modalCloseButton') || document.querySelector('.modal-close');
+        }
+        if (!elems.modalLogo || elems.modalLogo.nodeType !== 1) {
+            elems.modalLogo = document.getElementById('modalPlayerLogo');
+        }
+        if (!elems.container || elems.container.nodeType !== 1) {
+            elems.container = document.querySelector('.container');
+        }
+        if (!elems.header || elems.header.nodeType !== 1) {
+            elems.header = document.querySelector('.team-header');
+        }
 
         window.modalState.elements = elems;
+        
+        // Log missing critical elements
+        const missing = [];
+        if (!elems.modal) missing.push('modal');
+        if (!elems.modalDetails) missing.push('modalDetails');
+        if (missing.length > 0) {
+            console.warn('Missing critical modal elements:', missing);
+        }
+        
         return true;
     } catch (e) {
         console.error('ensureModalElements failed:', e);
@@ -129,7 +173,7 @@ window.showPlayerModal = function(player) {
         window.ensureModalElements();
     }
     
-    const elements = window.modalState?.elements || {};
+    let elements = window.modalState?.elements || {};
     if (!elements.modal) {
         console.error('Modal element not found. Attempting to recover...');
         // Try to recover modal elements
@@ -144,7 +188,39 @@ window.showPlayerModal = function(player) {
             return;
         }
         // Use recovered elements
-        Object.assign(elements, recoveredElements);
+        elements = recoveredElements;
+        // Update modalState with recovered elements
+        window.modalState.elements = elements;
+    }
+
+    // Re-query all critical elements to ensure they exist
+    if (!elements.modalName) {
+        elements.modalName = document.getElementById('modalPlayerName');
+    }
+    if (!elements.modalRole) {
+        elements.modalRole = document.getElementById('modalPlayerRole');
+    }
+    if (!elements.modalBadges) {
+        elements.modalBadges = document.getElementById('modalPlayerBadges');
+    }
+    if (!elements.modalDetails) {
+        elements.modalDetails = document.getElementById('modalPlayerDetails');
+    }
+    if (!elements.modalLogo) {
+        elements.modalLogo = document.getElementById('modalPlayerLogo');
+    }
+    if (!elements.modalClose) {
+        elements.modalClose = document.getElementById('modalCloseButton');
+    }
+
+    // Final check - if critical elements are still missing, abort
+    if (!elements.modal || !elements.modalDetails) {
+        console.error('Critical modal elements missing:', {
+            modal: !!elements.modal,
+            modalDetails: !!elements.modalDetails
+        });
+        alert('Modal elements are not available. Please refresh the page.');
+        return;
     }
 
     try {
@@ -181,6 +257,8 @@ window.showPlayerModal = function(player) {
         }
         if (elements.modalBadges) {
             elements.modalBadges.innerHTML = badgesHTML || '<span class="modal-badge">Player</span>';
+        } else {
+            console.warn('modalBadges element not found, skipping badge display');
         }
 
         // Parse stats (handle both object and string)
@@ -309,9 +387,20 @@ window.showPlayerModal = function(player) {
 
         detailsHTML += '</div>';
 
-        // Set details HTML
-        if (elements.modalDetails) {
+        // Set details HTML - with additional null check
+        if (elements.modalDetails && elements.modalDetails.nodeType === 1) {
             elements.modalDetails.innerHTML = detailsHTML;
+        } else {
+            console.error('modalDetails element is null or invalid:', elements.modalDetails);
+            // Try one more time to find it
+            const retryElement = document.getElementById('modalPlayerDetails');
+            if (retryElement) {
+                retryElement.innerHTML = detailsHTML;
+                elements.modalDetails = retryElement;
+                window.modalState.elements = elements;
+            } else {
+                console.error('Could not find modalPlayerDetails element in DOM');
+            }
         }
 
         // Show modal and blur background
