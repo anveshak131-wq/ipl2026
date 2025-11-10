@@ -271,7 +271,20 @@
         </div>
     </footer>
 
-    <script src="js/player-modal.js?v=2.0"></script>
-    <script src="js/team-page-loader.js?v=2.4"></script>
+    <script src="js/player-modal.js?v=2.1"></script>
+    <script src="js/team-page-loader.js?v=2.5"></script>
+    <script>
+        // Debug helper - check modal status after page load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                console.log('=== Modal Debug Info ===');
+                console.log('Modal initialized:', window.modalState?.initialized);
+                console.log('showPlayerModal available:', typeof window.showPlayerModal === 'function');
+                console.log('initModal available:', typeof window.initModal === 'function');
+                console.log('Modal element exists:', !!document.getElementById('playerModal'));
+                console.log('=======================');
+            }, 1500);
+        });
+    </script>
 </body>
 </html>

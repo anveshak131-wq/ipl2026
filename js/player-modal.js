@@ -79,6 +79,9 @@ function initModal() {
     console.log('Modal initialized successfully');
 }
 
+// Export initModal globally
+window.initModal = initModal;
+
 // Helper: ensure modal elements are present
 function ensureModalElements() {
     try {
@@ -106,19 +109,42 @@ function ensureModalElements() {
 
 // Show player modal with comprehensive stats
 window.showPlayerModal = function(player) {
+    console.log('showPlayerModal called with player:', player);
+    
     // Ensure modal is initialized
-    if (!window.modalState.initialized) {
-        ensureModalElements();
-        initModal();
+    if (!window.modalState || !window.modalState.initialized) {
+        console.log('Modal not initialized, initializing now...');
+        if (typeof window.ensureModalElements === 'function') {
+            window.ensureModalElements();
+        }
+        if (typeof window.initModal === 'function') {
+            window.initModal();
+        } else if (typeof initModal === 'function') {
+            initModal();
+        }
     }
 
     // Ensure elements exist
-    ensureModalElements();
+    if (typeof window.ensureModalElements === 'function') {
+        window.ensureModalElements();
+    }
     
     const elements = window.modalState?.elements || {};
     if (!elements.modal) {
-        console.error('Modal element not found');
-        return;
+        console.error('Modal element not found. Attempting to recover...');
+        // Try to recover modal elements
+        if (typeof window.ensureModalElements === 'function') {
+            window.ensureModalElements();
+        }
+        // Re-check after recovery
+        const recoveredElements = window.modalState?.elements || {};
+        if (!recoveredElements.modal) {
+            console.error('Modal element still not found after recovery attempt');
+            alert('Modal is not available. Please refresh the page.');
+            return;
+        }
+        // Use recovered elements
+        Object.assign(elements, recoveredElements);
     }
 
     try {
@@ -334,18 +360,49 @@ window.closePlayerModal = function() {
 window.ensureModalElements = ensureModalElements;
 
 // Initialize when DOM is loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(initModal, 100);
-    });
-} else {
-    setTimeout(initModal, 100);
+function initializeModalOnLoad() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (typeof window.initModal === 'function') {
+                    window.initModal();
+                }
+            }, 100);
+        });
+    } else {
+        // DOM already loaded
+        setTimeout(() => {
+            if (typeof window.initModal === 'function') {
+                window.initModal();
+            }
+        }, 100);
+    }
+    
+    // Also initialize after a delay to ensure all scripts are loaded
+    setTimeout(() => {
+        if (!window.modalState || !window.modalState.initialized) {
+            if (typeof window.initModal === 'function') {
+                window.initModal();
+            }
+        }
+    }, 500);
+    
+    // Final initialization check
+    setTimeout(() => {
+        if (!window.modalState || !window.modalState.initialized) {
+            console.warn('Modal still not initialized after delays, forcing initialization...');
+            if (typeof window.ensureModalElements === 'function') {
+                window.ensureModalElements();
+            }
+            if (typeof window.initModal === 'function') {
+                window.initModal();
+            }
+        } else {
+            console.log('Modal initialization confirmed');
+        }
+    }, 1000);
 }
 
-// Also initialize after a delay to ensure all scripts are loaded
-setTimeout(() => {
-    if (!window.modalState.initialized) {
-        initModal();
-    }
-}, 500);
+// Start initialization
+initializeModalOnLoad();
 

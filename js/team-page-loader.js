@@ -165,12 +165,17 @@ function createPlayerCard(player, teamCode) {
     // Add click event to show modal
     card.addEventListener('click', () => {
         try {
+            console.log('Player card clicked:', player.name);
+            
             // Ensure modal is initialized
-            if (!window.modalState?.initialized) {
+            if (!window.modalState || !window.modalState.initialized) {
                 console.log('Modal not yet initialized, initializing now...');
-                if (typeof initModal === 'function') {
+                if (typeof window.initModal === 'function') {
+                    window.initModal();
+                } else if (typeof initModal === 'function') {
                     initModal();
-                } else if (typeof window.ensureModalElements === 'function') {
+                }
+                if (typeof window.ensureModalElements === 'function') {
                     window.ensureModalElements();
                 }
             }
@@ -181,7 +186,7 @@ function createPlayerCard(player, teamCode) {
             }
 
             // Wait a bit for modal to initialize if needed
-            if (window.showPlayerModal) {
+            if (typeof window.showPlayerModal === 'function') {
                 // Clone the player object to ensure we pass all data including team
                 const playerData = {
                     ...player,
@@ -191,16 +196,22 @@ function createPlayerCard(player, teamCode) {
                 window.showPlayerModal(playerData);
             } else {
                 console.error('showPlayerModal function not found. Waiting...');
+                // Try to initialize modal again
+                if (typeof window.initModal === 'function') {
+                    window.initModal();
+                }
                 // Retry after a short delay
                 setTimeout(() => {
-                    if (window.showPlayerModal) {
+                    if (typeof window.showPlayerModal === 'function') {
                         const playerData = {
                             ...player,
                             team: player.team || teamCode.toUpperCase()
                         };
+                        console.log('Retrying to open modal for player:', playerData);
                         window.showPlayerModal(playerData);
                     } else {
-                        console.error('showPlayerModal still not available');
+                        console.error('showPlayerModal still not available after retry');
+                        console.error('Available functions:', Object.keys(window).filter(k => k.includes('modal') || k.includes('Modal')));
                         alert('Player modal is not available. Please refresh the page.');
                     }
                 }, 500);
