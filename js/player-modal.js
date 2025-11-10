@@ -17,6 +17,9 @@ const TEAM_LOGOS = {
     'LSG': 'assets/lsg_logo_new.svg'
 };
 
+// Vercel API base URL for fetching player stats
+const VERCEL_API_BASE = 'https://iplcrickethub-kappa.vercel.app';
+
 // Global state
 window.playerModalReady = false;
 
@@ -186,8 +189,43 @@ function ensureModalElements() {
 // Export ensureModalElements for external use
 window.ensureModalElements = ensureModalElements;
 
+// Fetch detailed player stats from Vercel API
+async function fetchPlayerStatsFromVercel(playerName, teamCode) {
+    try {
+        const teamCodeUpper = teamCode ? teamCode.toUpperCase() : '';
+        const apiUrl = `${VERCEL_API_BASE}/api/admin/players?team=${teamCodeUpper}`;
+        
+        console.log(`🔄 Fetching detailed stats for ${playerName} from Vercel API...`);
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+            console.warn(`⚠️ API response not OK: ${response.status}`);
+            return null;
+        }
+        
+        const result = await response.json();
+        const playersData = Array.isArray(result.data) ? result.data : (Array.isArray(result) ? result : []);
+        
+        // Find the specific player by name
+        const playerData = playersData.find(p => 
+            p.name && p.name.toLowerCase().trim() === playerName.toLowerCase().trim()
+        );
+        
+        if (playerData) {
+            console.log(`✅ Found detailed stats for ${playerName}`);
+            return playerData;
+        } else {
+            console.warn(`⚠️ Player ${playerName} not found in API response`);
+            return null;
+        }
+    } catch (error) {
+        console.error('❌ Error fetching player stats from Vercel:', error);
+        return null;
+    }
+}
+
 // Show player modal
-window.showPlayerModal = function(player) {
+window.showPlayerModal = async function(player) {
     if (!player) {
         console.error('No player data provided');
         return;
@@ -211,10 +249,10 @@ window.showPlayerModal = function(player) {
     }
     
     try {
-        // Set player name
+        // Set basic player info immediately
         if (modalName) modalName.textContent = player.name || 'Unknown Player';
         
-        // Set role
+        // Set role (will be updated after fetching detailed data)
         if (modalRole) {
             const roleText = player.role || 'Player';
             const teamText = player.team || '';
@@ -228,30 +266,60 @@ window.showPlayerModal = function(player) {
             modalLogo.onerror = () => { modalLogo.src = 'assets/ipl_logo_new.svg'; };
         }
         
-        // Build badges
+        // Show loading state
+        modalDetails.innerHTML = '<div class="empty-state"><h4>Loading statistics...</h4><p>Fetching player data from Vercel storage...</p></div>';
+        
+        // Show modal immediately with loading state
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        const container = document.querySelector('.container');
+        const header = document.querySelector('.team-header');
+        if (container) container.classList.add('blurred');
+        if (header) header.classList.add('blurred');
+        
+        // Fetch detailed stats from Vercel API
+        const detailedPlayerData = await fetchPlayerStatsFromVercel(player.name, player.team);
+        
+        // Use detailed data if available, otherwise fall back to player data
+        const finalPlayerData = detailedPlayerData || player;
+        
+        // Update role with detailed data
+        if (modalRole) {
+            const roleText = finalPlayerData.role || player.role || 'Player';
+            const teamText = finalPlayerData.team || player.team || '';
+            modalRole.textContent = teamText ? `${roleText} • ${teamText}` : roleText;
+        }
+        
+        // Update badges with detailed data
         let badgesHTML = '';
-        if (player.isCaptain) badgesHTML += '<span class="modal-badge">👑 Captain</span>';
-        if (player.isViceCaptain) badgesHTML += '<span class="modal-badge">⭐ Vice Captain</span>';
-        if (player.isForeign) badgesHTML += '<span class="modal-badge">🌏 Overseas</span>';
-        if ((player.role || '').toLowerCase().includes('wicket')) badgesHTML += '<span class="modal-badge">🧤 Wicket-Keeper</span>';
+        const isCaptain = finalPlayerData.isCaptain || player.isCaptain;
+        const isViceCaptain = finalPlayerData.isViceCaptain || player.isViceCaptain;
+        const isForeign = finalPlayerData.isForeign || player.isForeign;
+        const role = (finalPlayerData.role || player.role || '').toLowerCase();
+        
+        if (isCaptain) badgesHTML += '<span class="modal-badge">👑 Captain</span>';
+        if (isViceCaptain) badgesHTML += '<span class="modal-badge">⭐ Vice Captain</span>';
+        if (isForeign) badgesHTML += '<span class="modal-badge">🌏 Overseas</span>';
+        if (role.includes('wicket')) badgesHTML += '<span class="modal-badge">🧤 Wicket-Keeper</span>';
         if (!badgesHTML) badgesHTML = '<span class="modal-badge">Player</span>';
         if (modalBadges) modalBadges.innerHTML = badgesHTML;
         
         // Parse stats
-        let stats = player.stats || {};
+        let stats = finalPlayerData.stats || {};
         if (typeof stats === 'string') {
             try { stats = JSON.parse(stats); } catch (e) { stats = {}; }
         }
         
         // Build details HTML
-        const battingStyle = player['batting style'] || player.battingStyle || '';
-        const bowlingStyle = player['bowling style'] || player.bowlingStyle || '';
-        const allrounderType = player['allrounder type'] || player.allrounderType || '';
+        const battingStyle = finalPlayerData['batting style'] || finalPlayerData.battingStyle || player['batting style'] || player.battingStyle || '';
+        const bowlingStyle = finalPlayerData['bowling style'] || finalPlayerData.bowlingStyle || player['bowling style'] || player.bowlingStyle || '';
+        const allrounderType = finalPlayerData['allrounder type'] || finalPlayerData.allrounderType || player['allrounder type'] || player.allrounderType || '';
         
         let detailsHTML = '<div class="player-details-grid"><div class="details-section"><h4>Basic Information</h4>';
-        if (player.age) detailsHTML += `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${player.age}</div></div>`;
-        if (player.nationality) detailsHTML += `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${player.nationality}</div></div>`;
-        if (player.jersey || player.number) detailsHTML += `<div class="detail-item"><div class="detail-label">Jersey</div><div class="detail-value">${player.jersey || player.number}</div></div>`;
+        if (finalPlayerData.age || player.age) detailsHTML += `<div class="detail-item"><div class="detail-label">Age</div><div class="detail-value">${finalPlayerData.age || player.age}</div></div>`;
+        if (finalPlayerData.nationality || player.nationality) detailsHTML += `<div class="detail-item"><div class="detail-label">Nationality</div><div class="detail-value">${finalPlayerData.nationality || player.nationality}</div></div>`;
+        if (finalPlayerData.jersey || finalPlayerData.number || player.jersey || player.number) detailsHTML += `<div class="detail-item"><div class="detail-label">Jersey</div><div class="detail-value">${finalPlayerData.jersey || finalPlayerData.number || player.jersey || player.number}</div></div>`;
         if (battingStyle) detailsHTML += `<div class="detail-item"><div class="detail-label">Batting</div><div class="detail-value">${battingStyle}</div></div>`;
         if (bowlingStyle) detailsHTML += `<div class="detail-item"><div class="detail-label">Bowling</div><div class="detail-value">${bowlingStyle}</div></div>`;
         if (allrounderType) detailsHTML += `<div class="detail-item"><div class="detail-label">Type</div><div class="detail-value">${allrounderType}</div></div>`;
@@ -262,43 +330,34 @@ window.showPlayerModal = function(player) {
             detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.matches || stats.matchesPlayed || 0}</div><div class="stat-label">Matches</div></div>`;
             detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.innings || 0}</div><div class="stat-label">Innings</div></div>`;
             detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.runs || stats.totalRuns || 0}</div><div class="stat-label">Runs</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.battingAvg || stats.average || '0.00'}</div><div class="stat-label">Average</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.strikeRate || '0.00'}</div><div class="stat-label">Strike Rate</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.highestScore || stats.highest || 0}</div><div class="stat-label">Highest</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.centuries || stats.hundreds || 0}</div><div class="stat-label">100s</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fifties || stats.fifty || 0}</div><div class="stat-label">50s</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.sixes || 0}</div><div class="stat-label">Sixes</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fours || 0}</div><div class="stat-label">Fours</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.battingAvg || stats.average || stats.battingAverage || '0.00'}</div><div class="stat-label">Average</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.strikeRate || stats.strike_rate || '0.00'}</div><div class="stat-label">Strike Rate</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.highestScore || stats.highest || stats.highest_score || 0}</div><div class="stat-label">Highest</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.centuries || stats.hundreds || stats.century || 0}</div><div class="stat-label">100s</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fifties || stats.fifty || stats.half_centuries || 0}</div><div class="stat-label">50s</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.sixes || stats.six || 0}</div><div class="stat-label">Sixes</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fours || stats.four || 0}</div><div class="stat-label">Fours</div></div>`;
             detailsHTML += '</div></div>';
             
             detailsHTML += '<div class="details-section"><h4>Bowling Statistics</h4><div class="stats-grid">';
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.wickets || stats.totalWickets || 0}</div><div class="stat-label">Wickets</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.bowlingAvg || stats.bowlingAverage || '0.00'}</div><div class="stat-label">Average</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.economy || stats.economyRate || '0.00'}</div><div class="stat-label">Economy</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.bestBowling || stats.best || '-'}</div><div class="stat-label">Best</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fiveWickets || stats.fiveWicketHauls || 0}</div><div class="stat-label">5-Wickets</div></div>`;
-            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fourWickets || stats.fourWicketHauls || 0}</div><div class="stat-label">4-Wickets</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.wickets || stats.totalWickets || stats.total_wickets || 0}</div><div class="stat-label">Wickets</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.bowlingAvg || stats.bowlingAverage || stats.bowling_avg || '0.00'}</div><div class="stat-label">Average</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.economy || stats.economyRate || stats.economy_rate || '0.00'}</div><div class="stat-label">Economy</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.bestBowling || stats.best || stats.best_bowling || '-'}</div><div class="stat-label">Best</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fiveWickets || stats.fiveWicketHauls || stats.five_wickets || 0}</div><div class="stat-label">5-Wickets</div></div>`;
+            detailsHTML += `<div class="stat-item"><div class="stat-number">${stats.fourWickets || stats.fourWicketHauls || stats.four_wickets || 0}</div><div class="stat-label">4-Wickets</div></div>`;
             detailsHTML += '</div></div>';
         } else {
-            detailsHTML += '<div class="details-section"><div class="empty-state"><h4>No statistics available</h4><p>Stats will be displayed once added.</p></div></div>';
+            detailsHTML += '<div class="details-section"><div class="empty-state"><h4>No statistics available</h4><p>Stats will be displayed once added to the system.</p></div></div>';
         }
         detailsHTML += '</div>';
         
         // Set details - DIRECT assignment
         modalDetails.innerHTML = detailsHTML;
         
-        // Show modal
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        
-        const container = document.querySelector('.container');
-        const header = document.querySelector('.team-header');
-        if (container) container.classList.add('blurred');
-        if (header) header.classList.add('blurred');
-        
     } catch (error) {
         console.error('Error displaying modal:', error);
-        alert('Error displaying player details. Please try again.');
+        modalDetails.innerHTML = '<div class="empty-state"><h4>Error loading statistics</h4><p>Unable to fetch player data. Please try again later.</p></div>';
     }
 };
 
