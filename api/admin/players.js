@@ -31,7 +31,19 @@ export default async function handler(req, res) {
         });
       }
 
-      const players = await redis.get(`players:${team}`);
+      // Normalize team code (handle KXIP -> PBKS mapping)
+      let teamCode = team.toUpperCase();
+      if (teamCode === 'KXIP') {
+        teamCode = 'PBKS';
+      }
+
+      // Try to get players with normalized team code
+      let players = await redis.get(`players:${teamCode}`);
+      
+      // If not found and team was KXIP, also try PBKS (backward compatibility)
+      if (!players && team.toUpperCase() === 'KXIP') {
+        players = await redis.get(`players:PBKS`);
+      }
       
       return res.status(200).json({
         success: true,
@@ -50,7 +62,19 @@ export default async function handler(req, res) {
         });
       }
 
-      await redis.set(`players:${team}`, players);
+      // Normalize team code (handle KXIP -> PBKS mapping)
+      let teamCode = team.toUpperCase();
+      if (teamCode === 'KXIP') {
+        teamCode = 'PBKS';
+        // Also delete old KXIP key if it exists (migration)
+        try {
+          await redis.del(`players:KXIP`);
+        } catch (e) {
+          // Ignore errors
+        }
+      }
+
+      await redis.set(`players:${teamCode}`, players);
       
       return res.status(200).json({
         success: true,

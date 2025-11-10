@@ -255,7 +255,7 @@
                     <ul>
                         <li>Columns: <code>Date, Team 1, Team 2, Venue, Time, Status</code></li>
                         <li>Date format: YYYY-MM-DD</li>
-                        <li>Team codes: RCB, MI, CSK, SRH, KXIP, KKR, DC, RR, GT, LSG</li>
+                        <li>Team codes: RCB, MI, CSK, SRH, PBKS, KKR, DC, RR, GT, LSG</li>
                         <li>Status: upcoming, live, or completed</li>
                     </ul>
                 </div>
@@ -274,7 +274,7 @@
                         <option value="MI">Mumbai Indians (MI)</option>
                         <option value="CSK">Chennai Super Kings (CSK)</option>
                         <option value="SRH">Sunrisers Hyderabad (SRH)</option>
-                        <option value="KXIP">Kings XI Punjab (KXIP)</option>
+                        <option value="PBKS">Punjab Kings (PBKS)</option>
                         <option value="KKR">Kolkata Knight Riders (KKR)</option>
                         <option value="DC">Delhi Capitals (DC)</option>
                         <option value="RR">Rajasthan Royals (RR)</option>
@@ -306,7 +306,7 @@
                         <option value="MI">Mumbai Indians (MI)</option>
                         <option value="CSK">Chennai Super Kings (CSK)</option>
                         <option value="SRH">Sunrisers Hyderabad (SRH)</option>
-                        <option value="KXIP">Kings XI Punjab (KXIP)</option>
+                        <option value="PBKS">Punjab Kings (PBKS)</option>
                         <option value="KKR">Kolkata Knight Riders (KKR)</option>
                         <option value="DC">Delhi Capitals (DC)</option>
                         <option value="RR">Rajasthan Royals (RR)</option>
@@ -477,16 +477,72 @@
                         player.isForeign = true;
                     }
                     
-                    parsedPlayers.push(player);
+                    if (player.name) {
+                        parsedPlayers.push(player);
+                    }
                 }
                 
-                // Store in localStorage for the frontend to read
+                // Store in localStorage (backup)
                 localStorage.setItem(`uploaded_${team.toLowerCase()}_players`, JSON.stringify(parsedPlayers));
                 
-                console.log(`Parsed ${parsedPlayers.length} players for ${team}`);
+                // Prepare API payload
+                const apiPlayers = parsedPlayers.map(p => ({
+                    name: p.name,
+                    role: p.role || 'Player',
+                    age: p.age ? parseInt(p.age) : null,
+                    nationality: p.nationality || '',
+                    isForeign: p.isForeign || false,
+                    isCaptain: p.isCaptain || false,
+                    isViceCaptain: p.isViceCaptain || false,
+                    battingStyle: p['batting style'] || p.battingstyle || '',
+                    bowlingStyle: p['bowling style'] || p.bowlingstyle || '',
+                    allrounderType: p['allrounder type'] || p.allroundertype || '',
+                    stats: p.stats || {},
+                    jersey: p.jersey || p.number || null,
+                    number: p.jersey || p.number || null,
+                    photo: p.image || p.photo || '',
+                    // Legacy format
+                    'batting style': p['batting style'] || p.battingstyle || '',
+                    'bowling style': p['bowling style'] || p.bowlingstyle || '',
+                    'allrounder type': p['allrounder type'] || p.allroundertype || ''
+                }));
+
+                // Save to Vercel API
+                try {
+                    const apiUrl = `${window.location.origin}/api/admin/players`;
+                    console.log('Saving CSV players to API:', apiUrl);
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            team: team.toUpperCase(),
+                            players: apiPlayers
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`API error: ${response.status} - ${errorText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('API response:', result);
+                    
+                    successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded and synced with server)`;
+                    successEl.style.display = 'block';
+                } catch (apiError) {
+                    console.error('Error saving to API:', apiError);
+                    successEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Players for ${team} uploaded locally (${parsedPlayers.length} players), but failed to sync with server: ${apiError.message}`;
+                    successEl.style.display = 'block';
+                    successEl.style.background = 'rgba(255, 193, 7, 0.2)';
+                    successEl.style.borderColor = '#ffc107';
+                    successEl.style.color = '#ffc107';
+                }
                 
-                successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded)`;
-                successEl.style.display = 'block';
+                console.log(`Parsed ${parsedPlayers.length} players for ${team}`);
             } catch (error) {
                 showError('playersError', 'Upload failed: ' + error.message);
             }
@@ -595,7 +651,7 @@
             }
         }
 
-        function savePlayers() {
+        async function savePlayers() {
             const team = document.getElementById('teamSelectManual').value;
             if (!team) {
                 showError('playersManualError', 'Please select a team');
@@ -634,19 +690,78 @@
                 return;
             }
 
-            // Store in localStorage
+            const successEl = document.getElementById('playersManualSuccess');
+            const errorEl = document.getElementById('playersManualError');
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+
+            // Store in localStorage (backup)
             localStorage.setItem(`uploaded_${team.toLowerCase()}_players`, JSON.stringify(players));
 
-            // Show success
-            const successEl = document.getElementById('playersManualSuccess');
-            successEl.innerHTML = `<i class="fas fa-check-circle"></i> ${players.length} player(s) saved for ${team}!`;
-            successEl.style.display = 'block';
+            // Prepare API payload - normalize data format
+            const apiPlayers = players.map(p => ({
+                name: p.name,
+                role: p.role || 'Player',
+                age: p.age ? parseInt(p.age) : null,
+                nationality: p.nationality || '',
+                isForeign: p.isForeign || false,
+                isCaptain: p.isCaptain || false,
+                isViceCaptain: p.isViceCaptain || false,
+                battingStyle: p['batting style'] || '',
+                bowlingStyle: p['bowling style'] || '',
+                allrounderType: p['allrounder type'] || '',
+                stats: p.stats || {},
+                jersey: p.jersey || p.number || null,
+                number: p.jersey || p.number || null,
+                photo: p.image || p.photo || '',
+                // Also include legacy format for compatibility
+                'batting style': p['batting style'] || '',
+                'bowling style': p['bowling style'] || '',
+                'allrounder type': p['allrounder type'] || ''
+            }));
 
-            // Clear form
-            document.getElementById('playersList').innerHTML = '';
-            playerCount = 0;
+            try {
+                // Save to Vercel API
+                const apiUrl = `${window.location.origin}/api/admin/players`;
+                console.log('Saving players to API:', apiUrl, { team: team.toUpperCase(), players: apiPlayers });
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        team: team.toUpperCase(),
+                        players: apiPlayers
+                    })
+                });
 
-            console.log(`Saved ${players.length} players for ${team}`);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`API error: ${response.status} - ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log('API response:', result);
+
+                // Show success
+                successEl.innerHTML = `<i class="fas fa-check-circle"></i> ${players.length} player(s) saved for ${team}! (Synced with server)`;
+                successEl.style.display = 'block';
+
+                // Clear form
+                document.getElementById('playersList').innerHTML = '';
+                playerCount = 0;
+
+                console.log(`✅ Saved ${players.length} players for ${team} to API`);
+            } catch (error) {
+                console.error('Error saving to API:', error);
+                // Show warning but don't fail completely
+                successEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${players.length} player(s) saved locally, but failed to sync with server: ${error.message}`;
+                successEl.style.display = 'block';
+                successEl.style.background = 'rgba(255, 193, 7, 0.2)';
+                successEl.style.borderColor = '#ffc107';
+                successEl.style.color = '#ffc107';
+            }
         }
     </script>
 </body>

@@ -44,55 +44,97 @@ async function loadPlayers() {
         </div>
     `;
 
-    try {
-        playersData = [];
-        let debugOutput = '';
-        // Load players from Vercel KV API for all teams
-        for (const team of IPL_TEAMS) {
-            try {
-                const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
-                debugOutput += `<div><b>${team} response:</b> ${response.status}</div>`;
-                if (response.ok) {
-                    const result = await response.json();
-                    debugOutput += `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-                    const teamPlayers = result.data || result || [];
-                    if (Array.isArray(teamPlayers) && teamPlayers.length > 0) {
-                        teamPlayers.forEach(player => {
-                            if (player.name) {
-                                playersData.push({
-                                    id: `${team}_${player.name}`,
-                                    name: player.name,
-                                    team: team,
-                                    role: player.role || player.position || 'Player',
-                                    jersey: player.number || player.jersey,
-                                    photo: player.photo || player.image,
-                                    age: player.age,
-                                    nationality: player.nationality,
-                                    battingStyle: player['batting style'] || player.battingStyle,
-                                    bowlingStyle: player['bowling style'] || player.bowlingStyle,
-                                    allrounderType: player['allrounder type'] || player.allrounderType,
-                                    isCaptain: player.isCaptain,
-                                    isViceCaptain: player.isViceCaptain,
-                                    isForeign: player.isForeign,
-                                    stats: player.stats || {}
-                                });
-                            }
-                        });
+        try {
+            playersData = [];
+            let debugOutput = '';
+            let hasErrors = false;
+            
+            // Load players from Vercel KV API for all teams
+            for (const team of IPL_TEAMS) {
+                try {
+                    const apiUrl = `${API_BASE}/api/admin/players?team=${team}`;
+                    console.log(`Loading players for ${team} from: ${apiUrl}`);
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    debugOutput += `<div><b>${team}:</b> Status ${response.status}</div>`;
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log(`${team} API response:`, result);
+                        
+                        // Handle different response formats
+                        let teamPlayers = [];
+                        if (result.data) {
+                            teamPlayers = Array.isArray(result.data) ? result.data : [];
+                        } else if (Array.isArray(result)) {
+                            teamPlayers = result;
+                        } else if (result.players && Array.isArray(result.players)) {
+                            teamPlayers = result.players;
+                        }
+                        
+                        debugOutput += `<div style='color:green'>${team}: Found ${teamPlayers.length} players</div>`;
+                        
+                        if (teamPlayers.length > 0) {
+                            teamPlayers.forEach(player => {
+                                if (player && player.name) {
+                                    playersData.push({
+                                        id: `${team}_${player.name}`,
+                                        name: player.name,
+                                        team: team,
+                                        role: player.role || player.position || 'Player',
+                                        jersey: player.number || player.jersey || null,
+                                        photo: player.photo || player.image || null,
+                                        age: player.age || null,
+                                        nationality: player.nationality || null,
+                                        battingStyle: player['batting style'] || player.battingStyle || null,
+                                        bowlingStyle: player['bowling style'] || player.bowlingStyle || null,
+                                        allrounderType: player['allrounder type'] || player.allrounderType || null,
+                                        isCaptain: player.isCaptain || false,
+                                        isViceCaptain: player.isViceCaptain || false,
+                                        isForeign: player.isForeign || false,
+                                        stats: player.stats || {}
+                                    });
+                                }
+                            });
+                        } else {
+                            debugOutput += `<div style='color:orange'>${team}: No players found</div>`;
+                        }
+                    } else {
+                        const errorText = await response.text();
+                        debugOutput += `<div style='color:red'>${team} request failed: ${response.status} - ${errorText}</div>`;
+                        hasErrors = true;
+                        console.error(`${team} API error:`, response.status, errorText);
                     }
-                } else {
-                    debugOutput += `<div style='color:red'>${team} request failed: ${response.status}</div>`;
+                } catch (err) {
+                    debugOutput += `<div style='color:red'>Failed to load ${team} players: ${err.message}</div>`;
+                    hasErrors = true;
+                    console.error(`Error loading ${team} players:`, err);
                 }
-            } catch (err) {
-                debugOutput += `<div style='color:red'>Failed to load ${team} players: ${err}</div>`;
             }
-        }
-        displayPlayers(playersData);
-        updateStats();
-        // If no players, show debug output
-        if (playersData.length === 0) {
-            grid.innerHTML += `<div class='empty-state' style='grid-column: 1 / -1;'><h4>Debug API Output:</h4>${debugOutput}</div>`;
-        }
-    } catch (error) {
+            
+            console.log(`Loaded ${playersData.length} total players from API`);
+            
+            displayPlayers(playersData);
+            updateStats();
+            
+            // If no players found, show helpful message with debug info
+            if (playersData.length === 0) {
+                grid.innerHTML = `
+                    <div class='empty-state' style='grid-column: 1 / -1;'>
+                        <i class="fas fa-users-slash"></i>
+                        <h3>No Players Found</h3>
+                        <p>Upload players in the <a href="admin-upload.html" style="color: var(--secondary);">Admin Dashboard</a> first!</p>
+                        ${hasErrors ? `<details style='margin-top: 1rem; text-align: left;'><summary style='cursor: pointer; color: var(--secondary);'>Debug Info</summary><div style='margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px; font-size: 0.9rem;'>${debugOutput}</div></details>` : ''}
+                    </div>
+                `;
+            }
+        } catch (error) {
         grid.innerHTML = `
             <div class="empty-state" style="grid-column: 1 / -1;">
                 <i class="fas fa-exclamation-triangle"></i>
