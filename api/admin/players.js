@@ -44,16 +44,16 @@ function getRedis() {
 }
 
 export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+  // Wrap everything in try-catch to prevent crashes
   try {
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
     // GET - Fetch players for a team
     if (req.method === 'GET') {
       const { team } = req.query;
@@ -175,15 +175,23 @@ export default async function handler(req, res) {
       code: error.code
     });
     
+    // Log environment variable status
+    const envStatus = {
+      UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL ? 'Set' : 'Missing',
+      UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? 'Set' : 'Missing'
+    };
+    console.error('Environment Variables Status:', envStatus);
+    
     // Check if it's an environment variable issue
     const isEnvError = error.message && (
       error.message.includes('UPSTASH_REDIS_REST_URL') ||
       error.message.includes('UPSTASH_REDIS_REST_TOKEN') ||
       error.message.includes('environment variable') ||
-      error.message.includes('fromEnv')
+      error.message.includes('fromEnv') ||
+      error.message.includes('Missing environment variables')
     );
     
-    // Return a user-friendly error message
+    // Return a user-friendly error message with debugging info
     return res.status(500).json({
       success: false,
       error: error.message || 'Internal server error',
@@ -193,6 +201,13 @@ export default async function handler(req, res) {
       envVarsConfigured: {
         UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
         UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN
+      },
+      envVarStatus: envStatus,
+      debug: {
+        hasUrl: !!process.env.UPSTASH_REDIS_REST_URL,
+        hasToken: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+        urlLength: process.env.UPSTASH_REDIS_REST_URL?.length || 0,
+        tokenLength: process.env.UPSTASH_REDIS_REST_TOKEN?.length || 0
       }
     });
   }
