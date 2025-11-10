@@ -9,7 +9,8 @@ if (!window.modalState) {
 }
 
 const BACKEND_API_URL = 'https://ipl-backend-api.vercel.app'; // Update with your deployed backend URL
-const API_BASE = window.location.origin;
+const VERCEL_API_BASE = 'https://iplcrickethub-kappa.vercel.app';
+const API_BASE = VERCEL_API_BASE; // Use Vercel API for player data
 
 // Team code mapping (lowercase to uppercase)
 const TEAM_CODE_MAP = {
@@ -20,7 +21,7 @@ const TEAM_CODE_MAP = {
     'dc': 'DC',
     'srh': 'SRH',
     'rr': 'RR',
-    'kxip': 'KXIP',
+    'kxip': 'PBKS',
     'pbks': 'PBKS',
     'gt': 'GT',
     'lsg': 'LSG'
@@ -44,11 +45,24 @@ async function loadTeamPlayers(teamCode) {
     const apiUrl = `${API_BASE}/api/admin/players?team=${teamCodeUpper}`;
     
     try {
-        console.log(`🔄 Fetching ${teamCodeUpper} players from remote stats endpoint...`);
-        const response = await fetch(apiUrl);
+        console.log(`🔄 Fetching ${teamCodeUpper} players from Vercel API: ${apiUrl}`);
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            console.error(`❌ API Error: ${response.status} ${response.statusText}`);
+            throw new Error(`API request failed: ${response.status}`);
+        }
+        
         const result = await response.json();
-        if (response.ok && result) {
+        console.log(`📦 API Response for ${teamCodeUpper}:`, result);
+        
+        if (result) {
             const playersData = Array.isArray(result.data) ? result.data : (Array.isArray(result) ? result : []);
+            console.log(`📊 Found ${playersData.length} players for ${teamCodeUpper}`);
             if (playersData.length > 0) {
                 players = playersData.map(p => {
                     let stats = p.stats || {};
@@ -73,15 +87,18 @@ async function loadTeamPlayers(teamCode) {
                         photo: p.photo || p.image || null
                     };
                 });
-                console.log(`✅ Loaded ${players.length} players from remote stats endpoint`);
+                console.log(`✅ Loaded ${players.length} players from Vercel API`);
             } else {
-                console.warn('⚠️ No players found in remote stats response');
+                console.warn('⚠️ No players found in API response');
             }
-        } else {
-            console.warn('⚠️ API response not OK:', response.status);
         }
     } catch (e) {
-        console.error('❌ Failed to fetch from remote stats endpoint:', e);
+        console.error('❌ Failed to fetch from Vercel API:', e);
+        console.error('Error details:', {
+            message: e.message,
+            stack: e.stack,
+            apiUrl: `${API_BASE}/api/admin/players?team=${teamCodeUpper}`
+        });
     }
     if (players.length > 0) {
         displayPlayers(players, teamCode);
@@ -141,23 +158,28 @@ function displayPlayers(players, teamCode) {
  */
 function createPlayerCard(player, teamCode) {
     const card = document.createElement('div');
-    card.className = 'player-card';
+    card.className = 'player-card-modern';
     
     let badges = '';
-    if (player.isCaptain) badges += '<span class="badge badge-captain">👑 Captain</span>';
-    if (player.isViceCaptain) badges += '<span class="badge badge-captain">⭐ Vice Captain</span>';
-    if (player.isForeign) badges += '<span class="badge badge-foreign">🌏 Overseas</span>';
-    if ((player.role || '').toLowerCase() === 'wicket-keeper') badges += '<span class="badge badge-wk">🧤 WK</span>';
+    if (player.isCaptain) badges += '<span class="badge-modern badge-captain">👑 Captain</span>';
+    if (player.isViceCaptain) badges += '<span class="badge-modern badge-vice-captain">⭐ Vice Captain</span>';
+    if (player.isForeign) badges += '<span class="badge-modern badge-overseas">🌏 Overseas</span>';
+    if ((player.role || '').toLowerCase() === 'wicket-keeper' || (player.role || '').toLowerCase().includes('wicket')) {
+        badges += '<span class="badge-modern badge-wk">🧤 Wicket-Keeper</span>';
+    }
     
     const teamLogo = `assets/${teamCode.toLowerCase()}_logo_new.svg`;
     
     card.innerHTML = `
-        <div class="player-image">
-            <img src="${teamLogo}" alt="${player.name || 'Player'}" onerror="this.src='assets/ipl_logo_new.svg'">
+        <div class="player-image-wrapper">
+            <div class="player-image-glow"></div>
+            <div class="player-image-circle">
+                <img src="${teamLogo}" alt="${player.name || 'Player'}" onerror="this.src='assets/ipl_logo_new.svg'">
+            </div>
         </div>
         <h3 class="player-name">${player.name || 'Unknown'}</h3>
         <p class="player-role">${player.role || 'Player'}</p>
-        <div class="player-badges">
+        <div class="player-badges-modern">
             ${badges}
         </div>
     `;
@@ -167,57 +189,35 @@ function createPlayerCard(player, teamCode) {
         try {
             console.log('Player card clicked:', player.name);
             
-            // Ensure modal is initialized
-            if (!window.modalState || !window.modalState.initialized) {
-                console.log('Modal not yet initialized, initializing now...');
-                if (typeof window.initModal === 'function') {
-                    window.initModal();
-                } else if (typeof initModal === 'function') {
-                    initModal();
-                }
-                if (typeof window.ensureModalElements === 'function') {
-                    window.ensureModalElements();
-                }
+            const playerName = player.name || 'Unknown';
+            const team = player.team || teamCode.toUpperCase();
+            
+            // Prefer server-side modal (PHP/Python) - most reliable
+            if (window.PlayerModalServer && typeof window.PlayerModalServer.show === 'function') {
+                console.log('Using server-side modal (PHP/Python)');
+                window.PlayerModalServer.show(playerName, team);
+                return;
             }
             
-            // Ensure modal elements exist
-            if (typeof window.ensureModalElements === 'function') {
-                window.ensureModalElements();
-            }
-
-            // Wait a bit for modal to initialize if needed
-            if (typeof window.showPlayerModal === 'function') {
-                // Clone the player object to ensure we pass all data including team
-                const playerData = {
-                    ...player,
-                    team: player.team || teamCode.toUpperCase()
-                };
-                console.log('Opening modal for player:', playerData);
+            // Fallback to client-side modal if server-side not available
+            const playerData = {
+                ...player,
+                team: team
+            };
+            
+            if (window.PlayerModal && typeof window.PlayerModal.show === 'function') {
+                console.log('Using client-side modal (fallback)');
+                window.PlayerModal.show(playerData);
+            } else if (typeof window.showPlayerModal === 'function') {
+                console.log('Using legacy modal (fallback)');
                 window.showPlayerModal(playerData);
             } else {
-                console.error('showPlayerModal function not found. Waiting...');
-                // Try to initialize modal again
-                if (typeof window.initModal === 'function') {
-                    window.initModal();
-                }
-                // Retry after a short delay
-                setTimeout(() => {
-                    if (typeof window.showPlayerModal === 'function') {
-                        const playerData = {
-                            ...player,
-                            team: player.team || teamCode.toUpperCase()
-                        };
-                        console.log('Retrying to open modal for player:', playerData);
-                        window.showPlayerModal(playerData);
-                    } else {
-                        console.error('showPlayerModal still not available after retry');
-                        console.error('Available functions:', Object.keys(window).filter(k => k.includes('modal') || k.includes('Modal')));
-                        alert('Player modal is not available. Please refresh the page.');
-                    }
-                }, 500);
+                console.error('No modal system available');
+                alert('Player modal is not available. Please refresh the page.');
             }
         } catch (error) {
             console.error('Error showing player modal:', error);
+            alert('Error opening player details. Please try again.');
         }
     });
     card.style.cursor = 'pointer';
@@ -254,15 +254,40 @@ if (document.readyState === 'loading') {
 }
 
 function initTeamPage() {
-    // Try to detect team code from page URL or title
-    const path = window.location.pathname;
-    // Match both /rcb.html and /rcb
-    const teamMatch = path.match(/\/([a-z]{2,5})(\.html)?$/i);
+    // Try to detect team code from multiple sources
+    let teamCode = null;
     
-    if (teamMatch) {
-        const teamCode = teamMatch[1].toLowerCase();
+    // Method 1: Check data-team attribute on body
+    const bodyTeam = document.body.getAttribute('data-team');
+    if (bodyTeam) {
+        teamCode = bodyTeam.toLowerCase();
+        console.log('Detected team from data-team attribute:', teamCode);
+    }
+    
+    // Method 2: Try to detect from page URL
+    if (!teamCode) {
+        const path = window.location.pathname;
+        const teamMatch = path.match(/\/([a-z]{2,5})(\.html)?$/i);
+        if (teamMatch) {
+            teamCode = teamMatch[1].toLowerCase();
+            console.log('Detected team from URL:', teamCode);
+        }
+    }
+    
+    // Method 3: Try to detect from filename (for kxip/pbks)
+    if (!teamCode) {
+        const filename = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase();
+        if (filename && TEAM_CODE_MAP[filename]) {
+            teamCode = filename;
+            console.log('Detected team from filename:', teamCode);
+        }
+    }
+    
+    if (teamCode) {
+        // Normalize team code - use the detected code directly
+        // The TEAM_CODE_MAP will handle conversion to uppercase for API
         loadTeamPlayers(teamCode);
     } else {
-        console.warn('Could not detect team code from URL');
+        console.warn('Could not detect team code. Please ensure data-team attribute is set on body tag.');
     }
 }
