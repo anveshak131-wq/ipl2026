@@ -20,8 +20,8 @@ const TEAM_LOGOS = {
 // Global state
 window.playerModalReady = false;
 
-// Initialize modal on DOM ready
-function initPlayerModal() {
+// Helper function to safely get element by ID
+function safeGetElement(id) {
     try {
         const elem = document.getElementById(id);
         return elem && elem.nodeType === 1 ? elem : null;
