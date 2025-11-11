@@ -8,9 +8,9 @@ if (!window.modalState) {
     console.log('Waiting for modal initialization...');
 }
 
-const BACKEND_API_URL = 'https://ipl-backend-api.vercel.app'; // Update with your deployed backend URL
-const VERCEL_API_BASE = 'https://iplcrickethub-kappa.vercel.app';
-const API_BASE = VERCEL_API_BASE; // Use Vercel API for player data
+const BACKEND_API_URL = 'https://player-storage-kv.anvesh-ak-131.workers.dev'; // Cloudflare Workers KV
+const VERCEL_API_BASE = 'https://player-storage-kv.anvesh-ak-131.workers.dev';
+const API_BASE = 'https://player-storage-kv.anvesh-ak-131.workers.dev'; // Use Cloudflare Workers KV for player data
 
 // Team code mapping (lowercase to uppercase)
 const TEAM_CODE_MAP = {
