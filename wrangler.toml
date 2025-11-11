@@ -1,0 +1,10 @@
+name = "player-storage-kv"
+main = "./cloudflare/index.ts"
+account_id = "70f9ab1d159af55b362c502bfd77d421"
+workers_dev = true
+compatibility_date = "2025-11-11"
+
+# KV namespace binding for player storage (FREE, unlimited)
+[[kv_namespaces]]
+binding = "PLAYERS_KV"
+id = "0f578da851984373844b2e60ac637551"

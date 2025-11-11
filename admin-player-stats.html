@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        // Set Worker KV endpoint BEFORE any other scripts load
+        // This ensures player-stats-manager.js uses the correct endpoint
+        window.CF_API_ENDPOINT = 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players';
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Statistics Manager - IPL Cricket Hub</title>
