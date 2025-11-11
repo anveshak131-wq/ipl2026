@@ -1,0 +1,13 @@
+name = "player-storage-worker"
+type = "javascript"
+account_id = "YOUR_ACCOUNT_ID"
+workers_dev = true
+compatibility_date = "2025-11-11"
+
+[env.production]
+route = ""
+zone_id = ""
+
+[[kv_namespaces]]
+binding = "PLAYERS_KV"
+id = "YOUR_KV_NAMESPACE_ID"

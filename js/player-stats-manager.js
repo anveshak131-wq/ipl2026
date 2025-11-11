@@ -8,7 +8,12 @@ let playersData = [];
 let currentEditingPlayer = null;
 
 // API Configuration
-const API_BASE = window.location.origin;
+// Prefer a configured Cloudflare Worker endpoint if present (set in admin-upload.html)
+// window.CF_API_ENDPOINT should point to the full endpoint URL that accepts team query or POST body,
+// e.g. 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players'
+const API_ENDPOINT = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
+    ? window.CF_API_ENDPOINT.replace(/\/+$/, '') // remove trailing slash
+    : `${window.location.origin}/api/admin/players`;
 
 // Team logo mapping
 const TEAM_LOGOS = {
@@ -52,7 +57,7 @@ async function loadPlayers() {
             // Load players from Vercel KV API for all teams
             for (const team of IPL_TEAMS) {
                 try {
-                    const apiUrl = `${API_BASE}/api/admin/players?team=${team}`;
+                    const apiUrl = `${API_ENDPOINT}?team=${team}`;
                     console.log(`Loading players for ${team} from: ${apiUrl}`);
                     
                     const response = await fetch(apiUrl, {
@@ -334,8 +339,8 @@ async function savePlayerStats(event) {
     try {
         // Get all players for this team from API, fallback to localStorage
         let teamPlayers = [];
-        try {
-            const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
+            try {
+                const response = await fetch(`${API_ENDPOINT}?team=${team}`);
             if (response.ok) {
                 const result = await response.json();
                 teamPlayers = result.data || result || [];
@@ -379,8 +384,8 @@ async function savePlayerStats(event) {
         }
 
         // Try to save to API first, fallback to localStorage for static hosting
-        try {
-            const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
+            try {
+            const saveResponse = await fetch(`${API_ENDPOINT}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ team, players: teamPlayers })
@@ -428,7 +433,7 @@ async function deletePlayer() {
         // Get all players for this team from API, fallback to localStorage
         let teamPlayers = [];
         try {
-            const response = await fetch(`${API_BASE}/api/admin/players?team=${team}`);
+            const response = await fetch(`${API_ENDPOINT}?team=${team}`);
             if (response.ok) {
                 const result = await response.json();
                 teamPlayers = result.data || result || [];
@@ -449,7 +454,7 @@ async function deletePlayer() {
 
         // Try to save to API first, fallback to localStorage for static hosting
         try {
-            const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
+            const saveResponse = await fetch(`${API_ENDPOINT}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ team, players: teamPlayers })

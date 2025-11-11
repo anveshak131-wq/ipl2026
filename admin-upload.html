@@ -381,6 +381,13 @@
 
     <script src="file-upload.js"></script>
     <script>
+        // Cloudflare Workers KV endpoint for storing players
+        // FREE, unlimited storage and API calls
+        // Setup: See WORKERS_KV_SETUP.md for complete instructions
+    // Once deployed, set this to your Worker URL:
+    //   window.CF_API_ENDPOINT = 'https://player-storage-kv.YOUR_ACCOUNT.workers.dev/api/admin/players';
+    // Leave empty to store locally (browser localStorage only)
+    window.CF_API_ENDPOINT = 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players';
         // File info display
         document.getElementById('fixturesFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -507,11 +514,13 @@
                     'allrounder type': p['allrounder type'] || p.allroundertype || ''
                 }));
 
-                // Save to Vercel API
+                // Save to server API (Cloudflare Worker if configured, otherwise local /api)
                 try {
-                    const apiUrl = `${window.location.origin}/api/admin/players`;
+                    const apiUrl = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
+                        ? window.CF_API_ENDPOINT
+                        : `${window.location.origin}/api/admin/players`;
                     console.log('Saving CSV players to API:', apiUrl);
-                    
+
                     const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: {
@@ -530,7 +539,7 @@
 
                     const result = await response.json();
                     console.log('API response:', result);
-                    
+
                     successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded and synced with server)`;
                     successEl.style.display = 'block';
                 } catch (apiError) {
@@ -721,10 +730,12 @@
             }));
 
             try {
-                // Save to Vercel API
-                const apiUrl = `${window.location.origin}/api/admin/players`;
+                // Save to server API (Cloudflare Worker if configured, otherwise local /api)
+                const apiUrl = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
+                    ? window.CF_API_ENDPOINT
+                    : `${window.location.origin}/api/admin/players`;
                 console.log('Saving players to API:', apiUrl, { team: team.toUpperCase(), players: apiPlayers });
-                
+
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
