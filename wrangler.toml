@@ -1,4 +1,4 @@
-name = "player-storage-kv"
+name = "ipl2026"
 main = "./cloudflare/index.ts"
 account_id = "70f9ab1d159af55b362c502bfd77d421"
 workers_dev = true
