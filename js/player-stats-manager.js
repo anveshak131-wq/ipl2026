@@ -15,6 +15,12 @@ const API_ENDPOINT = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !=
     ? window.CF_API_ENDPOINT.replace(/\/+$/, '') // remove trailing slash
     : `${window.location.origin}/api/admin/players`;
 
+// Worker-only endpoint helper for POST operations. If this is null, we will NOT POST to the Pages site
+// to avoid 405 responses; code should fallback to localStorage when worker endpoint is not configured.
+const WORKER_API = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
+    ? window.CF_API_ENDPOINT.replace(/\/+$/, '')
+    : null;
+
 // Team logo mapping
 const TEAM_LOGOS = {
     'MI': 'assets/mi_logo_new.svg',
@@ -70,6 +76,17 @@ async function loadPlayers() {
                     debugOutput += `<div><b>${team}:</b> Status ${response.status}</div>`;
                     
                     if (response.ok) {
+                        const contentType = response.headers.get('content-type');
+                        console.log(`${team} response content-type:`, contentType);
+                        
+                        if (!contentType || !contentType.includes('application/json')) {
+                            const text = await response.text();
+                            console.warn(`${team} response is not JSON. Content: ${text.substring(0, 200)}`);
+                            debugOutput += `<div style='color:red'>${team}: Worker returned non-JSON response</div>`;
+                            hasErrors = true;
+                            throw new Error(`Expected JSON but got ${contentType}`);
+                        }
+                        
                         const result = await response.json();
                         console.log(`${team} API response:`, result);
                         
@@ -385,20 +402,26 @@ async function savePlayerStats(event) {
 
         // Try to save to API first, fallback to localStorage for static hosting
             try {
-            const saveResponse = await fetch(`${API_ENDPOINT}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ team, players: teamPlayers })
-            });
+                if (!WORKER_API) {
+                    // Worker endpoint not configured - skip POST to Pages site which returns 405.
+                    console.warn('CF_API_ENDPOINT not set; skipping POST to remote API. Saving locally.');
+                    localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
+                } else {
+                    const saveResponse = await fetch(WORKER_API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ team, players: teamPlayers })
+                    });
 
-            if (!saveResponse.ok) {
-                throw new Error('API save failed, using localStorage');
+                    if (!saveResponse.ok) {
+                        throw new Error('API save failed, using localStorage');
+                    }
+                }
+            } catch (apiError) {
+                // Fallback to localStorage for static hosting or API failure
+                console.log('API save failed or skipped, using localStorage fallback:', apiError);
+                localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
             }
-        } catch (apiError) {
-            // Fallback to localStorage for static hosting
-            console.log('API save failed, using localStorage fallback:', apiError);
-            localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
-        }
 
         // Update local data
         playersData[playerIndex] = updatedPlayer;
@@ -454,18 +477,22 @@ async function deletePlayer() {
 
         // Try to save to API first, fallback to localStorage for static hosting
         try {
-            const saveResponse = await fetch(`${API_ENDPOINT}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ team, players: teamPlayers })
-            });
+            if (!WORKER_API) {
+                console.warn('CF_API_ENDPOINT not set; skipping POST to remote API. Saving locally.');
+                localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
+            } else {
+                const saveResponse = await fetch(WORKER_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ team, players: teamPlayers })
+                });
 
-            if (!saveResponse.ok) {
-                throw new Error('API save failed, using localStorage');
+                if (!saveResponse.ok) {
+                    throw new Error('API save failed, using localStorage');
+                }
             }
         } catch (apiError) {
-            // Fallback to localStorage for static hosting
-            console.log('API save failed, using localStorage fallback:', apiError);
+            console.log('API save failed or skipped, using localStorage fallback:', apiError);
             localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
         }
 

@@ -15,7 +15,22 @@ class AdminAPI {
     // Generic API call handler
     async request(endpoint, options = {}) {
         try {
-            const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            // For player POST/DELETE operations ensure we use the configured Cloudflare Worker endpoint
+            // to avoid sending POSTs to a static Pages origin which returns 405.
+            let url = `${this.baseUrl}${endpoint}`;
+            if (endpoint.startsWith('/api/admin/players')) {
+                const method = (options.method || 'GET').toUpperCase();
+                if (method === 'POST' || method === 'DELETE') {
+                    if (!window.CF_API_ENDPOINT || window.CF_API_ENDPOINT.trim() === '') {
+                        throw new Error('CF_API_ENDPOINT is not configured. POST/DELETE to /api/admin/players is disabled.');
+                    }
+                    // Use the CF API endpoint as the base. Preserve any query string or suffix from endpoint.
+                    const suffix = endpoint.slice('/api/admin/players'.length) || '';
+                    url = window.CF_API_ENDPOINT.replace(/\/+$/, '') + suffix;
+                }
+            }
+
+            const response = await fetch(url, {
                 ...options,
                 headers: {
                     'Content-Type': 'application/json',

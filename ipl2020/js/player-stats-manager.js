@@ -10,6 +10,12 @@ let currentEditingPlayer = null;
 // API Configuration
 const API_BASE = window.location.origin;
 
+// Worker-only endpoint helper for POST operations. If this is null, we will NOT POST to the Pages site
+// to avoid 405 responses; code should fallback to localStorage when worker endpoint is not configured.
+const WORKER_API = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
+    ? window.CF_API_ENDPOINT.replace(/\/+$/, '')
+    : null;
+
 // Team logo mapping
 const TEAM_LOGOS = {
     'MI': 'assets/mi_logo_new.svg',
@@ -280,15 +286,25 @@ async function savePlayerStats(event) {
             teamPlayers.push(playerPayload);
         }
 
-        // Save back to Vercel KV API
-        const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ team, players: teamPlayers })
-        });
+        // Save back to Vercel KV API (POSTs must go to Worker endpoint)
+        try {
+            if (!WORKER_API) {
+                console.warn('CF_API_ENDPOINT not set; skipping POST to remote API. Saving locally.');
+                localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
+            } else {
+                const saveResponse = await fetch(WORKER_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ team, players: teamPlayers })
+                });
 
-        if (!saveResponse.ok) {
-            throw new Error('Failed to save to API');
+                if (!saveResponse.ok) {
+                    throw new Error('Failed to save to API');
+                }
+            }
+        } catch (e) {
+            console.warn('POST failed or skipped; falling back to localStorage', e);
+            localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
         }
 
         // Update local data
@@ -333,15 +349,25 @@ async function deletePlayer() {
         // Remove the player from the team array
         teamPlayers = teamPlayers.filter(p => p.name !== player.name);
 
-        // Save back to Vercel KV API
-        const saveResponse = await fetch(`${API_BASE}/api/admin/players`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ team, players: teamPlayers })
-        });
+        // Save back to Vercel KV API (POSTs must go to Worker endpoint)
+        try {
+            if (!WORKER_API) {
+                console.warn('CF_API_ENDPOINT not set; skipping POST to remote API. Saving locally.');
+                localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
+            } else {
+                const saveResponse = await fetch(WORKER_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ team, players: teamPlayers })
+                });
 
-        if (!saveResponse.ok) {
-            throw new Error('Failed to delete from API');
+                if (!saveResponse.ok) {
+                    throw new Error('Failed to delete from API');
+                }
+            }
+        } catch (e) {
+            console.warn('POST failed or skipped; falling back to localStorage', e);
+            localStorage.setItem(`players_${team}`, JSON.stringify(teamPlayers));
         }
 
         // Remove from local data

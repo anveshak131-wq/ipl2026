@@ -39,6 +39,11 @@
     </style>
 </head>
 <body data-team="RCB">
+    <script>
+        // Set Worker endpoint early so all fetch calls use it for POSTs
+        window.CF_API_ENDPOINT = 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players';
+    </script>
+    
     <!-- Animated Background -->
     <div class="team-background"></div>
     

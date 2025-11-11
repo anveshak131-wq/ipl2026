@@ -380,15 +380,19 @@
         </div>
     </div>
 
+    <script>
+        // Ensure the Cloudflare Worker endpoint is set BEFORE any other scripts that may POST to it.
+        // This must be present early so modules that use window.CF_API_ENDPOINT don't fall back to relative paths.
+        window.CF_API_ENDPOINT = 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players';
+    </script>
     <script src="file-upload.js?v=7.0"></script>
     <script>
         // Cloudflare Workers KV endpoint for storing players
         // FREE, unlimited storage and API calls
         // Setup: See WORKERS_KV_SETUP.md for complete instructions
-    // Once deployed, set this to your Worker URL:
-    //   window.CF_API_ENDPOINT = 'https://player-storage-kv.YOUR_ACCOUNT.workers.dev/api/admin/players';
-    // Leave empty to store locally (browser localStorage only)
-    window.CF_API_ENDPOINT = 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players';
+        // (Assignment removed here because it is defined above to ensure early availability)
+        // Leave empty to store locally (browser localStorage only)
+        // Once deployed, the endpoint is set to window.CF_API_ENDPOINT above.
         // File info display
         document.getElementById('fixturesFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -517,32 +521,37 @@
 
                 // Save to server API (Cloudflare Worker if configured, otherwise local /api)
                 try {
-                    const apiUrl = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
-                        ? window.CF_API_ENDPOINT
-                        : `${window.location.origin}/api/admin/players`;
-                    console.log('Saving CSV players to API:', apiUrl);
+                    // Only POST to the Cloudflare Worker if CF_API_ENDPOINT is configured.
+                    // If it's not set, we keep the data in localStorage (already saved above) and show a local success.
+                    if (!window.CF_API_ENDPOINT || window.CF_API_ENDPOINT.trim() === '') {
+                        console.warn('CF_API_ENDPOINT not set; skipping server sync. Players saved locally.');
+                        successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded locally (${parsedPlayers.length} players). Server sync skipped - CF_API_ENDPOINT not configured.`;
+                        successEl.style.display = 'block';
+                    } else {
+                        const apiUrl = window.CF_API_ENDPOINT.replace(/\/+$/, '');
+                        console.log('Saving CSV players to API (worker):', apiUrl);
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                team: team.toUpperCase(),
+                                players: apiPlayers
+                            })
+                        });
 
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            team: team.toUpperCase(),
-                            players: apiPlayers
-                        })
-                    });
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            throw new Error(`API error: ${response.status} - ${errorText}`);
+                        }
 
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`API error: ${response.status} - ${errorText}`);
+                        const result = await response.json();
+                        console.log('API response:', result);
+
+                        successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded and synced with server)`;
+                        successEl.style.display = 'block';
                     }
-
-                    const result = await response.json();
-                    console.log('API response:', result);
-
-                    successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded and synced with server)`;
-                    successEl.style.display = 'block';
                 } catch (apiError) {
                     console.error('Error saving to API:', apiError);
                     successEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Players for ${team} uploaded locally (${parsedPlayers.length} players), but failed to sync with server: ${apiError.message}`;
@@ -731,26 +740,30 @@
             }));
 
             try {
-                // Save to server API (Cloudflare Worker if configured, otherwise local /api)
-                const apiUrl = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
-                    ? window.CF_API_ENDPOINT
-                    : `${window.location.origin}/api/admin/players`;
-                console.log('Saving players to API:', apiUrl, { team: team.toUpperCase(), players: apiPlayers });
+                // Only POST to the Cloudflare Worker if CF_API_ENDPOINT is configured.
+                if (!window.CF_API_ENDPOINT || window.CF_API_ENDPOINT.trim() === '') {
+                    console.warn('CF_API_ENDPOINT not set; skipping server sync. Players saved locally.');
+                    successEl.innerHTML = `<i class="fas fa-check-circle"></i> ${players.length} player(s) saved locally for ${team}. Server sync skipped - CF_API_ENDPOINT not configured.`;
+                    successEl.style.display = 'block';
+                } else {
+                    const apiUrl = window.CF_API_ENDPOINT.replace(/\/+$/, '');
+                    console.log('Saving players to API (worker):', apiUrl, { team: team.toUpperCase(), players: apiPlayers });
 
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        team: team.toUpperCase(),
-                        players: apiPlayers
-                    })
-                });
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            team: team.toUpperCase(),
+                            players: apiPlayers
+                        })
+                    });
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`API error: ${response.status} - ${errorText}`);
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`API error: ${response.status} - ${errorText}`);
+                    }
                 }
 
                 const result = await response.json();
