@@ -1,0 +1,36 @@
+{
+  "name": "ipl-teams-manager-v2",
+  "version": "2.0.0",
+  "description": "Production-ready IPL cricket teams manager with in-memory XML data and hidden admin panel",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000 || npx http-server .",
+    "dev": "npx http-server . -p 3000 -c-1",
+    "test": "echo 'Run tests with: jest'",
+    "build": "echo 'No build required for static site'",
+    "deploy": "wrangler pages deploy . --project-name=ipl-teams-manager"
+  },
+  "keywords": [
+    "ipl",
+    "cricket",
+    "teams",
+    "manager",
+    "admin-panel",
+    "in-memory",
+    "xml",
+    "cloudflare-pages"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ipl-teams-manager-v2.git"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0",
+    "http-server": "^14.1.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

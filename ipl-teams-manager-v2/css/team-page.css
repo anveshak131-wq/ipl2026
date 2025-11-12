@@ -1,0 +1,138 @@
+/* ==================== Team Page Specific Styles ==================== */
+
+/* Set team-specific header backgrounds using CSS variables */
+.team-header[style*="--mi-color"],
+body:has(#teamHeader[style*="#004B87"]) .team-header {
+    background: linear-gradient(135deg, #004B87 0%, #003056 100%) !important;
+}
+
+.team-header[style*="--csk-color"],
+body:has(#teamHeader[style*="#FFC72C"]) .team-header {
+    background: linear-gradient(135deg, #FFC72C 0%, #FFA500 100%) !important;
+}
+
+.team-header[style*="--rcb-color"],
+body:has(#teamHeader[style*="#EC1C24"]) .team-header {
+    background: linear-gradient(135deg, #EC1C24 0%, #C41E3A 100%) !important;
+}
+
+.team-header[style*="--kkr-color"],
+body:has(#teamHeader[style*="#3A225E"]) .team-header {
+    background: linear-gradient(135deg, #3A225E 0%, #281847 100%) !important;
+}
+
+.team-header[style*="--dc-color"],
+body:has(#teamHeader[style*="#004B5E"]) .team-header {
+    background: linear-gradient(135deg, #004B5E 0%, #002F3E 100%) !important;
+}
+
+.team-header[style*="--srh-color"],
+body:has(#teamHeader[style*="#FF6D1F"]) .team-header {
+    background: linear-gradient(135deg, #FF6D1F 0%, #E04E0D 100%) !important;
+}
+
+.team-header[style*="--rr-color"],
+body:has(#teamHeader[style*="#E91E63"]) .team-header {
+    background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%) !important;
+}
+
+.team-header[style*="--pbks-color"],
+body:has(#teamHeader[style*="#EE2C2C"]) .team-header {
+    background: linear-gradient(135deg, #EE2C2C 0%, #C41E3A 100%) !important;
+}
+
+.team-header[style*="--gt-color"],
+body:has(#teamHeader[style*="#1E90FF"]) .team-header {
+    background: linear-gradient(135deg, #1E90FF 0%, #1161BF 100%) !important;
+}
+
+.team-header[style*="--lsg-color"],
+body:has(#teamHeader[style*="#5B8F5B"]) .team-header {
+    background: linear-gradient(135deg, #5B8F5B 0%, #3D5C3D 100%) !important;
+}
+
+/* Responsive adjustments for team page */
+@media (max-width: 768px) {
+    .team-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--space-2xl) var(--space-lg);
+    }
+
+    .team-header-content {
+        width: 100%;
+        gap: var(--space-lg);
+    }
+
+    .team-header #teamBadge {
+        width: 100px;
+        height: 100px;
+    }
+
+    .team-header-content h1 {
+        font-size: var(--font-size-4xl);
+    }
+
+    .players-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--space-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .team-header {
+        padding: var(--space-xl) var(--space-md);
+    }
+
+    .team-header #teamBadge {
+        width: 80px;
+        height: 80px;
+        font-size: var(--font-size-3xl);
+    }
+
+    .team-header-content h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .players-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .player-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Print styles for team page */
+@media print {
+    .team-header {
+        page-break-after: avoid;
+    }
+
+    .player-card {
+        page-break-inside: avoid;
+    }
+}
+
+/* Accessibility - High contrast mode */
+@media (prefers-contrast: more) {
+    .player-card {
+        border-width: 2px;
+    }
+
+    .player-role {
+        font-weight: 700;
+    }
+}
+
+/* Accessibility - Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .player-card {
+        transition: none;
+    }
+
+    .team-header {
+        animation: none;
+    }
+}

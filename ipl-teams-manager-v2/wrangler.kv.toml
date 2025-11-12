@@ -1,0 +1,27 @@
+# Cloudflare Workers & Pages Configuration for IPL Teams Manager v2
+# This config enables both Pages deployment and KV storage
+
+name = "ipl-teams-manager-v2"
+
+# Pages Build Configuration
+[pages]
+pages_build_output_dir = "."
+
+# KV Namespace Bindings
+# Replace IDs with your actual namespace IDs from Cloudflare Dashboard
+[[kv_namespaces]]
+binding = "KV_STORE"
+# Get these IDs from: https://dash.cloudflare.com → Workers KV Namespaces
+id = "YOUR_PRODUCTION_NAMESPACE_ID"
+preview_id = "YOUR_PREVIEW_NAMESPACE_ID"
+
+# Example (replace with real IDs):
+# [[kv_namespaces]]
+# binding = "KV_STORE"
+# id = "abc123def456xyz789"
+# preview_id = "preview_abc123def456xyz789"
+
+# Optional: Environment-specific routes
+[routes]
+# pattern = "example.com/api/*"
+# zone_name = "example.com"

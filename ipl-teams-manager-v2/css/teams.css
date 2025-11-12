@@ -1,0 +1,675 @@
+/* ==================== Teams Page Styles ==================== */
+
+/* Team Colors - IPL 2024 Official Colors */
+:root {
+    --mi-color: #004B87;      /* Mumbai Indians - Blue */
+    --mi-dark: #003056;
+    --csk-color: #FFC72C;     /* Chennai Super Kings - Gold */
+    --csk-dark: #FFA500;
+    --rcb-color: #EC1C24;     /* Royal Challengers Bangalore - Red */
+    --rcb-dark: #C41E3A;
+    --kkr-color: #3A225E;     /* Kolkata Knight Riders - Purple */
+    --kkr-dark: #281847;
+    --dc-color: #004B5E;      /* Delhi Capitals - Teal */
+    --dc-dark: #002F3E;
+    --srh-color: #FF6D1F;     /* Sunrisers Hyderabad - Orange */
+    --srh-dark: #E04E0D;
+    --rr-color: #E91E63;      /* Rajasthan Royals - Pink */
+    --rr-dark: #C2185B;
+    --pbks-color: #EE2C2C;    /* Punjab Kings - Red-Orange */
+    --pbks-dark: #C41E3A;
+    --gt-color: #1E90FF;      /* Gujarat Titans - Blue */
+    --gt-dark: #1161BF;
+    --lsg-color: #5B8F5B;     /* Lucknow Super Giants - Green */
+    --lsg-dark: #3D5C3D;
+}
+
+/* ==================== Homepage Hero Section ==================== */
+
+.hero-section {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+    padding: var(--space-3xl) var(--space-lg);
+    text-align: center;
+    color: white;
+    animation: slideInDown var(--transition-normal) ease-out;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: var(--font-size-5xl);
+    margin-bottom: var(--space-md);
+    color: white;
+}
+
+.hero-content p {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-xl);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.hero-content .btn {
+    animation: fadeIn var(--transition-slow) ease-out 0.3s backwards;
+}
+
+/* ==================== Teams Section ==================== */
+
+.teams-section {
+    padding: var(--space-3xl) var(--space-lg);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+    animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.section-header h2 {
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-4xl);
+}
+
+.section-header p {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+}
+
+/* ==================== Teams Grid ==================== */
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-xl);
+    animation: fadeIn var(--transition-normal) ease-out 0.2s backwards;
+}
+
+.team-card {
+    background: white;
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transform: translateY(0);
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--color-secondary);
+}
+
+.team-card-header {
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        transform: translate(50%, 50%);
+    }
+}
+
+.team-badge {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 3px solid white;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.team-card-body {
+    padding: var(--space-lg);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.team-name {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    color: var(--color-text-primary);
+}
+
+.team-code {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-md);
+    font-weight: 600;
+}
+
+.team-info {
+    flex-grow: 1;
+}
+
+.team-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-sm) 0;
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.team-stat:last-child {
+    border-bottom: none;
+}
+
+.team-stat-label {
+    color: var(--color-text-secondary);
+}
+
+.team-stat-value {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.team-card-footer {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+    background: var(--color-bg-secondary);
+    text-align: center;
+}
+
+.team-card-footer .btn {
+    width: 100%;
+}
+
+/* ==================== Team-Specific Card Styles ==================== */
+
+.team-card[data-team="MI"] .team-card-header {
+    --primary-color: var(--mi-color);
+    --primary-dark: var(--mi-dark);
+}
+
+.team-card[data-team="CSK"] .team-card-header {
+    --primary-color: var(--csk-color);
+    --primary-dark: var(--csk-dark);
+}
+
+.team-card[data-team="RCB"] .team-card-header {
+    --primary-color: var(--rcb-color);
+    --primary-dark: var(--rcb-dark);
+}
+
+.team-card[data-team="KKR"] .team-card-header {
+    --primary-color: var(--kkr-color);
+    --primary-dark: var(--kkr-dark);
+}
+
+.team-card[data-team="DC"] .team-card-header {
+    --primary-color: var(--dc-color);
+    --primary-dark: var(--dc-dark);
+}
+
+.team-card[data-team="SRH"] .team-card-header {
+    --primary-color: var(--srh-color);
+    --primary-dark: var(--srh-dark);
+}
+
+.team-card[data-team="RR"] .team-card-header {
+    --primary-color: var(--rr-color);
+    --primary-dark: var(--rr-dark);
+}
+
+.team-card[data-team="PBKS"] .team-card-header {
+    --primary-color: var(--pbks-color);
+    --primary-dark: var(--pbks-dark);
+}
+
+.team-card[data-team="GT"] .team-card-header {
+    --primary-color: var(--gt-color);
+    --primary-dark: var(--gt-dark);
+}
+
+.team-card[data-team="LSG"] .team-card-header {
+    --primary-color: var(--lsg-color);
+    --primary-dark: var(--lsg-dark);
+}
+
+/* ==================== Team Page Header ==================== */
+
+.team-header {
+    padding: var(--space-3xl) var(--space-lg) var(--space-2xl);
+    color: white;
+    margin-bottom: var(--space-3xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideInUp var(--transition-normal) ease-out;
+}
+
+.team-header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xl);
+    flex-grow: 1;
+}
+
+.team-header #teamBadge {
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 4px solid white;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-5xl);
+    flex-shrink: 0;
+}
+
+.team-header h1 {
+    color: white;
+    margin: 0;
+}
+
+.team-header .team-code {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: var(--font-size-lg);
+    margin: 0;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .team-header {
+        flex-direction: column;
+        gap: var(--space-xl);
+        align-items: flex-start;
+    }
+
+    .team-header-content {
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    .team-header #teamBadge {
+        width: 100px;
+        height: 100px;
+        font-size: var(--font-size-4xl);
+    }
+}
+
+/* ==================== Squad Section ==================== */
+
+.squad-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+}
+
+.squad-section .section-header {
+    margin-bottom: var(--space-2xl);
+}
+
+#playerCountInfo {
+    display: inline-block;
+    background: var(--color-bg-tertiary);
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-md);
+}
+
+/* ==================== Players Grid ==================== */
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-lg);
+    animation: fadeIn var(--transition-normal) ease-out 0.3s backwards;
+}
+
+.player-card {
+    background: white;
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+}
+
+.player-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-secondary);
+}
+
+.player-card-header {
+    background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-secondary) 100%);
+    padding: var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: var(--space-md);
+}
+
+.player-card-header h3 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    flex-grow: 1;
+}
+
+.player-jersey {
+    background: var(--color-secondary);
+    color: white;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    white-space: nowrap;
+    font-size: var(--font-size-sm);
+}
+
+.player-card-body {
+    padding: var(--space-lg);
+}
+
+.player-role {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    display: inline-block;
+    font-size: var(--font-size-sm);
+}
+
+.player-country {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    margin: 0;
+}
+
+/* ==================== Empty State ==================== */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3xl) var(--space-lg);
+    background: var(--color-bg-secondary);
+    border: 2px dashed var(--color-border-light);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-lg);
+    animation: bounce 2s infinite;
+}
+
+.empty-state h3 {
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-md);
+}
+
+.empty-state p {
+    color: var(--color-text-secondary);
+    max-width: 400px;
+    margin-bottom: 0;
+}
+
+/* ==================== Admin Modal Styles ==================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-lg);
+    animation: fadeIn var(--transition-normal) ease-out;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius-xl);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: slideInUp var(--transition-normal) ease-out;
+}
+
+.modal-header {
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.modal-close:hover {
+    color: var(--color-text-primary);
+}
+
+.modal-body {
+    padding: var(--space-lg);
+}
+
+.modal-tabs {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    border-bottom: 2px solid var(--color-border-light);
+}
+
+.modal-tab {
+    padding: var(--space-md);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.modal-tab:hover {
+    color: var(--color-text-primary);
+}
+
+.modal-tab.active {
+    color: var(--color-secondary);
+}
+
+.modal-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-secondary);
+}
+
+.modal-tab-content {
+    display: none;
+}
+
+.modal-tab-content.active {
+    display: block;
+    animation: fadeIn var(--transition-fast) ease-out;
+}
+
+/* ==================== Responsive Design ==================== */
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: var(--space-2xl) var(--space-lg);
+    }
+
+    .hero-content h1 {
+        font-size: var(--font-size-3xl);
+    }
+
+    .teams-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--space-lg);
+    }
+
+    .team-card-header {
+        height: 100px;
+    }
+
+    .team-badge {
+        width: 60px;
+        height: 60px;
+        font-size: var(--font-size-2xl);
+    }
+
+    .players-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--space-md);
+    }
+
+    .section-header h2 {
+        font-size: var(--font-size-3xl);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding: var(--space-xl) var(--space-md);
+    }
+
+    .hero-content h1 {
+        font-size: var(--font-size-3xl);
+    }
+
+    .hero-content p {
+        font-size: var(--font-size-base);
+    }
+
+    .teams-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .players-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .team-card-header {
+        height: 80px;
+    }
+
+    .team-badge {
+        width: 50px;
+        height: 50px;
+        font-size: var(--font-size-lg);
+    }
+
+    .player-card-header {
+        flex-direction: column;
+    }
+
+    .player-jersey {
+        align-self: flex-start;
+    }
+
+    .section-header h2 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .modal-content {
+        max-width: 95%;
+    }
+}
+
+/* ==================== Loading States ==================== */
+
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}

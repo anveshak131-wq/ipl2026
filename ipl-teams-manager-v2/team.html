@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Squad | IPL Teams Manager</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/team-page.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg class="nav-logo" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                </svg>
+                <h1>IPL Teams</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Team Header -->
+    <section class="team-header" id="teamHeader">
+        <div class="team-header-content">
+            <div class="team-badge" id="teamBadge"></div>
+            <h1 id="teamName"></h1>
+            <p id="teamCode" class="team-code"></p>
+        </div>
+        <a href="index.html" class="btn btn-secondary">← Back to Teams</a>
+    </section>
+
+    <!-- Squad Section -->
+    <main class="container">
+        <section class="squad-section">
+            <div class="section-header">
+                <h2>Squad Overview</h2>
+                <p id="playerCountInfo"></p>
+            </div>
+
+            <!-- Players Grid -->
+            <div class="players-grid" id="playersGrid">
+                <!-- Players loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">👥</div>
+                <h3>No Squad Yet</h3>
+                <p>Players can be added through the admin panel during development.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 IPL Teams Manager | In-Memory Data • No Persistence</p>
+        </div>
+    </footer>
+
+    <script src="js/data-manager.js"></script>
+    <script src="js/ui-renderer.js"></script>
+    <script>
+        // Get team code from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const teamCode = urlParams.get('code')?.toUpperCase();
+
+        if (!teamCode) window.location.href = 'index.html';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create or get shared DataManager instance from window
+            if (!window.sharedDataManager) {
+                window.sharedDataManager = new DataManager();
+            }
+            const dm = window.sharedDataManager;
+            
+            const team = dm.getTeam(teamCode);
+
+            if (!team) window.location.href = 'index.html';
+
+            // Set team header
+            document.getElementById('teamName').textContent = team.name;
+            document.getElementById('teamCode').textContent = `Code: ${team.code}`;
+            document.getElementById('teamHeader').style.background = `linear-gradient(135deg, ${team.color} 0%, ${team.darkColor} 100%)`;
+
+            // Load players
+            const players = dm.getTeamPlayers(teamCode);
+            const playersGrid = document.getElementById('playersGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            document.getElementById('playerCountInfo').textContent = `${players.length} players in squad`;
+
+            if (players.length === 0) {
+                emptyState.style.display = 'flex';
+            } else {
+                players.forEach(player => {
+                    const playerCard = document.createElement('div');
+                    playerCard.className = 'player-card';
+                    playerCard.innerHTML = `
+                        <div class="player-card-header">
+                            <h3>${player.name}</h3>
+                            <span class="player-jersey">#${player.jersey || 'N/A'}</span>
+                        </div>
+                        <div class="player-card-body">
+                            <p class="player-role">${player.role}</p>
+                            <p class="player-country">🌍 ${player.country || 'Unknown'}</p>
+                        </div>
+                    `;
+                    playersGrid.appendChild(playerCard);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

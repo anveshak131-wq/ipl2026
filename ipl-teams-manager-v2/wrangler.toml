@@ -1,0 +1,18 @@
+# Cloudflare Pages Configuration for IPL Teams Manager v2
+# Deploy a production-ready static site with persistent KV storage
+
+name = "ipl-teams-manager-v2"
+main = "./cloudflare/worker.ts"
+compatibility_date = "2025-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Pages Build Configuration - Static Site
+[pages]
+# Build output directory set to current directory (root)
+pages_build_output_dir = "."
+
+# KV Namespace Bindings for persistent data storage
+[[kv_namespaces]]
+binding = "KV_STORE"
+id = "e2981717849f4fa4bd10c7add46cbddd"
+preview_id = "e2981717849f4fa4bd10c7add46cbddd"
