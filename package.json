@@ -12,6 +12,7 @@
     "@upstash/redis": "^1.35.6"
   },
   "devDependencies": {
-    "vercel": "^33.0.0"
+    "vercel": "^33.0.0",
+    "wrangler": "^4.47.0"
   }
 }

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Details | IPL Teams Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">🏏 IPL Teams Manager</h1>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="admin.html" class="nav-link">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Team Header -->
+    <section class="team-hero" id="teamHero">
+        <div class="team-hero-content">
+            <h2 id="teamName"></h2>
+            <p id="teamCode"></p>
+            <a href="index.html" class="btn btn-secondary">← Back to Teams</a>
+        </div>
+    </section>
+
+    <!-- Players Section -->
+    <main class="container">
+        <section class="players-section">
+            <h3>Squad</h3>
+            <div class="players-grid" id="playersGrid">
+                <!-- Players will be dynamically populated here -->
+            </div>
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <p>No players added yet. Visit the <a href="admin.html">Admin page</a> to add players.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 IPL Teams Manager. All data stored in-memory (not persisted).</p>
+    </footer>
+
+    <script src="js/data-manager.js"></script>
+    <script>
+        // Get team code from URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const teamCode = urlParams.get('code');
+
+        if (!teamCode) {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dataManager = new DataManager();
+            const team = dataManager.getTeam(teamCode);
+
+            if (!team) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Set team info
+            document.getElementById('teamName').textContent = team.name;
+            document.getElementById('teamCode').textContent = `Code: ${team.code}`;
+
+            // Load and display players
+            const players = dataManager.getTeamPlayers(teamCode);
+            const playersGrid = document.getElementById('playersGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (players.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                players.forEach(player => {
+                    const playerCard = document.createElement('div');
+                    playerCard.className = 'player-card';
+                    playerCard.innerHTML = `
+                        <h4>${player.name}</h4>
+                        <p class="player-role">${player.role}</p>
+                        <p class="player-jersey">Jersey: ${player.jersey || 'N/A'}</p>
+                    `;
+                    playersGrid.appendChild(playerCard);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

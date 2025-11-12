@@ -1,0 +1,12 @@
+name = "ipl-teams-manager"
+main = "index.html"
+compatibility_date = "2025-01-01"
+
+# Cloudflare Pages Configuration
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+# Build configuration (static site, no build required)
+[build]
+command = ""
+watch_paths = ["*.html", "styles.css", "js/**/*.js"]

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Teams Manager | Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Manage IPL teams and players with an in-memory data system">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">🏏 IPL Teams Manager</h1>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="admin.html" class="nav-link">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>IPL Teams Manager</h2>
+            <p>Manage your favorite IPL teams and players effortlessly</p>
+            <a href="admin.html" class="btn btn-primary">Go to Admin</a>
+        </div>
+    </section>
+
+    <!-- Teams Grid -->
+    <main class="container">
+        <section class="teams-section">
+            <h2>All IPL Teams</h2>
+            <div class="teams-grid" id="teamsGrid">
+                <!-- Teams will be dynamically populated here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 IPL Teams Manager. All data stored in-memory (not persisted).</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script>
+        // Initialize teams on home page
+        document.addEventListener('DOMContentLoaded', () => {
+            const dataManager = new DataManager();
+            const teams = dataManager.getAllTeams();
+            const teamsGrid = document.getElementById('teamsGrid');
+
+            teams.forEach(team => {
+                const teamCard = document.createElement('div');
+                teamCard.className = 'team-card';
+                teamCard.innerHTML = `
+                    <div class="team-card-content">
+                        <h3>${team.name}</h3>
+                        <p class="team-code">${team.code}</p>
+                        <p class="team-players">Players: <span id="count-${team.code}">0</span></p>
+                        <a href="team.html?code=${team.code}" class="btn btn-secondary">View Team</a>
+                    </div>
+                `;
+                teamsGrid.appendChild(teamCard);
+
+                // Update player count
+                const players = dataManager.getTeamPlayers(team.code);
+                document.getElementById(`count-${team.code}`).textContent = players.length;
+            });
+        });
+    </script>
+</body>
+</html>
