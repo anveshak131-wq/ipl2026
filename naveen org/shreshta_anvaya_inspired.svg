@@ -1,0 +1,141 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Professional gradients and definitions -->
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="darkGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#B8860B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="sunGlow">
+      <stop offset="0%" style="stop-color:#FFFFE0;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:0.3" />
+    </radialGradient>
+    <radialGradient id="centerGlow">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:0.1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Dark teal background -->
+  <rect width="400" height="400" fill="#004D4D"/>
+  
+  <!-- Main logo container -->
+  <g transform="translate(200, 200)">
+    
+    <!-- Outer intricate mandala pattern -->
+    <g opacity="0.8">
+      <!-- Radiating petals/leaves -->
+      <g id="petal">
+        <path d="M 0,-120 Q -15,-110 -20,-95 Q -15,-85 0,-80 Q 15,-85 20,-95 Q 15,-110 0,-120" 
+              fill="url(#gold)" opacity="0.6"/>
+      </g>
+      <!-- Repeat petals in circle -->
+      <use href="#petal" transform="rotate(0)"/>
+      <use href="#petal" transform="rotate(30)"/>
+      <use href="#petal" transform="rotate(60)"/>
+      <use href="#petal" transform="rotate(90)"/>
+      <use href="#petal" transform="rotate(120)"/>
+      <use href="#petal" transform="rotate(150)"/>
+      <use href="#petal" transform="rotate(180)"/>
+      <use href="#petal" transform="rotate(210)"/>
+      <use href="#petal" transform="rotate(240)"/>
+      <use href="#petal" transform="rotate(270)"/>
+      <use href="#petal" transform="rotate(300)"/>
+      <use href="#petal" transform="rotate(330)"/>
+      
+      <!-- Inner decorative ring -->
+      <circle cx="0" cy="0" r="85" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.4"/>
+      <circle cx="0" cy="0" r="90" fill="none" stroke="url(#gold)" stroke-width="0.5" opacity="0.3"/>
+    </g>
+    
+    <!-- Double rings around center -->
+    <circle cx="0" cy="0" r="65" fill="none" stroke="url(#gold)" stroke-width="3"/>
+    <circle cx="0" cy="0" r="55" fill="none" stroke="url(#gold)" stroke-width="2"/>
+    
+    <!-- Central human figure -->
+    <g>
+      <!-- Body -->
+      <path d="M 0,20 L 0,-10" stroke="url(#gold)" stroke-width="4" stroke-linecap="round"/>
+      
+      <!-- Arms raised holding sun -->
+      <path d="M -15,-5 Q -20,-15 -25,-25" stroke="url(#gold)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M 15,-5 Q 20,-15 25,-25" stroke="url(#gold)" stroke-width="3" stroke-linecap="round"/>
+      
+      <!-- Head -->
+      <circle cx="0" cy="-15" r="6" fill="url(#gold)"/>
+      
+      <!-- Radiant sun above head -->
+      <g transform="translate(0, -35)">
+        <!-- Sun rays -->
+        <g id="ray">
+          <line x1="0" y1="-8" x2="0" y2="-15" stroke="url(#gold)" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <use href="#ray" transform="rotate(0)"/>
+        <use href="#ray" transform="rotate(45)"/>
+        <use href="#ray" transform="rotate(90)"/>
+        <use href="#ray" transform="rotate(135)"/>
+        <use href="#ray" transform="rotate(180)"/>
+        <use href="#ray" transform="rotate(225)"/>
+        <use href="#ray" transform="rotate(270)"/>
+        <use href="#ray" transform="rotate(315)"/>
+        
+        <!-- Sun center -->
+        <circle cx="0" cy="0" r="8" fill="url(#sunGlow)"/>
+        <circle cx="0" cy="0" r="5" fill="url(#gold)"/>
+      </g>
+      
+      <!-- Teardrop/heart shape on chest -->
+      <path d="M 0,5 C -3,0 -3,8 0,12 C 3,8 3,0 0,5" fill="url(#gold)"/>
+      
+      <!-- Legs -->
+      <path d="M -3,20 L -5,35 M 3,20 L 5,35" stroke="url(#gold)" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Inner glow effect -->
+    <circle cx="0" cy="0" r="50" fill="url(#centerGlow)"/>
+    
+    <!-- Additional mandala details -->
+    <g opacity="0.5">
+      <!-- Small decorative circles -->
+      <g id="dot">
+        <circle cx="0" cy="-45" r="2" fill="url(#gold)"/>
+      </g>
+      <use href="#dot" transform="rotate(0)"/>
+      <use href="#dot" transform="rotate(60)"/>
+      <use href="#dot" transform="rotate(120)"/>
+      <use href="#dot" transform="rotate(180)"/>
+      <use href="#dot" transform="rotate(240)"/>
+      <use href="#dot" transform="rotate(300)"/>
+      
+      <!-- Connecting arcs -->
+      <g id="arc">
+        <path d="M -30,-30 Q 0,-40 30,-30" fill="none" stroke="url(#gold)" stroke-width="1"/>
+      </g>
+      <use href="#arc" transform="rotate(0)"/>
+      <use href="#arc" transform="rotate(90)"/>
+      <use href="#arc" transform="rotate(180)"/>
+      <use href="#arc" transform="rotate(270)"/>
+    </g>
+  </g>
+  
+  <!-- Organization name -->
+  <g transform="translate(200, 350)">
+    <text x="0" y="0" font-family="Georgia, serif" font-size="16" font-weight="600" 
+          text-anchor="middle" fill="#FFD700" letter-spacing="2">SHRESHTA ANVAYA</text>
+    <text x="0" y="18" font-family="Arial, sans-serif" font-size="10" 
+          text-anchor="middle" fill="#FFA500" letter-spacing="1">CHARITABLE TRUST</text>
+  </g>
+  
+  <!-- Corner decorative elements -->
+  <g opacity="0.3">
+    <path d="M 30,30 Q 40,30 40,40" fill="none" stroke="url(#gold)" stroke-width="1"/>
+    <path d="M 370,30 Q 370,40 360,40" fill="none" stroke="url(#gold)" stroke-width="1"/>
+    <path d="M 30,370 Q 40,370 40,360" fill="none" stroke="url(#gold)" stroke-width="1"/>
+    <path d="M 370,370 Q 370,360 360,360" fill="none" stroke="url(#gold)" stroke-width="1"/>
+  </g>
+</svg>

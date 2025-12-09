@@ -1,0 +1,122 @@
+<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background elements -->
+  <defs>
+    <linearGradient id="saffronGold" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF9933;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFB84D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFCC66;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="indigo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A237E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#283593;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="flameGlow">
+      <stop offset="0%" style="stop-color:#FFB84D;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#FF9933;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#FFB84D;stop-opacity:0.2" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Outer circle -->
+  <circle cx="160" cy="160" r="150" fill="none" stroke="url(#indigo)" stroke-width="1" opacity="0.3"/>
+  
+  <!-- Main symbol group -->
+  <g transform="translate(160, 160)">
+    
+    <!-- Sanskrit-inspired sunburst geometry behind flame -->
+    <g opacity="0.2">
+      <!-- Radial lines -->
+      <path d="M 0,-35 L 0,-45 M 25,-25 L 32,-32 M 35,0 L 45,0 M 25,25 L 32,32 M 0,35 L 0,45 M -25,25 L -32,32 M -35,0 L -45,0 M -25,-25 L -32,-32" 
+            stroke="url(#indigo)" stroke-width="1" stroke-linecap="round"/>
+      <!-- Temple-inspired decorative arcs -->
+      <path d="M -20,-20 Q 0,-30 20,-20" 
+            stroke="url(#indigo)" stroke-width="0.5" fill="none"/>
+      <path d="M -20,20 Q 0,30 20,20" 
+            stroke="url(#indigo)" stroke-width="0.5" fill="none"/>
+    </g>
+    
+    <!-- Thin circular halo around flame -->
+    <circle cx="0" cy="-5" r="38" fill="none" stroke="url(#saffronGold)" stroke-width="1" opacity="0.6"/>
+    
+    <!-- Two symmetrical abstract hands -->
+    <!-- Left hand -->
+    <path d="M -35,15 
+             C -38,10 -40,5 -38,0
+             C -36,-5 -32,-8 -28,-8
+             C -25,-8 -22,-5 -20,0
+             C -18,5 -18,10 -20,15
+             C -22,18 -25,20 -28,20
+             C -32,20 -35,18 -35,15
+             Z" 
+          fill="url(#indigo)" opacity="0.8"/>
+    
+    <!-- Right hand -->
+    <path d="M 35,15 
+             C 38,10 40,5 38,0
+             C 36,-5 32,-8 28,-8
+             C 25,-8 22,-5 20,0
+             C 18,5 18,10 20,15
+             C 22,18 25,20 28,20
+             C 32,20 35,18 35,15
+             Z" 
+          fill="url(#indigo)" opacity="0.8"/>
+    
+    <!-- Flame of knowledge - elegant minimal design -->
+    <g>
+      <!-- Flame glow -->
+      <ellipse cx="0" cy="-8" rx="15" ry="20" fill="url(#flameGlow)"/>
+      
+      <!-- Main flame shape -->
+      <path d="M 0,-25
+               C -8,-20 -10,-15 -8,-10
+               C -6,-5 -4,0 0,5
+               C 4,0 6,-5 8,-10
+               C 10,-15 8,-20 0,-25
+               Z
+               M 0,-25
+               C -3,-22 -4,-18 -3,-15
+               C -2,-12 -1,-8 0,-5
+               C 1,-8 2,-12 3,-15
+               C 4,-18 3,-22 0,-25
+               Z" 
+            fill="url(#saffronGold)"/>
+      
+      <!-- Inner flame core -->
+      <path d="M 0,-15
+               C -3,-12 -3,-8 0,-3
+               C 3,-8 3,-12 0,-15
+               Z" 
+            fill="#FFCC66" opacity="0.8"/>
+    </g>
+    
+    <!-- Connecting energy lines from hands to flame -->
+    <g opacity="0.3">
+      <path d="M -20,5 Q -10,0 -5,-5" 
+            stroke="url(#saffronGold)" stroke-width="0.5" fill="none"/>
+      <path d="M 20,5 Q 10,0 5,-5" 
+            stroke="url(#saffronGold)" stroke-width="0.5" fill="none"/>
+    </g>
+    
+    <!-- Subtle geometric balance elements -->
+    <g opacity="0.15">
+      <circle cx="-25" cy="-10" r="1" fill="url(#indigo)"/>
+      <circle cx="25" cy="-10" r="1" fill="url(#indigo)"/>
+      <circle cx="0" cy="15" r="1" fill="url(#saffronGold)"/>
+    </g>
+  </g>
+  
+  <!-- Organization Name with elegant typography -->
+  <text x="160" y="230" font-family="Georgia, serif" font-size="16" font-weight="300" 
+        text-anchor="middle" fill="url(#indigo)" letter-spacing="2">SHRESHTA ANVAYA</text>
+  <text x="160" y="248" font-family="Arial, sans-serif" font-size="10" 
+        text-anchor="middle" fill="#1A237E" letter-spacing="1">CHARITABLE TRUST</text>
+  
+  <!-- Minimal elegant base line -->
+  <line x1="120" y1="265" x2="200" y2="265" stroke="url(#saffronGold)" stroke-width="0.5" opacity="0.4"/>
+  
+  <!-- Subtle divine energy indicators -->
+  <g transform="translate(160, 85)" opacity="0.2">
+    <path d="M -8,0 Q -4,-2 0,0 Q 4,-2 8,0" 
+          stroke="url(#saffronGold)" stroke-width="0.5" fill="none"/>
+  </g>
+</svg>

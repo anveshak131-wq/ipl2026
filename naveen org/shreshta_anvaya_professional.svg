@@ -1,0 +1,114 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Professional gradients and definitions -->
+  <defs>
+    <linearGradient id="primary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F7931E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="secondary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0%" style="stop-color:#FFB84D;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:0.1" />
+    </radialGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.1"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="400" fill="#FAFAFA"/>
+  
+  <!-- Main logo container -->
+  <g transform="translate(200, 180)" filter="url(#shadow)">
+    
+    <!-- Outer protective circle -->
+    <circle cx="0" cy="0" r="85" fill="none" stroke="url(#primary)" stroke-width="2" opacity="0.3"/>
+    <circle cx="0" cy="0" r="80" fill="none" stroke="url(#primary)" stroke-width="1" opacity="0.5"/>
+    
+    <!-- Central emblem combining multiple meaningful elements -->
+    
+    <!-- Foundation base - stability -->
+    <rect x="-40" y="35" width="80" height="8" rx="4" fill="url(#secondary)" opacity="0.8"/>
+    
+    <!-- Supporting hands - abstract and elegant -->
+    <g opacity="0.9">
+      <!-- Left hand curve -->
+      <path d="M -45,20 Q -50,10 -45,0 Q -35,-10 -25,-8 Q -20,-5 -15,0 Q -18,5 -22,10 Q -28,15 -35,18 Q -42,20 -45,20" 
+            fill="url(#secondary)"/>
+      
+      <!-- Right hand curve -->
+      <path d="M 45,20 Q 50,10 45,0 Q 35,-10 25,-8 Q 20,-5 15,0 Q 18,5 22,10 Q 28,15 35,18 Q 42,20 45,20" 
+            fill="url(#secondary)"/>
+    </g>
+    
+    <!-- Central growth element -->
+    <g>
+      <!-- Stem -->
+      <rect x="-3" y="-20" width="6" height="40" rx="3" fill="url(#primary)" opacity="0.8"/>
+      
+      <!-- Top crown/leaf element -->
+      <path d="M 0,-35 Q -15,-30 -20,-20 Q -15,-15 -10,-18 Q -5,-22 0,-25 Q 5,-22 10,-18 Q 15,-15 20,-20 Q 15,-30 0,-35" 
+            fill="url(#primary)"/>
+      
+      <!-- Inner detail -->
+      <circle cx="0" cy="-25" r="5" fill="#FFB84D" opacity="0.8"/>
+      <circle cx="0" cy="-25" r="3" fill="#FFFFFF"/>
+    </g>
+    
+    <!-- Connecting energy lines -->
+    <g opacity="0.3">
+      <path d="M -15,5 Q -8,0 -5,-5" stroke="url(#primary)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M 15,5 Q 8,0 5,-5" stroke="url(#primary)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Subtle radiating lines -->
+    <g opacity="0.15">
+      <line x1="0" y1="-50" x2="0" y2="-60" stroke="url(#primary)" stroke-width="1"/>
+      <line x1="-35" y1="-35" x2="-42" y2="-42" stroke="url(#primary)" stroke-width="1"/>
+      <line x1="35" y1="-35" x2="42" y2="-42" stroke="url(#primary)" stroke-width="1"/>
+      <line x1="-50" y1="0" x2="-60" y2="0" stroke="url(#primary)" stroke-width="1"/>
+      <line x1="50" y1="0" x2="60" y2="0" stroke="url(#primary)" stroke-width="1"/>
+    </g>
+    
+    <!-- Glow effect -->
+    <circle cx="0" cy="-15" r="25" fill="url(#glow)" opacity="0.3"/>
+  </g>
+  
+  <!-- Professional typography -->
+  <g transform="translate(200, 290)">
+    <!-- Main name -->
+    <text x="0" y="0" font-family="Helvetica Neue, Arial, sans-serif" font-size="24" font-weight="600" 
+          text-anchor="middle" fill="#1E3A8A" letter-spacing="1">SHRESHTA ANVAYA</text>
+    
+    <!-- Tagline -->
+    <text x="0" y="20" font-family="Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" 
+          text-anchor="middle" fill="#64748B" letter-spacing="2">CHARITABLE TRUST</text>
+  </g>
+  
+  <!-- Decorative elements -->
+  <g transform="translate(200, 340)">
+    <circle cx="-20" cy="0" r="2" fill="url(#primary)" opacity="0.4"/>
+    <circle cx="-10" cy="0" r="2" fill="url(#primary)" opacity="0.5"/>
+    <circle cx="0" cy="0" r="2" fill="url(#primary)" opacity="0.6"/>
+    <circle cx="10" cy="0" r="2" fill="url(#primary)" opacity="0.5"/>
+    <circle cx="20" cy="0" r="2" fill="url(#primary)" opacity="0.4"/>
+  </g>
+  
+  <!-- Corner accents -->
+  <g opacity="0.1">
+    <path d="M 20,20 L 20,40 L 40,20" fill="url(#primary)"/>
+    <path d="M 380,20 L 360,20 L 380,40" fill="url(#primary)"/>
+    <path d="M 20,380 L 40,380 L 20,360" fill="url(#primary)"/>
+    <path d="M 380,380 L 380,360 L 360,380" fill="url(#primary)"/>
+  </g>
+</svg>
