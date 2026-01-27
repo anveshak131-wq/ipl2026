@@ -1,0 +1,464 @@
+{
+  "id": "scorecard_1768539391551_0e95m545c",
+  "matchId": "1",
+  "league": "wpl",
+  "matchInfo": {
+    "team1": {
+      "id": "12",
+      "league": "wpl",
+      "name": "Royal Challengers Bangalore",
+      "shortName": "RCB",
+      "logo": "/logos/wpl_rcb_logo_animated.svg",
+      "description": "The women's franchise of RCB with explosive talent",
+      "colors": {
+        "primary": "#EC1C24",
+        "secondary": "#FFD700"
+      },
+      "trophies": [],
+      "homeGrounds": [
+        "M. Chinnaswamy Stadium"
+      ],
+      "players": []
+    },
+    "team2": {
+      "id": "11",
+      "league": "wpl",
+      "name": "Mumbai Indians",
+      "shortName": "MI",
+      "logo": "/logos/wpl_mi_logo_animated.svg",
+      "description": "The women's franchise of Mumbai Indians bringing championship pedigree",
+      "colors": {
+        "primary": "#004BA0",
+        "secondary": "#FFD700"
+      },
+      "trophies": [],
+      "homeGrounds": [
+        "Wankhede Stadium"
+      ],
+      "players": []
+    },
+    "venue": "Dr. DY Patil Sports Academy, Navi Mumbai",
+    "date": "2026-01-09",
+    "time": "19:30",
+    "toss": {
+      "winner": "Royal Challengers Bangalore",
+      "decision": "bowl"
+    },
+    "matchId": "1"
+  },
+  "innings": [
+    {
+      "inningsNumber": 1,
+      "battingTeamId": "12",
+      "batting": [
+        {
+          "playerId": "20",
+          "name": "Amelia Kerr",
+          "runs": 4,
+          "balls": 15,
+          "fours": 0,
+          "sixes": 0,
+          "strikeRate": 26.67,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Arundhati Reddy b Lauren Bell"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "29",
+          "name": "G. Kamalini",
+          "runs": 32,
+          "balls": 28,
+          "fours": 5,
+          "sixes": 0,
+          "strikeRate": 114.29,
+          "dismissal": {
+            "type": "bowled",
+            "details": "b Shreyanka Patil"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "wpl3",
+          "name": "Nat Sciver-Brunt",
+          "runs": 4,
+          "balls": 3,
+          "fours": 1,
+          "sixes": 0,
+          "strikeRate": 133.33,
+          "dismissal": {
+            "type": "stumped",
+            "details": "st Richa Ghosh b Nadine de Klerk"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "18",
+          "name": "Harmanpreet Kaur",
+          "runs": 20,
+          "balls": 17,
+          "fours": 1,
+          "sixes": 1,
+          "strikeRate": 117.65,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Richa Ghosh b Nadine de Klerk"
+          },
+          "isCaptain": true
+        },
+        {
+          "playerId": "24",
+          "name": "Nicola Carey",
+          "runs": 40,
+          "balls": 29,
+          "fours": 4,
+          "sixes": 0,
+          "strikeRate": 137.93,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Dayalan Hemalatha b Nadine de Klerk"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "26",
+          "name": "Sajeevan Sajana",
+          "runs": 45,
+          "balls": 25,
+          "fours": 7,
+          "sixes": 1,
+          "strikeRate": 180,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Smriti Mandhana b Nadine de Klerk"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "19",
+          "name": "Amanjot Kaur",
+          "runs": 0,
+          "balls": 2,
+          "fours": 0,
+          "sixes": 0,
+          "strikeRate": 0,
+          "dismissal": {
+            "type": "not-out"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "25",
+          "name": "Poonam Khemnar",
+          "runs": 0,
+          "balls": 1,
+          "fours": 0,
+          "sixes": 0,
+          "strikeRate": 0,
+          "dismissal": {
+            "type": "not-out"
+          },
+          "isCaptain": false
+        }
+      ],
+      "bowling": [
+        {
+          "playerId": "16",
+          "name": "Lauren Bell",
+          "overs": 4,
+          "balls": 0,
+          "runs": 14,
+          "wickets": 1,
+          "maidens": 1,
+          "economyRate": 3.5,
+          "isCaptain": false,
+          "wides": 3
+        },
+        {
+          "playerId": "17",
+          "name": "Linsey Smith",
+          "overs": 2,
+          "balls": 0,
+          "runs": 23,
+          "wickets": 0,
+          "maidens": 0,
+          "economyRate": 11.5,
+          "isCaptain": false
+        },
+        {
+          "playerId": "4",
+          "name": "Arundhati Reddy",
+          "overs": 4,
+          "balls": 0,
+          "runs": 37,
+          "wickets": 0,
+          "maidens": 0,
+          "economyRate": 9.25,
+          "isCaptain": false,
+          "wides": 2
+        },
+        {
+          "playerId": "9",
+          "name": "Nadine de Klerk",
+          "overs": 4,
+          "balls": 0,
+          "runs": 26,
+          "wickets": 4,
+          "maidens": 0,
+          "economyRate": 6.5,
+          "isCaptain": false
+        },
+        {
+          "playerId": "13",
+          "name": "Shreyanka Patil",
+          "overs": 4,
+          "balls": 0,
+          "runs": 32,
+          "wickets": 1,
+          "maidens": 0,
+          "economyRate": 8,
+          "isCaptain": false
+        },
+        {
+          "playerId": "12",
+          "name": "Radha Yadav",
+          "overs": 2,
+          "balls": 0,
+          "runs": 21,
+          "wickets": 0,
+          "maidens": 0,
+          "economyRate": 10.5,
+          "isCaptain": false
+        }
+      ],
+      "extras": {
+        "wides": 8,
+        "noBalls": 0,
+        "byes": "",
+        "legByes": 1
+      },
+      "totalRuns": 154,
+      "totalWickets": 6,
+      "totalOvers": "20.0"
+    },
+    {
+      "inningsNumber": 2,
+      "battingTeamId": 11,
+      "batting": [
+        {
+          "playerId": "8",
+          "name": "Grace Harris",
+          "runs": 25,
+          "balls": 12,
+          "fours": 4,
+          "sixes": 1,
+          "strikeRate": 208.33,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Shabnim Ismail b Nat Sciver-Brunt"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "2",
+          "name": "Smriti Mandhana",
+          "runs": 18,
+          "balls": 13,
+          "fours": 4,
+          "sixes": 0,
+          "strikeRate": 138.46,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Poonam Khemnar b Shabnim Ismail"
+          },
+          "isCaptain": true
+        },
+        {
+          "playerId": "5",
+          "name": "Dayalan Hemalatha",
+          "runs": 7,
+          "balls": 12,
+          "fours": 1,
+          "sixes": 0,
+          "strikeRate": 58.33,
+          "dismissal": {
+            "type": "lbw",
+            "details": "lbw b Amanjot Kaur"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "wpl6",
+          "name": "Richa Ghosh",
+          "runs": 6,
+          "balls": 6,
+          "fours": 1,
+          "sixes": 0,
+          "strikeRate": 100,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Nicola Carey b Amelia Kerr"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "12",
+          "name": "Radha Yadav",
+          "runs": 1,
+          "balls": 2,
+          "fours": 0,
+          "sixes": 0,
+          "strikeRate": 50,
+          "dismissal": {
+            "type": "bowled",
+            "details": "b Amelia Kerr"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "9",
+          "name": "Nadine de Klerk",
+          "runs": 63,
+          "balls": 44,
+          "fours": 7,
+          "sixes": 2,
+          "strikeRate": 143.18,
+          "dismissal": {
+            "type": "not-out"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "4",
+          "name": "Arundhati Reddy",
+          "runs": 20,
+          "balls": 25,
+          "fours": 2,
+          "sixes": 0,
+          "strikeRate": 80,
+          "dismissal": {
+            "type": "caught",
+            "details": "c Amelia Kerr b Nicola Carey"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "13",
+          "name": "Shreyanka Patil",
+          "runs": 1,
+          "balls": 2,
+          "fours": 0,
+          "sixes": 0,
+          "strikeRate": 50,
+          "dismissal": {
+            "type": "bowled",
+            "details": "b Nicola Carey"
+          },
+          "isCaptain": false
+        },
+        {
+          "playerId": "11",
+          "name": "Prema Rawat",
+          "runs": 8,
+          "balls": 4,
+          "fours": 2,
+          "sixes": 0,
+          "strikeRate": 200,
+          "dismissal": {
+            "type": "not-out"
+          },
+          "isCaptain": false
+        }
+      ],
+      "bowling": [
+        {
+          "playerId": "wpl3",
+          "name": "Nat Sciver-Brunt",
+          "overs": 4,
+          "balls": 0,
+          "runs": 47,
+          "wickets": 1,
+          "maidens": 0,
+          "economyRate": 11.75,
+          "isCaptain": false,
+          "wides": 1
+        },
+        {
+          "playerId": "33",
+          "name": "Shabnim Ismail",
+          "overs": 4,
+          "balls": 0,
+          "runs": 26,
+          "wickets": 1,
+          "maidens": 0,
+          "economyRate": 6.5,
+          "isCaptain": false
+        },
+        {
+          "playerId": "24",
+          "name": "Nicola Carey",
+          "overs": 4,
+          "balls": 0,
+          "runs": 35,
+          "wickets": 2,
+          "maidens": 0,
+          "economyRate": 8.75,
+          "isCaptain": false
+        },
+        {
+          "playerId": "19",
+          "name": "Amanjot Kaur",
+          "overs": 3,
+          "balls": 0,
+          "runs": 18,
+          "wickets": 1,
+          "maidens": 0,
+          "economyRate": 6,
+          "isCaptain": false
+        },
+        {
+          "playerId": "20",
+          "name": "Amelia Kerr",
+          "overs": 4,
+          "balls": 0,
+          "runs": 13,
+          "wickets": 2,
+          "maidens": 0,
+          "economyRate": 3.25,
+          "isCaptain": false,
+          "wides": 2
+        },
+        {
+          "playerId": "32",
+          "name": "Saika Ishaque",
+          "overs": 1,
+          "balls": 0,
+          "runs": 13,
+          "wickets": 0,
+          "maidens": 0,
+          "economyRate": 13,
+          "isCaptain": false
+        }
+      ],
+      "extras": {
+        "wides": 3,
+        "noBalls": 0,
+        "byes": 5,
+        "legByes": ""
+      },
+      "totalRuns": 157,
+      "totalWickets": 7,
+      "totalOvers": "20.0"
+    }
+  ],
+  "createdAt": "2026-01-16T04:56:31.551Z",
+  "updatedAt": "2026-01-18T09:18:22.434Z",
+  "draft": false,
+  "publishedAt": "2026-01-16T10:20:28.985Z",
+  "result": {
+    "winner": "Royal Challengers Bangalore",
+    "margin": "3 wkts",
+    "manOfTheMatch": "Nadine de Klerk"
+  }
+}
