@@ -160,7 +160,10 @@ async function saveToVercelKV(team, players) {
         // Fetch existing players from backend
         let existingPlayers = [];
         try {
-            const fetchResp = await fetch(`/api/admin/players?team=${team}`);
+            const fetchUrl = (window.CF_API_ENDPOINT && window.CF_API_ENDPOINT.trim() !== '')
+                ? `${window.CF_API_ENDPOINT.replace(/\/+$/, '')}?team=${team}`
+                : `/api/admin/players?team=${team}`;
+            const fetchResp = await fetch(fetchUrl);
             if (fetchResp.ok) {
                 const result = await fetchResp.json();
                 existingPlayers = result.data || result || [];
@@ -175,17 +178,26 @@ async function saveToVercelKV(team, players) {
         players.forEach(p => { if(p.name) nameMap[p.name.toLowerCase()] = p; });
         const mergedPlayers = Object.values(nameMap);
 
-        // Save merged list to backend
-        const response = await fetch('/api/admin/players', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ team, players: mergedPlayers })
-        });
+        // Save merged list to backend (POSTs must go to Worker endpoint)
+        try {
+            if (!window.CF_API_ENDPOINT || window.CF_API_ENDPOINT.trim() === '') {
+                console.warn('CF_API_ENDPOINT not set; skipping server sync. Saving merged players locally.');
+                localStorage.setItem(`uploaded_${team.toLowerCase()}_players`, JSON.stringify(mergedPlayers));
+            } else {
+                const response = await fetch(window.CF_API_ENDPOINT.replace(/\/+$/, ''), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ team, players: mergedPlayers })
+                });
 
-        if (response.ok) {
-            console.log(`✅ Saved merged players to Vercel KV for team ${team}`);
-        } else {
-            console.warn('Failed to save merged players to Vercel KV:', response.status);
+                if (response.ok) {
+                    console.log(`✅ Saved merged players to Vercel KV for team ${team}`);
+                } else {
+                    console.warn('Failed to save merged players to Vercel KV:', response.status);
+                }
+            }
+        } catch (error) {
+            console.error('Error saving merged players to Vercel KV:', error);
         }
     } catch (error) {
         console.error('Error saving merged players to Vercel KV:', error);

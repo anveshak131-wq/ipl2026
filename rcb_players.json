@@ -1,0 +1,6 @@
+{
+  "team": "RCB",
+  "players": [
+    { "name": "Local Test Player", "role": "Batsman", "number": 77, "stats": {"runs":0} }
+  ]
+}

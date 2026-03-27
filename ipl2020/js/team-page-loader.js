@@ -9,7 +9,22 @@ if (!window.modalState) {
 }
 
 const BACKEND_API_URL = 'https://ipl-backend-api.vercel.app'; // Update with your deployed backend URL
-const REMOTE_STATS_URL = 'https://iplcrickethub-kappa.vercel.app/api/admin/players?team=RCB';
+const API_BASE = window.location.origin;
+
+// Team code mapping (lowercase to uppercase)
+const TEAM_CODE_MAP = {
+    'rcb': 'RCB',
+    'mi': 'MI',
+    'csk': 'CSK',
+    'kkr': 'KKR',
+    'dc': 'DC',
+    'srh': 'SRH',
+    'rr': 'RR',
+    'kxip': 'KXIP',
+    'pbks': 'PBKS',
+    'gt': 'GT',
+    'lsg': 'LSG'
+};
 
 /**
  * Load players for a team page
@@ -23,35 +38,47 @@ async function loadTeamPlayers(teamCode) {
     }
     playersContainer.innerHTML = '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.7);">Loading players...</div>';
     let players = [];
+    
+    // Convert team code to uppercase for API
+    const teamCodeUpper = TEAM_CODE_MAP[teamCode.toLowerCase()] || teamCode.toUpperCase();
+    const apiUrl = `${API_BASE}/api/admin/players?team=${teamCodeUpper}`;
+    
     try {
-        console.log('🔄 Fetching RCB players from remote stats endpoint...');
-        const response = await fetch(REMOTE_STATS_URL);
+        console.log(`🔄 Fetching ${teamCodeUpper} players from remote stats endpoint...`);
+        const response = await fetch(apiUrl);
         const result = await response.json();
-        if (response.ok && result && Array.isArray(result.data)) {
-            players = result.data.map(p => {
-                let stats = p.stats || {};
-                if (typeof stats === 'string') {
-                    try { stats = JSON.parse(stats); } catch { stats = {}; }
-                }
-                return {
-                    name: p.name,
-                    role: p.role || p.position,
-                    age: p.age,
-                    nationality: p.nationality,
-                    isForeign: p.isForeign || false,
-                    isCaptain: p.isCaptain || false,
-                    isViceCaptain: p.isViceCaptain || false,
-                    'batting style': p.battingStyle || p['batting style'],
-                    'bowling style': p.bowlingStyle || p['bowling style'],
-                    'allrounder type': p.allrounderType || p['allrounder type'],
-                    stats: stats,
-                    jersey: p.jersey,
-                    photo: p.photo || null
-                };
-            });
-            console.log(`✅ Loaded ${players.length} players from remote stats endpoint`);
+        if (response.ok && result) {
+            const playersData = Array.isArray(result.data) ? result.data : (Array.isArray(result) ? result : []);
+            if (playersData.length > 0) {
+                players = playersData.map(p => {
+                    let stats = p.stats || {};
+                    if (typeof stats === 'string') {
+                        try { stats = JSON.parse(stats); } catch { stats = {}; }
+                    }
+                    return {
+                        name: p.name,
+                        team: teamCodeUpper,
+                        role: p.role || p.position || 'Player',
+                        age: p.age,
+                        nationality: p.nationality,
+                        isForeign: p.isForeign || false,
+                        isCaptain: p.isCaptain || false,
+                        isViceCaptain: p.isViceCaptain || false,
+                        'batting style': p.battingStyle || p['batting style'] || '',
+                        'bowling style': p.bowlingStyle || p['bowling style'] || '',
+                        'allrounder type': p.allrounderType || p['allrounder type'] || '',
+                        stats: stats,
+                        jersey: p.jersey || p.number || p.jerseyNumber || null,
+                        number: p.number || p.jersey || p.jerseyNumber || null,
+                        photo: p.photo || p.image || null
+                    };
+                });
+                console.log(`✅ Loaded ${players.length} players from remote stats endpoint`);
+            } else {
+                console.warn('⚠️ No players found in remote stats response');
+            }
         } else {
-            console.warn('⚠️ No players found in remote stats response');
+            console.warn('⚠️ API response not OK:', response.status);
         }
     } catch (e) {
         console.error('❌ Failed to fetch from remote stats endpoint:', e);
@@ -138,23 +165,56 @@ function createPlayerCard(player, teamCode) {
     // Add click event to show modal
     card.addEventListener('click', () => {
         try {
+            console.log('Player card clicked:', player.name);
+            
             // Ensure modal is initialized
-            if (!window.modalState?.initialized) {
+            if (!window.modalState || !window.modalState.initialized) {
                 console.log('Modal not yet initialized, initializing now...');
-                initModal();
+                if (typeof window.initModal === 'function') {
+                    window.initModal();
+                } else if (typeof initModal === 'function') {
+                    initModal();
+                }
+                if (typeof window.ensureModalElements === 'function') {
+                    window.ensureModalElements();
+                }
             }
             
-            // Now check if we can show the modal
-            // Try to recover modal elements if possible
-            if (typeof window.ensureModalElements === 'function') try { window.ensureModalElements(); } catch(e){}
+            // Ensure modal elements exist
+            if (typeof window.ensureModalElements === 'function') {
+                window.ensureModalElements();
+            }
 
-            if (window.showPlayerModal) {
-                // Clone the player object to ensure we pass all data
-                const playerData = JSON.parse(JSON.stringify(player));
+            // Wait a bit for modal to initialize if needed
+            if (typeof window.showPlayerModal === 'function') {
+                // Clone the player object to ensure we pass all data including team
+                const playerData = {
+                    ...player,
+                    team: player.team || teamCode.toUpperCase()
+                };
                 console.log('Opening modal for player:', playerData);
                 window.showPlayerModal(playerData);
             } else {
-                console.error('showPlayerModal function not found. Modal state:', window.modalState);
+                console.error('showPlayerModal function not found. Waiting...');
+                // Try to initialize modal again
+                if (typeof window.initModal === 'function') {
+                    window.initModal();
+                }
+                // Retry after a short delay
+                setTimeout(() => {
+                    if (typeof window.showPlayerModal === 'function') {
+                        const playerData = {
+                            ...player,
+                            team: player.team || teamCode.toUpperCase()
+                        };
+                        console.log('Retrying to open modal for player:', playerData);
+                        window.showPlayerModal(playerData);
+                    } else {
+                        console.error('showPlayerModal still not available after retry');
+                        console.error('Available functions:', Object.keys(window).filter(k => k.includes('modal') || k.includes('Modal')));
+                        alert('Player modal is not available. Please refresh the page.');
+                    }
+                }, 500);
             }
         } catch (error) {
             console.error('Error showing player modal:', error);

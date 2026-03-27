@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="fireGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FBBF24;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M32 8c-4 8-8 12-8 20 0 8 4 14 8 14s8-6 8-14c0-4-2-8-4-12 2 2 4 6 4 10 0 6-2 10-4 12 6-2 10-8 10-14 0-10-6-16-14-16z" fill="url(#fireGrad)" stroke="#DC2626" stroke-width="1.5"/>
+  <ellipse cx="32" cy="36" rx="6" ry="8" fill="#FBBF24" opacity="0.6"/>
+  <path d="M32 20c-2 4-4 6-4 10 0 4 2 7 4 7s4-3 4-7c0-4-2-6-4-10z" fill="#FEF3C7" opacity="0.8"/>
+</svg>

@@ -4,22 +4,66 @@
  * Uses Upstash Redis (automatically configured by Vercel)
  */
 
-import { kv } from '@vercel/kv'
+import { Redis } from '@upstash/redis'
 
-// Initialize KV client (uses Upstash Redis behind the scenes)
-const redis = kv;
+// Lazy initialization of Redis to avoid errors if env vars not available
+let redis = null;
+
+function getRedis() {
+  if (!redis) {
+    // Check if environment variables are available
+    const url = process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+    
+    if (!url || !token) {
+      const missing = [];
+      if (!url) missing.push('UPSTASH_REDIS_REST_URL');
+      if (!token) missing.push('UPSTASH_REDIS_REST_TOKEN');
+      
+      throw new Error(
+        `Missing environment variables: ${missing.join(', ')}. ` +
+        `Please add these to Vercel project settings → Environment Variables and redeploy.`
+      );
+    }
+    
+    try {
+      redis = Redis.fromEnv();
+    } catch (error) {
+      console.error('Failed to initialize Redis:', error);
+      console.error('Environment check:', {
+        UPSTASH_REDIS_REST_URL: url ? 'Set' : 'Missing',
+        UPSTASH_REDIS_REST_TOKEN: token ? 'Set' : 'Missing'
+      });
+      throw new Error(
+        `Redis initialization failed: ${error.message}. ` +
+        `Check that UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are correctly set in Vercel.`
+      );
+    }
+  }
+  return redis;
+}
 
 export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+  // Immediate logging to verify function is being called
+  console.log('=== API /admin/players called ===');
+  console.log('Method:', req.method);
+  console.log('Query:', req.query);
+  console.log('Environment check:', {
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL ? 'Set' : 'Missing',
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? 'Set' : 'Missing'
+  });
+  
+  // Wrap everything in try-catch to prevent crashes
   try {
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+      console.log('OPTIONS request - returning 200');
+      return res.status(200).end();
+    }
     // GET - Fetch players for a team
     if (req.method === 'GET') {
       const { team } = req.query;
@@ -31,11 +75,40 @@ export default async function handler(req, res) {
         });
       }
 
-      const players = await redis.get(`players:${team}`);
+      // Normalize team code (handle KXIP -> PBKS mapping for backward compatibility)
+      let teamCode = team.toUpperCase();
+      const originalTeam = teamCode;
+      
+      // Map KXIP to PBKS (Punjab Kings renamed)
+      if (teamCode === 'KXIP') {
+        teamCode = 'PBKS';
+      }
+
+      // Get Redis client
+      const redisClient = getRedis();
+      
+      // Try to get players with normalized team code
+      let players = await redisClient.get(`players:${teamCode}`);
+      
+      // Backward compatibility: if not found with normalized code and original was different, try original
+      if (!players && originalTeam !== teamCode) {
+        players = await redisClient.get(`players:${originalTeam}`);
+        // If found with old key, migrate to new key
+        if (players) {
+          try {
+            await redisClient.set(`players:${teamCode}`, players);
+            await redisClient.del(`players:${originalTeam}`);
+          } catch (e) {
+            // Ignore migration errors
+            console.warn('Migration error:', e);
+          }
+        }
+      }
       
       return res.status(200).json({
         success: true,
-        data: players || []
+        data: players || [],
+        count: Array.isArray(players) ? players.length : 0
       });
     }
 
@@ -50,12 +123,29 @@ export default async function handler(req, res) {
         });
       }
 
-      await redis.set(`players:${team}`, players);
+      // Get Redis client
+      const redisClient = getRedis();
+      
+      // Normalize team code (handle KXIP -> PBKS mapping)
+      let teamCode = team.toUpperCase();
+      if (teamCode === 'KXIP') {
+        teamCode = 'PBKS';
+        // Also delete old KXIP key if it exists (migration)
+        try {
+          await redisClient.del(`players:KXIP`);
+        } catch (e) {
+          // Ignore errors
+          console.warn('Delete old key error:', e);
+        }
+      }
+
+      await redisClient.set(`players:${teamCode}`, players);
       
       return res.status(200).json({
         success: true,
         message: 'Players saved successfully',
-        data: players
+        data: players,
+        count: players.length
       });
     }
 
@@ -70,7 +160,10 @@ export default async function handler(req, res) {
         });
       }
 
-      await redis.del(`players:${team}`);
+      // Get Redis client
+      const redisClient = getRedis();
+      
+      await redisClient.del(`players:${team}`);
       
       return res.status(200).json({
         success: true,
@@ -84,10 +177,48 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('API Error:', error);
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', {
+      message: error.message,
+      name: error.name,
+      code: error.code
+    });
+    
+    // Log environment variable status
+    const envStatus = {
+      UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL ? 'Set' : 'Missing',
+      UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN ? 'Set' : 'Missing'
+    };
+    console.error('Environment Variables Status:', envStatus);
+    
+    // Check if it's an environment variable issue
+    const isEnvError = error.message && (
+      error.message.includes('UPSTASH_REDIS_REST_URL') ||
+      error.message.includes('UPSTASH_REDIS_REST_TOKEN') ||
+      error.message.includes('environment variable') ||
+      error.message.includes('fromEnv') ||
+      error.message.includes('Missing environment variables')
+    );
+    
+    // Return a user-friendly error message with debugging info
     return res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message || 'Internal server error',
+      hint: isEnvError 
+        ? 'Upstash Redis environment variables are not configured. Please add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to Vercel environment variables and redeploy. See VERCEL_UPSTASH_SETUP.md for instructions.'
+        : 'Error occurred while accessing Upstash Redis. Check server logs for details.',
+      envVarsConfigured: {
+        UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
+        UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN
+      },
+      envVarStatus: envStatus,
+      debug: {
+        hasUrl: !!process.env.UPSTASH_REDIS_REST_URL,
+        hasToken: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+        urlLength: process.env.UPSTASH_REDIS_REST_URL?.length || 0,
+        tokenLength: process.env.UPSTASH_REDIS_REST_TOKEN?.length || 0
+      }
     });
   }
 }

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - File Upload - IPL 2026</title>
+    <!-- Cache-buster: 2025-11-11-v7 -->
+    <title>Admin - Upload Players & Data</title>
     <link rel="shortcut icon" href="index.ico" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -255,7 +256,7 @@
                     <ul>
                         <li>Columns: <code>Date, Team 1, Team 2, Venue, Time, Status</code></li>
                         <li>Date format: YYYY-MM-DD</li>
-                        <li>Team codes: RCB, MI, CSK, SRH, KXIP, KKR, DC, RR, GT, LSG</li>
+                        <li>Team codes: RCB, MI, CSK, SRH, PBKS, KKR, DC, RR, GT, LSG</li>
                         <li>Status: upcoming, live, or completed</li>
                     </ul>
                 </div>
@@ -274,7 +275,7 @@
                         <option value="MI">Mumbai Indians (MI)</option>
                         <option value="CSK">Chennai Super Kings (CSK)</option>
                         <option value="SRH">Sunrisers Hyderabad (SRH)</option>
-                        <option value="KXIP">Kings XI Punjab (KXIP)</option>
+                        <option value="PBKS">Punjab Kings (PBKS)</option>
                         <option value="KKR">Kolkata Knight Riders (KKR)</option>
                         <option value="DC">Delhi Capitals (DC)</option>
                         <option value="RR">Rajasthan Royals (RR)</option>
@@ -306,7 +307,7 @@
                         <option value="MI">Mumbai Indians (MI)</option>
                         <option value="CSK">Chennai Super Kings (CSK)</option>
                         <option value="SRH">Sunrisers Hyderabad (SRH)</option>
-                        <option value="KXIP">Kings XI Punjab (KXIP)</option>
+                        <option value="PBKS">Punjab Kings (PBKS)</option>
                         <option value="KKR">Kolkata Knight Riders (KKR)</option>
                         <option value="DC">Delhi Capitals (DC)</option>
                         <option value="RR">Rajasthan Royals (RR)</option>
@@ -379,8 +380,19 @@
         </div>
     </div>
 
-    <script src="file-upload.js"></script>
     <script>
+        // Ensure the Cloudflare Worker endpoint is set BEFORE any other scripts that may POST to it.
+        // This must be present early so modules that use window.CF_API_ENDPOINT don't fall back to relative paths.
+        window.CF_API_ENDPOINT = 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players';
+    </script>
+    <script src="file-upload.js?v=7.0"></script>
+    <script>
+        // Cloudflare Workers KV endpoint for storing players
+        // FREE, unlimited storage and API calls
+        // Setup: See WORKERS_KV_SETUP.md for complete instructions
+        // (Assignment removed here because it is defined above to ensure early availability)
+        // Leave empty to store locally (browser localStorage only)
+        // Once deployed, the endpoint is set to window.CF_API_ENDPOINT above.
         // File info display
         document.getElementById('fixturesFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -477,16 +489,79 @@
                         player.isForeign = true;
                     }
                     
-                    parsedPlayers.push(player);
+                    if (player.name) {
+                        parsedPlayers.push(player);
+                    }
                 }
                 
-                // Store in localStorage for the frontend to read
+                // Store in localStorage (backup)
                 localStorage.setItem(`uploaded_${team.toLowerCase()}_players`, JSON.stringify(parsedPlayers));
                 
-                console.log(`Parsed ${parsedPlayers.length} players for ${team}`);
+                // Prepare API payload
+                const apiPlayers = parsedPlayers.map(p => ({
+                    name: p.name,
+                    role: p.role || 'Player',
+                    age: p.age ? parseInt(p.age) : null,
+                    nationality: p.nationality || '',
+                    isForeign: p.isForeign || false,
+                    isCaptain: p.isCaptain || false,
+                    isViceCaptain: p.isViceCaptain || false,
+                    battingStyle: p['batting style'] || p.battingstyle || '',
+                    bowlingStyle: p['bowling style'] || p.bowlingstyle || '',
+                    allrounderType: p['allrounder type'] || p.allroundertype || '',
+                    stats: p.stats || {},
+                    jersey: p.jersey || p.number || null,
+                    number: p.jersey || p.number || null,
+                    photo: p.image || p.photo || '',
+                    // Legacy format
+                    'batting style': p['batting style'] || p.battingstyle || '',
+                    'bowling style': p['bowling style'] || p.bowlingstyle || '',
+                    'allrounder type': p['allrounder type'] || p.allroundertype || ''
+                }));
+
+                // Save to server API (Cloudflare Worker if configured, otherwise local /api)
+                try {
+                    // Only POST to the Cloudflare Worker if CF_API_ENDPOINT is configured.
+                    // If it's not set, we keep the data in localStorage (already saved above) and show a local success.
+                    if (!window.CF_API_ENDPOINT || window.CF_API_ENDPOINT.trim() === '') {
+                        console.warn('CF_API_ENDPOINT not set; skipping server sync. Players saved locally.');
+                        successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded locally (${parsedPlayers.length} players). Server sync skipped - CF_API_ENDPOINT not configured.`;
+                        successEl.style.display = 'block';
+                    } else {
+                        const apiUrl = window.CF_API_ENDPOINT.replace(/\/+$/, '');
+                        console.log('Saving CSV players to API (worker):', apiUrl);
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                team: team.toUpperCase(),
+                                players: apiPlayers
+                            })
+                        });
+
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            throw new Error(`API error: ${response.status} - ${errorText}`);
+                        }
+
+                        const result = await response.json();
+                        console.log('API response:', result);
+
+                        successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded and synced with server)`;
+                        successEl.style.display = 'block';
+                    }
+                } catch (apiError) {
+                    console.error('Error saving to API:', apiError);
+                    successEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Players for ${team} uploaded locally (${parsedPlayers.length} players), but failed to sync with server: ${apiError.message}`;
+                    successEl.style.display = 'block';
+                    successEl.style.background = 'rgba(255, 193, 7, 0.2)';
+                    successEl.style.borderColor = '#ffc107';
+                    successEl.style.color = '#ffc107';
+                }
                 
-                successEl.innerHTML = `<i class="fas fa-check-circle"></i> Players for ${team} uploaded successfully! (${parsedPlayers.length} players loaded)`;
-                successEl.style.display = 'block';
+                console.log(`Parsed ${parsedPlayers.length} players for ${team}`);
             } catch (error) {
                 showError('playersError', 'Upload failed: ' + error.message);
             }
@@ -595,7 +670,7 @@
             }
         }
 
-        function savePlayers() {
+        async function savePlayers() {
             const team = document.getElementById('teamSelectManual').value;
             if (!team) {
                 showError('playersManualError', 'Please select a team');
@@ -634,19 +709,84 @@
                 return;
             }
 
-            // Store in localStorage
+            const successEl = document.getElementById('playersManualSuccess');
+            const errorEl = document.getElementById('playersManualError');
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+
+            // Store in localStorage (backup)
             localStorage.setItem(`uploaded_${team.toLowerCase()}_players`, JSON.stringify(players));
 
-            // Show success
-            const successEl = document.getElementById('playersManualSuccess');
-            successEl.innerHTML = `<i class="fas fa-check-circle"></i> ${players.length} player(s) saved for ${team}!`;
-            successEl.style.display = 'block';
+            // Prepare API payload - normalize data format
+            const apiPlayers = players.map(p => ({
+                name: p.name,
+                role: p.role || 'Player',
+                age: p.age ? parseInt(p.age) : null,
+                nationality: p.nationality || '',
+                isForeign: p.isForeign || false,
+                isCaptain: p.isCaptain || false,
+                isViceCaptain: p.isViceCaptain || false,
+                battingStyle: p['batting style'] || '',
+                bowlingStyle: p['bowling style'] || '',
+                allrounderType: p['allrounder type'] || '',
+                stats: p.stats || {},
+                jersey: p.jersey || p.number || null,
+                number: p.jersey || p.number || null,
+                photo: p.image || p.photo || '',
+                // Also include legacy format for compatibility
+                'batting style': p['batting style'] || '',
+                'bowling style': p['bowling style'] || '',
+                'allrounder type': p['allrounder type'] || ''
+            }));
 
-            // Clear form
-            document.getElementById('playersList').innerHTML = '';
-            playerCount = 0;
+            try {
+                // Only POST to the Cloudflare Worker if CF_API_ENDPOINT is configured.
+                if (!window.CF_API_ENDPOINT || window.CF_API_ENDPOINT.trim() === '') {
+                    console.warn('CF_API_ENDPOINT not set; skipping server sync. Players saved locally.');
+                    successEl.innerHTML = `<i class="fas fa-check-circle"></i> ${players.length} player(s) saved locally for ${team}. Server sync skipped - CF_API_ENDPOINT not configured.`;
+                    successEl.style.display = 'block';
+                } else {
+                    const apiUrl = window.CF_API_ENDPOINT.replace(/\/+$/, '');
+                    console.log('Saving players to API (worker):', apiUrl, { team: team.toUpperCase(), players: apiPlayers });
 
-            console.log(`Saved ${players.length} players for ${team}`);
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            team: team.toUpperCase(),
+                            players: apiPlayers
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`API error: ${response.status} - ${errorText}`);
+                    }
+                }
+
+                const result = await response.json();
+                console.log('API response:', result);
+
+                // Show success
+                successEl.innerHTML = `<i class="fas fa-check-circle"></i> ${players.length} player(s) saved for ${team}! (Synced with server)`;
+                successEl.style.display = 'block';
+
+                // Clear form
+                document.getElementById('playersList').innerHTML = '';
+                playerCount = 0;
+
+                console.log(`✅ Saved ${players.length} players for ${team} to API`);
+            } catch (error) {
+                console.error('Error saving to API:', error);
+                // Show warning but don't fail completely
+                successEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${players.length} player(s) saved locally, but failed to sync with server: ${error.message}`;
+                successEl.style.display = 'block';
+                successEl.style.background = 'rgba(255, 193, 7, 0.2)';
+                successEl.style.borderColor = '#ffc107';
+                successEl.style.color = '#ffc107';
+            }
         }
     </script>
 </body>

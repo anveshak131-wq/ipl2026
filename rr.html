@@ -1,335 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>RR - IPL 2026</title>
-	<link rel="shortcut icon" href="index.ico" />
-	<link rel="icon" type="image/x-icon" href="rr_logo_new.svg">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-	<style type="text/css">
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
-
-		body {
-			font-family: 'Poppins', sans-serif;
-			background: linear-gradient(135deg, #FF6B00 0%, #FF4500 50%, #CC3300 100%);
-			background-size: 400% 400%;
-			animation: gradient 15s ease infinite;
-			min-height: 100vh;
-			position: relative;
-			overflow-x: hidden;
-			color: white;
-		}
-
-		body::before {
-			content: '';
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-			pointer-events: none;
-			z-index: 0;
-		}
-
-		@keyframes gradient {
-			0% { background-position: 0% 50%; }
-			50% { background-position: 100% 50%; }
-			100% { background-position: 0% 50%; }
-		}
-
-		.container {
-			max-width: 1400px;
-			margin: 0 auto;
-			padding: 0 20px;
-			position: relative;
-			z-index: 1;
-		}
-
-		main {
-			margin-top: 100px;
-			padding: 3rem 0;
-		}
-
-		header {
-			background: rgba(30, 30, 60, 0.98);
-			backdrop-filter: blur(10px);
-			border-bottom: 2px solid #ffd700;
-			position: fixed;
-			width: 100%;
-			top: 0;
-			z-index: 1000;
-			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-		}
-
-		nav {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 1.2rem 0;
-		}
-
-		.logo {
-			font-size: 1.8rem;
-			font-weight: 800;
-			color: white;
-			text-decoration: none;
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-		}
-
-		.logo img {
-			height: 40px;
-			width: 40px;
-		}
-
-		.nav-links {
-			display: flex;
-			list-style: none;
-			gap: 2rem;
-			align-items: center;
-		}
-
-		.nav-links a {
-			color: white;
-			text-decoration: none;
-			padding: 0.7rem 1.5rem;
-			border-radius: 50px;
-			transition: all 0.3s ease;
-			font-weight: 600;
-			position: relative;
-			background: transparent;
-		}
-
-		.nav-links a::before {
-			content: '';
-			position: absolute;
-			inset: 0;
-			border-radius: 50px;
-			background: linear-gradient(45deg, #FF6B00, #FF4500);
-			opacity: 0;
-			transition: opacity 0.3s ease;
-			z-index: -1;
-		}
-
-		.nav-links a:hover::before {
-			opacity: 1;
-		}
-
-		.nav-links a:hover {
-			transform: translateY(-2px);
-			color: white;
-		}
-
-		.nav-links a.active {
-			background: linear-gradient(45deg, #FF6B00, #FF4500);
-			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-			color: white;
-		}
-
-		.team-header {
-			text-align: center;
-			padding: 3rem 0;
-		}
-
-		.team-logo {
-			width: 200px;
-			height: 200px;
-			margin: 0 auto 1rem;
-			filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-			animation: float 3s ease-in-out infinite;
-		}
-
-		@keyframes float {
-			0%, 100% { transform: translateY(0px); }
-			50% { transform: translateY(-10px); }
-		}
-
-		.team-name {
-			font-size: 3rem;
-			font-weight: 800;
-			margin-bottom: 0.5rem;
-			color: white;
-		}
-
-		.team-full-name {
-			font-size: 1.2rem;
-			color: rgba(255, 255, 255, 0.9);
-			margin-bottom: 2rem;
-		}
-
-		.content-section {
-			background: rgba(255, 255, 255, 0.1);
-			backdrop-filter: blur(10px);
-			border-radius: 20px;
-			padding: 2rem;
-			margin: 2rem 0;
-		}
-
-		.content-section h2 {
-			font-size: 1.8rem;
-			margin-bottom: 1rem;
-			color: #ffd700;
-		}
-
-		.content-section p {
-			font-size: 1.1rem;
-			line-height: 1.8;
-			color: rgba(255, 255, 255, 0.9);
-			margin-bottom: 1rem;
-		}
-
-		.uploaded-players {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-			gap: 1rem;
-			margin-top: 1.5rem;
-		}
-
-		.player-item {
-			background: rgba(0, 0, 0, 0.3);
-			border-radius: 10px;
-			padding: 1rem;
-			text-align: center;
-			transition: all 0.3s;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-		}
-
-		.player-item:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-			background: rgba(0, 0, 0, 0.4);
-		}
-
-		.player-item .role {
-			font-size: 0.85rem;
-			color: #ffd700;
-			margin-top: 0.3rem;
-		}
-
-		.player-item .name {
-			font-weight: 600;
-			color: white;
-			font-size: 0.95rem;
-		}
-
-		.no-players-message {
-			text-align: center;
-			padding: 2rem;
-			color: rgba(255, 255, 255, 0.6);
-			font-style: italic;
-		}
-
-		@media (max-width: 768px) {
-			.team-name {
-				font-size: 2rem;
-			}
-			.nav-links {
-				flex-wrap: wrap;
-				gap: 0.5rem;
-			}
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Rajasthan Royals - IPL 2026 | Complete Squad & Player Stats</title>
+    <meta name="description" content="Explore Rajasthan Royals (RR) complete squad for IPL 2026. View player profiles, statistics, and team information.">
+    <link rel="shortcut icon" href="assets/ipl_logo_new.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/shared-modern.css">
+    <link rel="stylesheet" href="css/team-modern.css">
+    <style>
+        :root {
+            --team-primary: #254AA5;
+            --team-secondary: #4A6FD8;
+            --team-accent: #FFD700;
+        }
+        
+        .team-logo-glow {
+            background: linear-gradient(135deg, var(--team-primary), var(--team-accent));
+        }
+        
+        .team-stat-card:hover {
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(37, 74, 165, 0.3);
+        }
+        
+        .player-card-modern:hover {
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(37, 74, 165, 0.4),
+                inset 0 0 30px rgba(37, 74, 165, 0.2);
+        }
+    </style>
 </head>
-<body>
-	<header>
-		<nav class="container">
-			<a href="index.html" class="logo">
-				<img src="rr_logo_new.svg" alt="RR Logo" />
-				<span>RR</span>
-			</a>
-			<ul class="nav-links">
-				<li><a href="index.html">Home</a></li>
-				<li><a href="rr.html" class="active">About</a></li>
-				<li><a href="fixtures_modern.html">Fixtures</a></li>
-				<li><a href="points_modern.html">Points</a></li>
-				<li><a href="scores_modern.html">Scores</a></li>
-				<li><a href="about.html">About IPL</a></li>
-			</ul>
-		</nav>
-	</header>
-
-	<main>
-		<div class="container">
-			<div class="team-header">
-				<img src="rr_logo_new.svg" alt="RR" class="team-logo">
-				<h1 class="team-name">Rajasthan Royals</h1>
-				<p class="team-full-name">RR</p>
-			</div>
-
-			<div class="content-section">
-				<h2><i class="fas fa-trophy"></i> About RR</h2>
-				<p>Rajasthan Royals is a franchise cricket team based in Jaipur, Rajasthan, that plays in the Indian Premier League. The team was the inaugural champions of the IPL in 2008 and continues to be a competitive force in the tournament.</p>
-			</div>
-
-			<div class="content-section">
-				<h2><i class="fas fa-users"></i> Complete Squad</h2>
-				<p style="text-align: center; color: #ffd700; padding: 3rem; font-size: 1.2rem;">
-					Team roster will be updated once confirmed. Check back soon!
-				</p>
-			</div>
-
-			<div class="content-section">
-				<h2><i class="fas fa-users"></i> Squad</h2>
-				<div id="uploadedPlayers">
-					<div class="no-players-message">Loading players...</div>
-				</div>
-			</div>
-
-			<div class="content-section">
-				<h2><i class="fas fa-link"></i> Official Links</h2>
-				<p>
-					For more information, visit <a href="https://www.rajasthanroyals.com/" target="_blank" style="color: #ffd700;">rajasthanroyals.com</a>
-				</p>
-			</div>
-		</div>
-	</main>
-
-	<footer style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); text-align: center; padding: 2rem 0; margin-top: 4rem; border-top: 2px solid rgba(255, 255, 255, 0.2);">
-		<div class="container">
-			<p>&copy; 2026 SportsUP99. All rights reserved.</p>
-			<p style="margin-top: 0.5rem;">
-				<a href="admin-upload.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 0.9rem;">
-					<i class="fas fa-cog"></i> Admin Upload
-				</a>
-			</p>
-		</div>
-	</footer>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			const playersContainer = document.getElementById('uploadedPlayers');
-			try {
-				const playersData = localStorage.getItem('uploaded_rr_players');
-				if (playersData) {
-					const players = JSON.parse(playersData);
-					if (players && players.length > 0) {
-						let html = '<div class="uploaded-players">';
-						players.forEach(player => {
-							const playerName = player.name || player.Name || 'Unknown Player';
-							const playerRole = player.role || player.Role || 'Player';
-							html += `<div class="player-item"><div class="name">${playerName}</div><div class="role">${playerRole}</div></div>`;
-						});
-						html += '</div>';
-						playersContainer.innerHTML = html;
-					} else {
-						playersContainer.innerHTML = '<div class="no-players-message">No players uploaded yet. Go to <a href="admin-upload.html" style="color: #ffd700;">Admin Upload</a> to add players.</div>';
-					}
-				} else {
-					playersContainer.innerHTML = '<div class="no-players-message">No players uploaded yet. Go to <a href="admin-upload.html" style="color: #ffd700;">Admin Upload</a> to add players.</div>';
-				}
-			} catch (error) {
-				console.error('Error loading players:', error);
-				playersContainer.innerHTML = '<div class="no-players-message">Error loading players. Please try again.</div>';
-			}
-		});
-	</script>
+<body data-team="RR">
+    <script>
+        window.CF_API_ENDPOINT = 'https://player-storage-kv.anvesh-ak-131.workers.dev/api/admin/players';
+    </script>
+    <div class="team-background"></div>
+    <nav class="team-nav" id="teamNav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/ipl_logo_new.svg" alt="IPL">
+                <span>IPL 2026</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fixtures_modern.html">Fixtures</a></li>
+                <li><a href="points_modern.html">Points</a></li>
+                <li><a href="scores_modern.html">Scores</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="team-hero">
+        <div class="team-hero-container">
+            <div class="team-logo-wrapper">
+                <div class="team-logo-glow"></div>
+                <div class="team-logo-circle">
+                    <img src="assets/rr_logo_new.svg" alt="Rajasthan Royals">
+                </div>
+            </div>
+            <h1 class="team-title">RAJASTHAN ROYALS</h1>
+            <p class="team-subtitle">Jaipur • Sawai Mansingh Stadium</p>
+            <div class="team-stats-grid">
+                <div class="team-stat-card">
+                    <div class="team-stat-number" id="playerCount">0</div>
+                    <div class="team-stat-label">Total Players</div>
+                </div>
+                <div class="team-stat-card">
+                    <div class="team-stat-number" id="foreignCount">0</div>
+                    <div class="team-stat-label">Overseas</div>
+                </div>
+                <div class="team-stat-card">
+                    <div class="team-stat-number" id="indianCount">0</div>
+                    <div class="team-stat-label">Indian</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="squad-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">SQUAD 2026</h2>
+                <p class="section-subtitle">Meet the royals of Rajasthan</p>
+            </div>
+            <div class="players-grid" id="playersContainer">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 1rem; color: var(--text-muted);">Loading squad...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Player Modal (created dynamically by server-side modal system) -->
+    <!-- Modal will be created automatically by player-modal-server.js -->
+    <footer class="team-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 SportsUP99. All rights reserved.</p>
+        </div>
+    </footer>
+    <!-- Scripts -->
+    <!-- Server-side modal (PHP/Python) - Most reliable -->
+    <script src="js/player-modal-server.js"></script>
+    <!-- Fallback client-side modal -->
+    <script src="js/player-modal-new.js"></script>
+    <script src="js/team-page-loader.js"></script>
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('teamNav');
+            if (nav && window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else if (nav) {
+                nav.classList.remove('scrolled');
+            }
+        });
+        // Initialize server-side modal (auto-initializes, but ensure it's ready)
+        window.addEventListener('load', () => {
+            if (window.PlayerModalServer && typeof window.PlayerModalServer.init === 'function') {
+                window.PlayerModalServer.init();
+            }
+            // Also initialize fallback
+            if (window.PlayerModal && typeof window.PlayerModal.init === 'function') {
+                window.PlayerModal.init();
+            }
+        });
+    </script>
 </body>
 </html>

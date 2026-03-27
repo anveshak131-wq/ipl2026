@@ -222,29 +222,35 @@ function savePlayers() {
         photo: p.image || ''
     }));
 
-    fetch(`/api/admin/players`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ team: team.toUpperCase(), players: apiPlayers })
-    })
-    .then(res => {
-        if (!res.ok) throw new Error('Failed to sync with server');
-        return res.json();
-    })
-    .then(data => {
-        let msg = `${apiPlayers.length} player(s) saved for ${team}!`;
-        if (foundCaptain) msg += ' (Captain set)';
-        if (foundViceCaptain) msg += ' (Vice-Captain set)';
-        showSuccess('playersManualSuccess', msg);
-        hideError('playersManualError');
-        // Optionally reload stats manager if open
-        if (window.location.pathname.includes('admin-player-stats')) {
-            setTimeout(() => window.location.reload(), 1000);
+    // Only POST to the Cloudflare Worker if CF_API_ENDPOINT is configured. Otherwise keep local save.
+    (async () => {
+        try {
+            if (!window.CF_API_ENDPOINT || window.CF_API_ENDPOINT.trim() === '') {
+                console.warn('CF_API_ENDPOINT not set; skipping server sync. Players saved locally.');
+                showSuccess('playersManualSuccess', `${apiPlayers.length} player(s) saved for ${team}! (Local only — server sync skipped)`);
+            } else {
+                const apiUrl = window.CF_API_ENDPOINT.replace(/\/+$/, '');
+                const res = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ team: team.toUpperCase(), players: apiPlayers })
+                });
+                if (!res.ok) throw new Error('Failed to sync with server');
+                const data = await res.json();
+                let msg = `${apiPlayers.length} player(s) saved for ${team}!`;
+                if (foundCaptain) msg += ' (Captain set)';
+                if (foundViceCaptain) msg += ' (Vice-Captain set)';
+                showSuccess('playersManualSuccess', msg);
+                hideError('playersManualError');
+                if (window.location.pathname.includes('admin-player-stats')) {
+                    setTimeout(() => window.location.reload(), 1000);
+                }
+            }
+        } catch (err) {
+            console.error('Error syncing to server:', err);
+            showError('playersManualError', 'Saved locally, but failed to sync with server. Try again.');
         }
-    })
-    .catch(err => {
-        showError('playersManualError', 'Saved locally, but failed to sync with server. Try again.');
-    });
+    })();
 
     // Clear form
     document.getElementById('playersList').innerHTML = '';
